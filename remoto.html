@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Alerta remota</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="assets/css/bootstrap-material-design.min.css">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+</head>
+
+<body style="background-color: #C5C1BE;">
+    <div class="container-fluid">
+        <section class="py-5">
+            <div class="container text-center">
+                <h2>Hospital Universitario</h2>
+                
+                <div class="row">
+                    <div class="col-12 col-md-6 mt-5">
+                        <img class="rounded-circle mb-4" src="assets/img/b1.png" alt="alerta 1" id="boton1">
+                        <p class="mb-0">alerta 1</p>
+                        <p class="text-muted">para llamados simples</p>
+                    </div>
+                    <div class="col-12 col-md-6 mt-5">
+                        <img class="rounded-circle mb-4" src="assets/img/b2.png" alt="alerta 2" id="boton2">
+                        <p class="mb-0">alerta 2</p>
+                        <p class="text-muted">alerta con mayor urgencia</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap-material-design.min.js"></script>
+    <script type="text/javascript">
+    habilitabotones();
+    var cod = getUrlVars()["q"];
+    //alert(cod);
+    var piso=cod.substring(1,3);
+    var hab=parseInt(cod.substring(4,6));
+    var cama=cod.substring(7,8);
+    //alert(hab);
+    //alert(cama);
+    /*
+        <div class="col-6 col-md-3 offset-4">
+            <select class="form-control" style="height: 36px;" id="selecthab" name="selecthab">
+                <option selected>Indique la habitacion</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+    */
+
+    function habilitabotones() {
+        $("#boton1").attr('onClick', 'enviaalerta(2)');
+        $("#boton2").attr('onClick', 'enviaalerta(3)');
+    }
+
+
+    function enviaalerta(a) {
+        $("#boton1").attr('onClick', '');
+        $("#boton2").attr('onClick', '');
+        //var hab = $('select[name=selecthab] option').filter(':selected').val();
+        // estasfuncionan igual
+        //hab = $('#selecthab option:selected').val();
+        //alert(hab);
+        if (hab.length > 2) {
+            alert('elija la Habitacion');
+            habilitabotones();
+        } else {
+            
+            $.ajax({
+                type: "POST",
+                data: {
+                    hab: hab,
+                    alerta: a,
+                    cama: cama
+                },
+                contentType: 'application/x-www-form-urlencoded',
+                mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
+                url: "http://201.190.151.236:3001/remotorecibe",
+                success: function(msg) {
+                    habilitabotones();
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    $("#muestraError").html("no está conectado a la base de datos");
+                    habilitabotones();
+                }
+            });
+        }
+    }
+
+    function getUrlVars()    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    $(document).ready(function() {});
+    </script>
+</body>
+
+</html>

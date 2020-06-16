@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <style>
+        .bd-docs.dark-edition .bd-example {
+          background-color: #1a2035;
+          border: 0;
+          border-radius: 10px;
+          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+
+        .bd-docs.dark-edition {
+          background-color: #fff;
+        }
+  </style>
+</head>
+
+<body class="dark-edition">
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-4 col-lg-12">
+                    <div class="card card-chart">
+                        <div class="card-header card-header-success">
+                            <div class="ct-chart" id="dailySalesChart"></div>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">Llamados diarios</h4>
+                            <p class="card-category">
+                                <span class="text-success"><i class="fa fa-long-arrow-up"></i> 55% </span> de aumento
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> calculo de dia completo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-12">
+                    <div class="card card-chart">
+                        <div class="card-header card-header-warning">
+                            <div class="ct-chart" id="websiteViewsChart"></div>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">Ocupacion</h4>
+                            <p class="card-category">cantidad de pacientes atendidos</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> se actualiza por mes
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-12">
+                    <div class="card card-chart">
+                        <div class="card-header card-header-danger">
+                            <div class="ct-chart" id="completedTasksChart"></div>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">Antiguedad de los pacientes</h4>
+                            <p class="card-category">a partir del mas antiguo</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                 fracciones variables
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-success card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">system_update_alt</i>
+                            </div>
+                            <p class="card-category">Habitaciones vacías</p>
+                            <h3 class="card-title" id="h_vacias"></h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats" id="comment1">
+                                456
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-warning card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">local_hotel</i>
+                            </div>
+                            <p class="card-category">Camas ocupadas</p>
+                            <h3 class="card-title" id="c_ocupadas"></h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <span id="comment2">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-danger card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">info_outline</i>
+                            </div>
+                            <p class="card-category">Camas bloqueadas</p>
+                            <h3 class="card-title" id="c_bloqueadas"></h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <span id="comment3">&nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                    <div class="card card-stats">
+                        <div class="card-header card-header-info card-header-icon">
+                            <div class="card-icon">
+                                <i class="material-icons">star_border</i>
+                            </div>
+                            <p class="card-category">Profesionales</p>
+                            <h3 class="card-title" id="profesionales"></h3>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Proximas tareas</h4>
+                            <p class="card-category">formato a definir....</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover">
+                                <thead class="text-warning">
+                                    <th>caso</th>
+                                    <th>nombre</th>
+                                    <th>X</th>
+                                    <th>Y</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Perez</td>
+                                        <td>3</td>
+                                        <td>Negro</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Minerva</td>
+                                        <td>89</td>
+                                        <td>aguja</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>Rodriguez</td>
+                                        <td>56142</td>
+                                        <td>radiografia</td>
+                                    </tr>
+                                    <tr>
+                                        <td>4</td>
+                                        <td>Algio</td>
+                                        <td>3835</td>
+                                        <td>Basico</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-tabs card-header-warning">
+                            <div class="nav-tabs-navigation">
+                                <div class="nav-tabs-wrapper">
+                                    <span class="nav-tabs-title">Tarea:</span>
+                                    <ul class="nav nav-tabs" data-tabs="tabs">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" href="#profile" data-toggle="tab">
+                                                <i class="material-icons">bug_report</i> Bacterias
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#messages" data-toggle="tab">
+                                                <i class="material-icons">code</i> Vaciar
+                                                <div class="ripple-container"></div>
+                                            </a>
+                                        </li>
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="profile">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value="" />
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Texto de prueba Texto de prueba </td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value=""/>
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Texto de prueba Texto de prueba </td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value=""/>
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Texto de prueba Texto de prueba 
+                                                </td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value="" />
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Texto de prueba Texto de prueba </td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane" id="messages">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value="" />
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar 
+                                                </td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value=""/>
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar Limpiar </td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane" id="settings">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value=""/>
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Lines From Great Russian Literature? Or E-mails From My Boss?</td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value="" />
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit
+                                                </td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" value="" />
+                                                            <span class="form-check-sign">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td>Sign contract for "What are conference organizers afraid of?"</td>
+                                                <td class="td-actions text-right">
+                                                    <button type="button" rel="tooltip" title="Edit Task" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">edit</i>
+                                                    </button>
+                                                    <button type="button" rel="tooltip" title="Remove" class="btn btn-white btn-link btn-sm">
+                                                        <i class="material-icons">close</i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/chartist.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $().ready(function() {
+            $sidebar = $('.sidebar');
+
+            $sidebar_img_container = $sidebar.find('.sidebar-background');
+
+            $full_page = $('.full-page');
+
+
+
+            window_width = $(window).width();
+
+
+        });
+    });
+    </script>
+    <script>
+    var allData = xyzopqdatosdesdeelserver
+
+
+
+	$("#h_vacias").text(allData["h_vacias"]);
+    if (allData["h_listavacias"].length > 0) $("#comment1").html('<i class="material-icons">local_offer</i> &nbsp;' + allData["h_listavacias"]);
+
+    $("#c_bloqueadas").text(allData["c_bloqueadas"]);
+    if (allData["c_listahbloq"].length > 0) $("#comment3").html('<i class="material-icons">local_offer</i> Habitaciones: ' + allData["c_listahbloq"]);
+
+    $("#c_ocupadas").text(allData["c_ocupadas"] + '/29');
+    if (allData["c_ocupadas"] > 26) $("#comment2").html('<i class="material-icons text-warning">warning</i> <a href="" class="warning-link">Alta ocupación</a>');
+    $("#profesionales").text(allData["profesionales"]);
+
+
+    
+
+    </script>
+    <script>
+    $(document).ready(function() {
+        // Javascript method's body can be found in assets/js/demos.js
+        md.initDashboardPageCharts();
+
+
+
+
+
+    });
+
+
+    demo = {
+        initDocumentationCharts: function() {
+            if ($('#dailySalesChart').length != 0 && $('#websiteViewsChart').length != 0) {
+                /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
+
+                dataDailySalesChart = {
+                    labels: ['L', 'M', 'M', 'J', 'V', 'S', 'D'],
+                    series: [
+                        [12, 17, 7, 17, 23, 18, 38]
+                    ]
+                };
+
+                optionsDailySalesChart = {
+                    lineSmooth: Chartist.Interpolation.cardinal({
+                        tension: 0
+                    }),
+                    low: 0,
+                    high: 50, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                    chartPadding: {
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    },
+                }
+
+                var dailySalesChart = new Chartist.Line('#dailySalesChart', dataDailySalesChart, optionsDailySalesChart);
+
+                var animationHeaderChart = new Chartist.Line('#websiteViewsChart', dataDailySalesChart, optionsDailySalesChart);
+            }
+        }
+
+    }
+    </script>
+</body>
+
+</html>

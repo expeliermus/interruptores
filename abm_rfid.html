@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <link rel="icon" type="image/png" href="./assets/img/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" type="text/css" href="./assets/css/fonts.css" />
+    <link rel="stylesheet" type="text/css" href="./assets/css/fontawesome.css" />
+    <link href="./assets/css/material-kit.css?v=2.0.7" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/css/bootstrap-material-design.min.css">
+
+    <title>Profesionales</title>
+    <style>
+        .responsive-card-table {
+        border-collapse: collapse;
+    }
+
+    .responsive-card-table.unstriped tbody {
+        background-color: transparent;
+    }
+
+
+
+
+    @media screen and (max-width: 640px) {
+        .responsive-card-table {}
+
+        .responsive-card-table thead tr {
+            position: absolute;
+            top: -9999em;
+            left: -9999em;
+        }
+
+        .responsive-card-table tr {
+            border-radius: 25px;
+            border: 2px solid #3B1EEB;
+            background: #4FC6FF; 
+             padding: 20px; 
+            display: block;
+        }
+
+        .responsive-card-table tr+tr {
+            margin-top: 1.5rem;
+        }
+
+        .responsive-card-table td {
+            border: none;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-justify-content: flex-start;
+            -ms-flex-pack: start;
+            justify-content: flex-start;
+            -webkit-align-items: center;
+            -ms-flex-align: center;
+            align-items: center;
+            border-bottom: 1px solid #0a0a0a;
+            padding-left: 50%;
+            position: relative;
+            background: #4FC6FF;
+        }
+
+        .responsive-card-table td:before {
+            content: attr(data-label);
+            display: inline-block;
+            font-weight: bold;
+            line-height: 1.5;
+            margin-left: -100%;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            padding: 12px 12px 12px 20px;
+            
+        }
+
+        .responsive-card-table td:after {
+            content: '';
+            position: absolute;
+            background: #4FC6FF; 
+            width: 45%;
+            height: 95%;
+            left: 1px;
+            top: 1px;
+            z-index: 0;
+        }
+
+        img {
+          display: none;
+        }
+        body {
+            font-size: 100%;
+            font-weight: bold;
+        }
+    }
+    
+    </style>
+</head>
+
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+
+        
+            <div class="container">
+                <div class="row align-items-center">
+                    
+                       
+                            <table class="table  unstriped" id="simple">
+                                <caption>Lista de Tarjetas<p></p>
+                                </caption>
+                                <thead>
+                                    <tr>
+                                   
+                                        <th>Nombre</th>
+                                        <th>alta</th>
+                                        <th>
+                                            <div type="button" id="borradesconocidas" class="btn btn-Default btn-lg" data-toggle="tooltip" data-placement="top" title="Borrar todas las desconocidas">
+                                                <i class="material-icons" style="color:black">remove_circle_outline</i>
+                                            </button>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listado">
+                                </tbody>
+                            </table>
+                        
+                
+                </div>
+            </div>
+       
+   
+    <!-- Modal -->
+    <div class="modal fade" id="ModalProfesional" tabindex="-1" role="dialog" aria-labelledby="ModalProfesionalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>asignar un profesional</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline" action="" method="post">
+                        <div class="form-group">
+                            <label for="inputNombreProfesional" class="bmd-label-floating">Nombre</label>
+                            <input type="text" class="form-control" id="inputNombreProfesional" size="40%" required autocomplete="off"/>
+                            <input type="hidden" id="inputrfid" />
+                        </div>
+                        <span class="form-group bmd-form-group">
+                            <!-- needed to match padding for floating labels -->
+                            <button type="button" id="ModalProfBoton" class="btn btn-primary">Grabar</button>
+                        </span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="ModalAgregar" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Agregar un dispositivo</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline" action="" method="post">
+                        <div class="form-group">
+                            <label for="inputrfidalta" class="bmd-label-floating">rfid address</label>
+                            <input type="text" class="form-control" id="inputrfidalta" size="40%" />
+                        </div>
+                        <div class="form-group">
+                            <label for="inputNombreProfesionalAlta" class="bmd-label-floating">habitación</label>
+                            <input type="text" class="form-control" id="inputNombreProfesionalAlta" size="40%" />
+                        </div>
+                        <span class="form-group bmd-form-group">
+                            <!-- needed to match padding for floating labels -->
+                            <button type="button" id="ModalProfBotonAlta" class="btn btn-primary">Grabar</button>
+                        </span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="ModalBorrar" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>¿Borrarla?</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline" action="" method="post">
+                        <div class="form-group">
+                            <input type="hidden" id="inputrfidbaja" />
+                        </div>
+                        <span class="form-group bmd-form-group">
+                            <button type="button" id="ModalBotonBorrar" class="btn btn-outline-warning" style="margin-right: 20px; margin-left: 20px">Si</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-outline-primary">No</button>
+                        </span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="./assets/js/jquery.min.js" type="text/javascript"></script>
+    <script src="./assets/js/bootstrap-material-design.js"></script>
+    <script>
+    var datosDesdeSQL = 'xyzopqdatosdesdeelserver'
+
+    var linea = '';
+    for (var caso of JSON.parse(datosDesdeSQL)) {
+        agregaLinea(caso.rfid, caso.nombre, caso.alta.substr(0, 10), 0);
+        //console.log(caso.rfid + ' ' + caso.nombre+ ' ' + caso.alta.substr(0,10));
+    }
+
+
+    function agregaLinea(a, b, c, color) {
+        var vcolor = 'gray';
+        var adicional = '';
+        switch (color) {
+            case 1:
+                vcolor = 'red';
+                adicional = 'data-toggle="tooltip" data-placement="left" title="Se grabó en SQL pero no se pudo subscribir"';
+                break;
+            case 2:
+                vcolor = 'lightgreen';
+                break;
+            default:
+                vcolor = 'gray';
+
+        }
+        var linea = '';
+        //background: #4FC6FF;
+        linea = linea + '<tr style=" color:' + vcolor + '" >'
+        /*linea = linea + '<td data-label="Tarjeta" class="' + adicional + ' d-none d-sm-none d-md-block">' + a + '</td>'*/
+        linea = linea + ' <td data-label="Nombre">' + b + '</td>'
+        linea = linea + ' <td data-label="alta">' + c + '</td>'
+        linea = linea + ' <td data-label="Acción" >'
+        linea = linea + ' <button type="button" onclick="tomaDato($(this))" class="btn btn-Default btn-fab  btn-round " data-toggle="modal" data-target="#ModalProfesional" data-toggle="tooltip" data-placement="bottom" title="asignar un profesional">'
+        linea = linea + '     <i class="material-icons">person</i>'
+        linea = linea + ' </button>'
+        linea = linea + ' <button type="button" onclick="tomaDatoBaja($(this))" class="btn btn-Default btn-fab btn-round" data-toggle="modal" data-target="#ModalBorrar" data-toggle="tooltip" data-placement="bottom" title="borrar esta tarjeta">'
+        linea = linea + '     <i class="material-icons">delete</i>'
+        linea = linea + ' </button>'
+        linea = linea + ' </td>'
+        linea = linea + '</tr>'
+        $("#listado").append(linea);
+    }
+
+
+    $(document).ready(function() {
+        $('body').bootstrapMaterialDesign();
+        $('#ModalProfBoton').attr('onClick', 'enviaModif()');
+        //$('#ModalProfBotonAlta').attr('onClick', 'enviaAlta()');
+        $('#ModalBotonBorrar').attr('onClick', 'enviaBaja()');
+        $('#borradesconocidas').attr('onClick', 'enviaDesconocidas()');
+
+
+        $('#ModalProfesional').on('shown.bs.modal', function() {
+            $('#inputNombreProfesional').trigger('focus');
+        })
+        $('#ModalAgregar').on('shown.bs.modal', function() {
+            $('#inputrfidalta').trigger('focus');
+        })
+
+       // $('button').tooltip();
+       // $('td').tooltip();
+    });
+
+    function tomaDato(e) {
+        $("#inputrfid").val(e.parent().parent().children().html());
+    }
+
+    function tomaDatoBaja(e) {
+        $("#inputrfidbaja").val(e.parent().parent().children().html());
+    }
+
+    function enviaAlta() {
+        $("#ModalProfBotonalta").attr('onClick', '');
+        var profesional = $("#inputNombreProfesionalAlta").val();
+        var rfid = $("#inputrfidalta").val();
+
+        $.ajax({
+            type: "POST",
+            data: {
+                rfid: rfid,
+                profesional: profesional
+            },
+            contentType: 'application/x-www-form-urlencoded',
+            mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
+            url: "http://201.190.151.236:3001/rfidalta",
+            success: function(msg) {
+                //   console.log(msg);
+                var respuesta = JSON.parse(msg);
+                //   console.log(respuesta);
+                //   console.log(respuesta[0].error);
+                if (respuesta[0].error != '0') {
+                    alert(respuesta[0].error);
+                } else {
+                    if (respuesta[0].repetido == 1) {
+                        alert('Este rfid address ya estaba en la base de datos, ahora ni se lo volvió a agregar ni se lo volvió a subscribir')
+                    } else {
+                        if (respuesta[0].hecho == 1) { agregaLinea(rfid, profesional, 1); } //alta sin subscrip  
+                        if (respuesta[0].hecho == 2) { agregaLinea(rfid, profesional, 2); } //alta con subscrip  
+                        if (respuesta[0].recibido == 1) { alert('se procesó el pedido de alta, pero no se informa si fué satisfactorio') }
+                    }
+
+                }
+                if (respuesta[0].hecho == 0) { alert("Hay conexion pero el servidor SQL rechazó el pedido, no se grabó el cambio"); }
+                $('#ModalProfBotonalta').attr('onClick', 'enviaModif()');
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("No hay conexion, no se grabó el cambio");
+                $('#ModalProfBotonalta').attr('onClick', 'enviaModif()');
+            }
+        });
+    }
+
+    function enviaModif() {
+        $("#ModalProfBoton").attr('onClick', '');
+        var profesional = $("#inputNombreProfesional").val();
+        var rfid = $("#inputrfid").val();
+
+        $.ajax({
+            type: "POST",
+            data: {
+                rfid: rfid,
+                profesional: profesional
+            },
+            contentType: 'application/x-www-form-urlencoded',
+            mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
+            url: "http://201.190.151.236:3001/rfidmodifica",
+            success: function(msg) {
+                var respuesta = JSON.parse(msg);
+                //console.log(respuesta[0].hecho);
+                if (respuesta[0].hecho == 1) {
+                    window.location.reload(false);
+                }
+                if (respuesta[0].hecho == 0) { alert("Hay conexion pero el servidor SQL rechazó el pedido, no se grabó el cambio"); }
+                //$('#ModalProfBoton').attr('onClick', 'enviaModif()');  no es necesaria, se hace reload de la pagina
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("No hay conexion, no se grabó el cambio");
+                $('#ModalProfBoton').attr('onClick', 'enviaModif()');
+            }
+        });
+    }
+
+    function enviaBaja() {
+        $("#ModalBotonBorrar").attr('onClick', '');
+        var rfid = $("#inputrfidbaja").val();
+
+        $.ajax({
+            type: "POST",
+            data: {
+                rfid: rfid
+            },
+            contentType: 'application/x-www-form-urlencoded',
+            mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
+            url: "http://201.190.151.236:3001/rfidbaja",
+            success: function(msg) {
+                var respuesta = JSON.parse(msg);
+                //console.log(respuesta[0].hecho);
+                if (respuesta[0].hecho == 1) {
+                    window.location.reload(false);
+                }
+                if (respuesta[0].hecho == 0) { alert("Hay conexion pero el servidor SQL rechazó el pedido, no se grabó el cambio"); }
+                //$('#ModalProfBoton').attr('onClick', 'enviaModif()');  no es necesaria, se hace reload de la pagina
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("No hay conexion, no se grabó el cambio");
+                $('#ModalBotonBorrar').attr('onClick', 'enviaBaja()');
+            }
+        });
+    }
+
+    function enviaDesconocidas() {
+        $("#borradesconocidas").attr('onClick', '');
+        $.ajax({
+            type: "POST",
+            data: { que: 1 },
+            url: "http://201.190.151.236:3001/rfidbajadesconocidas",
+            success: function(msg) {
+                window.location.reload(false);
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alert("No hay conexion, no se grabó el cambio");
+                $('#borradesconocidas').attr('onClick', 'enviaDesconocidas()');
+            }
+        });
+    }
+    </script>
+   
+</body>
+
+</html>
