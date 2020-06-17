@@ -7,7 +7,7 @@
 6 silly lifecycle SOS@1.0.0~prestart: no script for prestart, continuing
 7 info lifecycle SOS@1.0.0~start: SOS@1.0.0
 8 verbose lifecycle SOS@1.0.0~start: unsafe-perm in lifecycle true
-9 verbose lifecycle SOS@1.0.0~start: PATH: /usr/share/npm/bin/node-gyp-bin:/root/web/test/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+9 verbose lifecycle SOS@1.0.0~start: PATH: /usr/share/npm/bin/node-gyp-bin:/root/web/test/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 10 verbose lifecycle SOS@1.0.0~start: CWD: /root/web/test
 11 silly lifecycle SOS@1.0.0~start: Args: [ '-c', 'node mqtt.js' ]
 12 silly lifecycle SOS@1.0.0~start: Returned: code: 1  signal: null
