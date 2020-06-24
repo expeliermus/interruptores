@@ -37,7 +37,7 @@ CREATE TABLE `todo` (
   `dup` varchar(10) DEFAULT NULL,
   `length` smallint(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33305 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2006 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +49,4 @@ CREATE TABLE `todo` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-17  9:01:19
+-- Dump completed on 2020-06-17  9:29:41

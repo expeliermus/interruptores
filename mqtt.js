@@ -144,7 +144,7 @@ client.on('message', function(topic, message, packet) {
                         if (err) {
                             console.log('error en la consulta: ' + laquery + ' ' + todo);
                         } else {
-                            if (rows[0][0].resultado != '1' && rows[0][0].resultado != undefined) {
+                            if (rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
                                 client.publish(parte[0] + '/estado', rows[0][0].resultado.toString(), { qos: 2 });
                             }
                         }
@@ -298,7 +298,7 @@ app.use('/assets/', express.static('assets/')) ///// borrarlo es solo por la com
 //app.use('/graficos/', express.static('graficos/'))
 
 app.get('/', function(req, res) {
-    var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 order by length(habitacion),habitacion;";
+    var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 and habitacion not in ('enfermeria','desconocida') order by length(habitacion),habitacion;";
     conn.query(laquery, function(err, rows) {
         fs.readFile("comandos.html", function(err, html) {
             if (err) console.error(err);
@@ -312,7 +312,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/comandos.html', function(req, res) {
-    var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 order by length(habitacion),habitacion;";
+    var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 and habitacion not in ('enfermeria','desconocida') order by length(habitacion),habitacion;";
     conn.query(laquery, function(err, rows) {
         fs.readFile("comandos.html", function(err, html) {
             if (err) console.error(err);
@@ -408,364 +408,371 @@ app.post('/resethab', function(req, res) {
 });
 
 app.post('/apagardesdeapp', function(req, res) {
-            if (req.body.hab == undefined || req.body.quien == undefined || req.body.como == undefined) {
-                return res.json([{ 'error': true }]);
-            } else {
-                if (req.body.como == 'tarjremota') {
-                    console.log("recibio pedido apagardesdeapp por tarjeta remota");
-                    var laquery = "call accionhab('apagarremoto',?,?,?);";
-                } else {
-                    console.log("recibio pedido apagardesdeapp por opcion de pantalla");
-                    var laquery = "call accionhab('apagar',?,?,?);";
-                }
-                if (req.body.hab.length <= 20 && req.body.quien.length <= 45 && req.body.como.length <= 10) {
-                        var todo = [req.body.hab, req.body.quien, req.body.como];
-                        conn.query(laquery, todo, (err, rows, fields) => {
-                            if (err) console.error(err);
-                        });
-                        resetcoloreshab(req.body.hab);
-                        res.json([{ 'error': false }]);
+    if (req.body.hab == undefined || req.body.quien == undefined || req.body.como == undefined) {
+        return res.json([{ 'error': true }]);
+    } else {
+        if (req.body.como == 'tarjremota') {
+            console.log("recibio pedido apagardesdeapp por tarjeta remota");
+            var laquery = "call accionhab('apagarremoto',?,?,?);";
+        } else {
+            console.log("recibio pedido apagardesdeapp por opcion de pantalla");
+            var laquery = "call accionhab('apagar',?,?,?);";
+        }
+        if (req.body.hab.length <= 20 && req.body.quien.length <= 45 && req.body.como.length <= 10) {
+            var todo = [req.body.hab, req.body.quien, req.body.como];
+            conn.query(laquery, todo, (err, rows, fields) => {
+                if (err) {console.error(err)}
+                    else {
+                        setTimeout(resetcoloreshab.bind(null, 'todas'), 2000);
+                        //setTimeout(resetcoloreshab.bind(null,req.body.hab), 2000);
                     }
-                }
             });
+            
+            res.json([{ 'error': false }]);
+        }
+    }
+});
 
-        app.get('/profesionales', function(req, res) {
-            console.log("recibio  /profesionales");
-            var laquery = "SELECT nombre, DATE_FORMAT(alta, '%d/%m/%Y') as alta FROM rfid order by alta desc;";
-            conn.query(laquery, function(err, rows) {
+app.get('/profesionales', function(req, res) {
+    console.log("recibio  /profesionales");
+    var laquery = "SELECT rfid,nombre, DATE_FORMAT(alta, '%d/%m/%Y') as alta FROM rfid order by alta desc;";
+    conn.query(laquery, function(err, rows) {
 
-                fs.readFile("abm_rfid.html", function(err, html) {
-                    if (err) console.error(err);
-                    var html_string = html.toString();
-                    html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
-                    res.writeHead(200);
-                    res.write(html_string);
-                    res.end();
-                });
-            });
+        fs.readFile("abm_rfid.html", function(err, html) {
+            if (err) console.error(err);
+            var html_string = html.toString();
+            html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
+            res.writeHead(200);
+            res.write(html_string);
+            res.end();
         });
+    });
+});
 
-        app.post('/rfidmodifica', function(req, res) {
-            console.log("recibio pedido de modificar rfid-profesional");
-            var rfid = req.body.rfid;
-            var profesional = req.body.profesional;
-            var laquery = "update rfid set alta=CURRENT_TIMESTAMP,nombre='" + profesional + "' where rfid='" + rfid + "';"
-            conn.query(laquery, function(err, rows) {
-                if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
-            });
+app.post('/rfidmodifica', function(req, res) {
+    console.log("recibio pedido de modificar rfid-profesional");
+    var rfid = req.body.rfid;
+    var profesional = req.body.profesional;
+    var laquery = "update rfid set alta=CURRENT_TIMESTAMP,nombre='" + profesional + "' where rfid='" + rfid + "';"
+    console.log(laquery);
+    conn.query(laquery, function(err, rows) {
+        if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
+    });
+});
+
+app.post('/rfidbaja', function(req, res) {
+    console.log("recibio pedido de baja rfid");
+    var rfid = req.body.rfid;
+    var laquery = "delete from rfid where rfid='" + rfid + "';";
+    conn.query(laquery, function(err, rows) {
+        if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
+    });
+});
+
+app.post('/rfidbajadesconocidas', function(req, res) {
+    var laquery = "delete from rfid where nombre='desconocida';";
+    console.log(laquery);
+    conn.query(laquery, function(err, rows) {
+        if (err) { console.log(0); return res.json([{ 'hecho': 0 }]); } else { console.log(1); return res.json([{ 'hecho': 1 }]); }
+    });
+});
+
+app.get('/dispositivos', function(req, res) {
+    console.log("recibio  /dispositivos");
+    var laquery = 'select * from mac order by mac;';
+    conn.query(laquery, function(err, rows) {
+
+        fs.readFile("abm_mac.html", function(err, html) {
+            if (err) console.error(err);
+            var html_string = html.toString();
+            html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
+            res.writeHead(200);
+            res.write(html_string);
+            res.end();
         });
+    });
+});
 
-        app.post('/rfidbaja', function(req, res) {
-            console.log("recibio pedido de baja rfid");
-            var rfid = req.body.rfid;
-            var laquery = "delete from rfid where rfid='" + rfid + "';";
-            conn.query(laquery, function(err, rows) {
-                if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
-            });
+app.get('/controles', function(req, res) {
+    console.log("recibio  /controles");
+    var laquery = 'select mac,habitacion from mac where (rf is not null and length(rf) > 0) order by habitacion;';
+    conn.query(laquery, function(err, rows) {
+
+        fs.readFile("abm_rf.html", function(err, html) {
+            if (err) console.error(err);
+            var html_string = html.toString();
+            html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
+            res.writeHead(200);
+            res.write(html_string);
+            res.end();
         });
+    });
+});
+app.post('/seteacontroles', function(req, res) {
+    console.log("recibio pedido de setear controles");
+    var mac = req.body.mac;
+    var datos = req.body.datos;
+    var pos;
+    var codigo;
+    client.subscribe(mac + '/controles', { qos: 2 }, function(err, granted) {
+        if (err) {
+            console.log("--> no pudo subscribirse para setear controles a " + mac);
+            return res.json([{ 'error': '1' }]);
+        } else {
 
-        app.post('/rfidbajadesconocidas', function(req, res) {
-            var laquery = "delete from rfid where nombre='desconocida';";
-            console.log(laquery);
-            conn.query(laquery, function(err, rows) {
-                if (err) { console.log(0); return res.json([{ 'hecho': 0 }]); } else { console.log(1); return res.json([{ 'hecho': 1 }]); }
-            });
-        });
-
-        app.get('/dispositivos', function(req, res) {
-            console.log("recibio  /dispositivos");
-            var laquery = 'select * from mac order by mac;';
-            conn.query(laquery, function(err, rows) {
-
-                fs.readFile("abm_mac.html", function(err, html) {
-                    if (err) console.error(err);
-                    var html_string = html.toString();
-                    html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
-                    res.writeHead(200);
-                    res.write(html_string);
-                    res.end();
-                });
-            });
-        });
-
-        app.get('/controles', function(req, res) {
-            console.log("recibio  /controles");
-            var laquery = 'select mac,habitacion from mac where (rf is not null and length(rf) > 0) order by habitacion;';
-            conn.query(laquery, function(err, rows) {
-
-                fs.readFile("abm_rf.html", function(err, html) {
-                    if (err) console.error(err);
-                    var html_string = html.toString();
-                    html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
-                    res.writeHead(200);
-                    res.write(html_string);
-                    res.end();
-                });
-            });
-        }); app.post('/seteacontroles', function(req, res) {
-            console.log("recibio pedido de setear controles");
-            var mac = req.body.mac;
-            var datos = req.body.datos;
-            var pos;
-            var codigo;
-            client.subscribe(mac + '/controles', { qos: 2 }, function(err, granted) {
-                if (err) {
-                    console.log("--> no pudo subscribirse para setear controles a " + mac);
-                    return res.json([{ 'error': '1' }]);
-                } else {
-
-                    for (i = 0; i < datos.length; i++) {
-                        pos = datos[i].pos;
-                        codigo = datos[i].codigo;
-                        // no pudo funcionar el callback de publish
-                        client.publish(mac + '/controles', pos + ';' + codigo, { qos: 2 }, function(err) {});
-                    }
-                    return res.json([{ 'error': '0' }]);
-                    client.unsubscribe(mac + '/controles', 0, function(err) {});
-                }
-            });
-        });
+            for (i = 0; i < datos.length; i++) {
+                pos = datos[i].pos;
+                codigo = datos[i].codigo;
+                // no pudo funcionar el callback de publish
+                client.publish(mac + '/controles', pos + ';' + codigo, { qos: 2 }, function(err) {});
+            }
+            return res.json([{ 'error': '0' }]);
+            client.unsubscribe(mac + '/controles', 0, function(err) {});
+        }
+    });
+});
 
 
-        app.post('/macalta', function(req, res) {
-            console.log("recibio pedido de alta mac");
-            var mac = req.body.mac;
-            var habitacion = req.body.habitacion;
-            var rf = req.body.rf;
-            if (rf != null && rf.length == 0) { rf = null } else { rf = "'" + rf + "'" }
-            var laquery = "select mac from mac where mac='" + mac + "';";
-            conn.query(laquery, function(err, rows) {
-                if (err) {
-                    console.log(err);
-                    return res.json([{ 'error': 'No se conectó a la base de datos' }]);
-                } else {
-                    //length==0 significa no hubo resultados, no hay link o paso el tiempo. En este caso es que no se duplicará
-                    if (rows.length == 0) {
-                        var laquery = "insert into mac (mac,habitacion,rf) values ('" + mac + "' , '" + habitacion + "'," + rf + ")";
-                        conn.query(laquery, function(err, rows) {
-                            if (err) { return res.json([{ 'error': 'No se grabó, el formato de los datos no es aceptado, tal vez sea la longitud de ellos' }]); } else {
-                                client.subscribe(req.body.mac + '/alerta', { qos: 2 }, function(err, granted) {
-                                    if (err) {
-                                        console.log("--> no pudo subscribirse a " + caso.mac);
-                                        return res.json([{ 'hecho': 1, 'error': '0' }]);
-                                    } else {
-                                        console.log('Subscripto: ' + granted[0].topic + '   qos:' + granted[0].qos);
-                                        client.subscribe(req.body.mac + '/rfid', { qos: 2 }, function(err, granted) {});
-                                        client.subscribe(req.body.mac + '/estado', { qos: 2 }, function(err, granted) {});
-                                        client.subscribe(req.body.mac + '/vivo', { qos: 0 }, function(err, granted) {});
-                                        client.subscribe(req.body.mac + '/vivoconf', { qos: 0 }, function(err, granted) {});
-                                        return res.json([{ 'hecho': 2, 'error': '0' }]);
-                                    }
-                                });
+app.post('/macalta', function(req, res) {
+    console.log("recibio pedido de alta mac");
+    var mac = req.body.mac;
+    var habitacion = req.body.habitacion;
+    var rf = req.body.rf;
+    if (rf != null && rf.length == 0) { rf = null } else { rf = "'" + rf + "'" }
+    var laquery = "select mac from mac where mac='" + mac + "';";
+    conn.query(laquery, function(err, rows) {
+        if (err) {
+            console.log(err);
+            return res.json([{ 'error': 'No se conectó a la base de datos' }]);
+        } else {
+            //length==0 significa no hubo resultados, no hay link o paso el tiempo. En este caso es que no se duplicará
+            if (rows.length == 0) {
+                var laquery = "insert into mac (mac,habitacion,rf) values ('" + mac + "' , '" + habitacion + "'," + rf + ")";
+                conn.query(laquery, function(err, rows) {
+                    if (err) { return res.json([{ 'error': 'No se grabó, el formato de los datos no es aceptado, tal vez sea la longitud de ellos' }]); } else {
+                        client.subscribe(req.body.mac + '/alerta', { qos: 2 }, function(err, granted) {
+                            if (err) {
+                                console.log("--> no pudo subscribirse a " + caso.mac);
+                                return res.json([{ 'hecho': 1, 'error': '0' }]);
+                            } else {
+                                console.log('Subscripto: ' + granted[0].topic + '   qos:' + granted[0].qos);
+                                client.subscribe(req.body.mac + '/rfid', { qos: 2 }, function(err, granted) {});
+                                client.subscribe(req.body.mac + '/estado', { qos: 2 }, function(err, granted) {});
+                                client.subscribe(req.body.mac + '/vivo', { qos: 0 }, function(err, granted) {});
+                                client.subscribe(req.body.mac + '/vivoconf', { qos: 0 }, function(err, granted) {});
+                                return res.json([{ 'hecho': 2, 'error': '0' }]);
                             }
                         });
-                        // esto es para dar de alta la habitacion si es que no existe
-                        laquery = "INSERT INTO dashboard (habitacion) SELECT * FROM (SELECT  '" + habitacion + "') AS tmp WHERE NOT EXISTS ( SELECT 1 FROM dashboard WHERE habitacion = '" + habitacion + "') LIMIT 1;"
-                        conn.query(laquery, function(err, rows) {});
-                    } else {
-                        return res.json([{ 'repetido': 1, 'error': '0' }]);
                     }
-                }
-
-            });
-        });
-
-        app.post('/macmodifica', function(req, res) {
-            console.log("recibio pedido de modificar mac-habitacion");
-            var mac = req.body.mac;
-            var habitacion = req.body.habitacion;
-            var rf = req.body.rf;
-            if (rf != null && rf.length == 0) { rf = null } else { rf = "'" + rf + "'" }
-            var laquery = "UPDATE mac SET habitacion = '" + habitacion + "',rf = " + rf + " WHERE mac = '" + mac + "';"
-            conn.query(laquery, function(err, rows) {
-                if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
-            });
-            // esto es para dar de alta la habitacion si es que no existe
-            laquery = "INSERT INTO dashboard (habitacion) SELECT * FROM (SELECT  '" + habitacion + "') AS tmp WHERE NOT EXISTS ( SELECT 1 FROM dashboard WHERE habitacion = '" + habitacion + "') LIMIT 1;"
-            conn.query(laquery, function(err, rows) {});
-
-        });
-
-        app.post('/macbaja', function(req, res) {
-            console.log("recibio pedido de baja mac");
-            var mac = req.body.mac;
-            var laquery = "delete from mac where mac='" + mac + "';";
-            //console.log(laquery);
-            conn.query(laquery, function(err, rows) {
-                if (err) {
-                    console.log(err);
-                    return res.json([{ 'error': 'No se conectó a la base de datos' }]);
-                } else {
-                    client.unsubscribe(req.body.mac + '/alerta', 0, function(err) {
-                        if (err) {
-                            console.log("--> falló el pedido de des-subscribirse a " + caso.mac);
-                            return res.json([{ 'hecho': 1, 'error': '0' }]);
-                        }
-                        client.unsubscribe(req.body.mac + '/rfid', { qos: 2 }, function(err, granted) {});
-                        client.unsubscribe(req.body.mac + '/estado', { qos: 2 }, function(err, granted) {});
-                        client.unsubscribe(req.body.mac + '/vivo', { qos: 0 }, function(err, granted) {});
-                        client.unsubscribe(req.body.mac + '/vivoconf', { qos: 0 }, function(err, granted) {});
-                        return res.json([{ 'hecho': 2, 'error': '0' }]);
-                    });
-                };
-
-            });
-        });
-
-        app.post('/status', function(req, res) {
-            //console.log("recibio pedido de status");
-            var laquery = 'select d.*,color,mac.ultrespuesta, DATE_FORMAT(TIMEDIFF(current_timestamp,d.desde), "%H:%i" ) as antiguedad,mac.tipohab from dashboard d left join color c on d.estado=c.estado join mac on d.habitacion=mac.habitacion;';
-            conn.query(laquery, function(err, rows) {
-                if (err) {
-                    console.log('error en la consulta: ' + laquery);
-                    return res.json({ 'error': true, 'message': 'Error occurred' + err });
-                }
-                //console.log(rows);
-                res.json(rows);
-            });
-        });
-
-        app.get('/programartareas.html', function(req, res) {
-            fs.readFile("programartareas.html", function(err, html) {
-                if (err) console.error(err);
-                var html_string = html.toString();
-                res.writeHead(200);
-                res.write(html_string);
-                res.end();
-            });
-        }); app.get('/camas.html', function(req, res) {
-            var laquery = 'SELECT TRIM(habitacion) as habitacion,TRIM(cama) as cama,TRIM(Paciente) as Paciente FROM camas order by LENGTH (habitacion),habitacion,cama;';
-            conn.query(laquery, function(err, rows) {
-                fs.readFile("camas.html", function(err, html) {
-                    if (err) console.error(err);
-                    var html_string = html.toString();
-                    html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
-                    res.writeHead(200);
-                    res.write(html_string);
-                    res.end();
                 });
-            });
-        });
-
-        app.get('/camas2.html', function(req, res) {
-            var laquery = 'SELECT TRIM(habitacion) as habitacion,TRIM(cama) as cama,TRIM(Paciente) as Paciente FROM camas order by LENGTH (habitacion),habitacion,cama;';
-            conn.query(laquery, function(err, rows) {
-                fs.readFile("camas2.html", function(err, html) {
-                    if (err) console.error(err);
-                    var html_string = html.toString();
-                    html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
-                    res.writeHead(200);
-                    res.write(html_string);
-                    res.end();
-                });
-            });
-        });
-
-        app.get('/dashboard.html', function(req, res) {
-            var laquery = 'call g_dashboard(7);';
-            conn.query(laquery, function(err, rows) {
-                fs.readFile("dashboard.html", function(err, html) {
-                    if (err) console.error(err);
-                    var html_string = html.toString();
-                    html_string = html_string.replace("xyzopqdatosdesdeelserver", rows[0][0].resultado);
-                    res.writeHead(200);
-                    res.write(html_string);
-                    res.end();
-                });
-            });
-        });
-
-        app.post('/usuario', function(req, res) {
-            console.log("recibio pedido logueo");
-            var laquery = "select grupo from usuarios where usuario=? and password=?;";
-            var todo = [req.body.usuario, req.body.pass];
-            if (req.body.usuario == undefined || req.body.pass == undefined) {
-                return res.json([{ 'error': true, 'grupo': 'basico' }]);
+                // esto es para dar de alta la habitacion si es que no existe
+                laquery = "INSERT INTO dashboard (habitacion) SELECT * FROM (SELECT  '" + habitacion + "') AS tmp WHERE NOT EXISTS ( SELECT 1 FROM dashboard WHERE habitacion = '" + habitacion + "') LIMIT 1;"
+                conn.query(laquery, function(err, rows) {});
+            } else {
+                return res.json([{ 'repetido': 1, 'error': '0' }]);
             }
+        }
+
+    });
+});
+
+app.post('/macmodifica', function(req, res) {
+    console.log("recibio pedido de modificar mac-habitacion");
+    var mac = req.body.mac;
+    var habitacion = req.body.habitacion;
+    var rf = req.body.rf;
+    if (rf != null && rf.length == 0) { rf = null } else { rf = "'" + rf + "'" }
+    var laquery = "UPDATE mac SET habitacion = '" + habitacion + "',rf = " + rf + " WHERE mac = '" + mac + "';"
+    conn.query(laquery, function(err, rows) {
+        if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
+    });
+    // esto es para dar de alta la habitacion si es que no existe
+    laquery = "INSERT INTO dashboard (habitacion) SELECT * FROM (SELECT  '" + habitacion + "') AS tmp WHERE NOT EXISTS ( SELECT 1 FROM dashboard WHERE habitacion = '" + habitacion + "') LIMIT 1;"
+    conn.query(laquery, function(err, rows) {});
+
+});
+
+app.post('/macbaja', function(req, res) {
+    console.log("recibio pedido de baja mac");
+    var mac = req.body.mac;
+    var laquery = "delete from mac where mac='" + mac + "';";
+    //console.log(laquery);
+    conn.query(laquery, function(err, rows) {
+        if (err) {
+            console.log(err);
+            return res.json([{ 'error': 'No se conectó a la base de datos' }]);
+        } else {
+            client.unsubscribe(req.body.mac + '/alerta', 0, function(err) {
+                if (err) {
+                    console.log("--> falló el pedido de des-subscribirse a " + caso.mac);
+                    return res.json([{ 'hecho': 1, 'error': '0' }]);
+                }
+                client.unsubscribe(req.body.mac + '/rfid', { qos: 2 }, function(err, granted) {});
+                client.unsubscribe(req.body.mac + '/estado', { qos: 2 }, function(err, granted) {});
+                client.unsubscribe(req.body.mac + '/vivo', { qos: 0 }, function(err, granted) {});
+                client.unsubscribe(req.body.mac + '/vivoconf', { qos: 0 }, function(err, granted) {});
+                return res.json([{ 'hecho': 2, 'error': '0' }]);
+            });
+        };
+
+    });
+});
+
+app.post('/status', function(req, res) {
+    //console.log("recibio pedido de status");
+    var laquery = 'select d.*,color,mac.ultrespuesta, DATE_FORMAT(TIMEDIFF(current_timestamp,d.desde), "%H:%i" ) as antiguedad,mac.tipohab from dashboard d left join color c on d.estado=c.estado join mac on d.habitacion=mac.habitacion;';
+    conn.query(laquery, function(err, rows) {
+        if (err) {
+            console.log('error en la consulta: ' + laquery);
+            return res.json({ 'error': true, 'message': 'Error occurred' + err });
+        }
+        //console.log(rows);
+        res.json(rows);
+    });
+});
+
+app.get('/programartareas.html', function(req, res) {
+    fs.readFile("programartareas.html", function(err, html) {
+        if (err) console.error(err);
+        var html_string = html.toString();
+        res.writeHead(200);
+        res.write(html_string);
+        res.end();
+    });
+});
+app.get('/camas.html', function(req, res) {
+    var laquery = 'SELECT TRIM(habitacion) as habitacion,TRIM(cama) as cama,TRIM(Paciente) as Paciente FROM camas order by LENGTH (habitacion),habitacion,cama;';
+    conn.query(laquery, function(err, rows) {
+        fs.readFile("camas.html", function(err, html) {
+            if (err) console.error(err);
+            var html_string = html.toString();
+            html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
+            res.writeHead(200);
+            res.write(html_string);
+            res.end();
+        });
+    });
+});
+
+app.get('/camas2.html', function(req, res) {
+    var laquery = 'SELECT TRIM(habitacion) as habitacion,TRIM(cama) as cama,TRIM(Paciente) as Paciente FROM camas order by LENGTH (habitacion),habitacion,cama;';
+    conn.query(laquery, function(err, rows) {
+        fs.readFile("camas2.html", function(err, html) {
+            if (err) console.error(err);
+            var html_string = html.toString();
+            html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
+            res.writeHead(200);
+            res.write(html_string);
+            res.end();
+        });
+    });
+});
+
+app.get('/dashboard.html', function(req, res) {
+    var laquery = 'call g_dashboard(7);';
+    conn.query(laquery, function(err, rows) {
+        fs.readFile("dashboard.html", function(err, html) {
+            if (err) console.error(err);
+            var html_string = html.toString();
+            html_string = html_string.replace("xyzopqdatosdesdeelserver", rows[0][0].resultado);
+            res.writeHead(200);
+            res.write(html_string);
+            res.end();
+        });
+    });
+});
+
+app.post('/usuario', function(req, res) {
+    console.log("recibio pedido logueo");
+    var laquery = "select grupo from usuarios where usuario=? and password=?;";
+    var todo = [req.body.usuario, req.body.pass];
+    if (req.body.usuario == undefined || req.body.pass == undefined) {
+        return res.json([{ 'error': true, 'grupo': 'basico' }]);
+    }
+    conn.query(laquery, todo, (err, rows, fields) => {
+        if (err) console.error(err);
+        if (rows.length == 0) { return res.json([{ 'error': true, 'grupo': 'basico' }]); } else { return res.json([{ 'error': false, 'grupo': rows[0].grupo }]); }
+    });
+});
+
+app.get('/prueba.html', function(req, res) {
+    fs.readFile("prueba.html", function(err, html) {
+        if (err) console.error(err);
+        var html_string = html.toString();
+        res.writeHead(200);
+        res.write(html_string);
+        res.end();
+    });
+});
+
+app.get('/remoto.html', function(req, res) {
+    fs.readFile("remoto.html", function(err, html) {
+        if (err) console.error(err);
+        var html_string = html.toString();
+        res.writeHead(200);
+        res.write(html_string);
+        res.end();
+    });
+});
+
+app.post('/remotorecibe', function(req, res) {
+    console.log("recibio msg en formaremota");
+    //console.log(req.body.hab);
+    //console.log(req.body.alerta);
+    if (req.body.hab == undefined || req.body.alerta == undefined) {
+        return res.json([{ 'error': true }]);
+    } else {
+        //acá repite los codigos que se usarían si vinieran por mqtt
+        if (req.body.hab.length <= 2 && req.body.alerta.length <= 10 && parseInt(req.body.cama) < 999) {
+            var laquery = "call RecibeMSGremoto(?,?,?, @resultado);";
+            var todo = [req.body.hab, req.body.alerta, parseInt(req.body.cama)];
             conn.query(laquery, todo, (err, rows, fields) => {
-                if (err) console.error(err);
-                if (rows.length == 0) { return res.json([{ 'error': true, 'grupo': 'basico' }]); } else { return res.json([{ 'error': false, 'grupo': rows[0].grupo }]); }
-            });
-        });
+                //console.log("call RecibeMSGremoto(" + req.body.hab + "," + req.body.alerta + ", @resultado);");
 
-        app.get('/prueba.html', function(req, res) {
-            fs.readFile("prueba.html", function(err, html) {
-                if (err) console.error(err);
-                var html_string = html.toString();
-                res.writeHead(200);
-                res.write(html_string);
-                res.end();
-            });
-        });
-
-        app.get('/remoto.html', function(req, res) {
-            fs.readFile("remoto.html", function(err, html) {
-                if (err) console.error(err);
-                var html_string = html.toString();
-                res.writeHead(200);
-                res.write(html_string);
-                res.end();
-            });
-        });
-
-        app.post('/remotorecibe', function(req, res) {
-            console.log("recibio msg en formaremota");
-            //console.log(req.body.hab);
-            //console.log(req.body.alerta);
-            if (req.body.hab == undefined || req.body.alerta == undefined) {
-                return res.json([{ 'error': true }]);
-            } else {
-                //acá repite los codigos que se usarían si vinieran por mqtt
-                if (req.body.hab.length <= 2 && req.body.alerta.length <= 10 && parseInt(req.body.cama) < 999) {
-                    var laquery = "call RecibeMSGremoto(?,?,?, @resultado);";
-                    var todo = [req.body.hab, req.body.alerta, parseInt(req.body.cama)];
-                    conn.query(laquery, todo, (err, rows, fields) => {
-                        //console.log("call RecibeMSGremoto(" + req.body.hab + "," + req.body.alerta + ", @resultado);");
-
-                        if (err) {
-                            console.log('error en la consulta: ' + laquery + ' ' + todo);
-                            return res.json([{ 'error': true }]);
-                        } else {
-                            //if (rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
-                            //client.publish(parte[0] + '/estado', rows[0][0].resultado.toString(), { qos: 2 });
-                            return res.json([{ 'error': false }]);
-                            //}
-                        }
-
-                    });
+                if (err) {
+                    console.log('error en la consulta: ' + laquery + ' ' + todo);
+                    return res.json([{ 'error': true }]);
+                } else {
+                    //if (rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
+                    //client.publish(parte[0] + '/estado', rows[0][0].resultado.toString(), { qos: 2 });
+                    return res.json([{ 'error': false }]);
+                    //}
                 }
+
+            });
+        }
+    }
+});
+
+app.post('/seteatipohab', function(req, res) {
+    var laquery;
+    var todo;
+    var algunerror = false;
+    var respuesta = JSON.parse(req.body.data);
+    for (var caso of respuesta) {
+        //console.log(caso.hab);
+        laquery = "update mac set tipohab=? where habitacion=?;";
+        todo = [caso.maxaisla, '' + caso.hab + ''];
+
+        conn.query(laquery, todo, (err, rows, fields) => {
+            if (err) {
+                console.log('error en la consulta: ' + laquery + ' ' + todo);
+                algunerror = true;
             }
         });
-
-        app.post('/seteatipohab', function(req, res) {
-            var laquery;
-            var todo;
-            var algunerror = false;
-            var respuesta = JSON.parse(req.body.data);
-            for (var caso of respuesta) {
-                //console.log(caso.hab);
-                laquery = "update mac set tipohab=? where habitacion=?;";
-                todo = [caso.maxaisla, '' + caso.hab + ''];
-
-                conn.query(laquery, todo, (err, rows, fields) => {
-                    if (err) {
-                        console.log('error en la consulta: ' + laquery + ' ' + todo);
-                        algunerror = true;
-                    }
-                });
-            }
-            if (algunerror) {
-                return res.json([{ 'error': 1 }]);
-            } else {
-                return res.json([{ 'error': 0 }]);
-            }
+    }
+    if (algunerror) {
+        return res.json([{ 'error': 1 }]);
+    } else {
+        return res.json([{ 'error': 0 }]);
+    }
 
 
-        });
+});
 
-        app.listen(3001, function() {
-            console.log('web server escuchando en el puerto 3001');
+app.listen(3001, function() {
+    console.log('web server escuchando en el puerto 3001');
 
-            ////////////  fin configuracion WEB
+    ////////////  fin configuracion WEB
 
-        });
+});

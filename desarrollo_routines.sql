@@ -132,7 +132,7 @@ if (V_id is not null ) then
 	update sucesos 
 		set quiencierra='sistema',
 		cuandocierra=CURRENT_TIMESTAMP,
-		comocierra='01 varios sucesos abiertos, se cierra éste y se deja aquel con id: ' + CAST( V_id AS CHAR)
+		comocierra=concat('01 varios sucesos abiertos, se cierra éste y se deja aquel con id: ' , CAST( V_id AS CHAR))
 		where habitacion =V_auxhabitacion and id != V_id and cuandocierra IS NULL;
 end if;
 /*en este punto del codigo, puede no haber registro de la habitacion, puede haber muchos cerrados, puede haber maximo 1 abierto*/
@@ -403,6 +403,70 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `g_prof_raceBKP` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`frombakend`@`localhost` PROCEDURE `g_prof_raceBKP`(
+IN pasado smallint
+)
+BEGIN
+declare resultado varchar(21800);
+declare aux varchar(10000);
+Declare cuando char(10);
+DECLARE done INT DEFAULT FALSE;
+DECLARE cur1 CURSOR FOR select distinct CONCAT(day(cuando1) , '/' , month(cuando1)  , ' ' , hour(cuando1) , 'hs') as cuando from sucesos where quienatiende in (select distinct nombre from rfid where nombre != 'desconocida' and nombre is not null) and cuando1 >  date_sub(current_date, interval pasado day) ;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+select '{' into resultado;
+    OPEN cur1;
+		read_loop: LOOP
+			FETCH cur1 INTO cuando;
+			IF done THEN
+			  LEAVE read_loop;
+			END IF;
+
+
+				select concat('"', cuando ,'":', JSON_ARRAYAGG(JSON_OBJECT('profesional',p.nombre,'MAU',COALESCE(cant,0)))) into aux
+				from ( 
+						select quienatiende as quien,count(*) as cant 
+						from sucesos 
+						where quienatiende in (select distinct quienatiende from sucesos where quienatiende is not null and length(quienatiende)>1 and cuando1 > date_sub(current_date, interval pasado day) )
+                        and CONCAT(day(cuando1) , '/' , month(cuando1)  , ' ' , hour(cuando1) , 'hs')=cuando
+						group by quienatiende 
+				) r
+				 right join (select distinct nombre from rfid r join sucesos s on r.nombre=s.quienatiende where  s.cuando1 >  date_sub(current_date, interval pasado day) ) p
+				on p.nombre=r.quien;
+	
+			select concat (resultado,aux,',') into resultado;
+            
+	
+		END LOOP;
+       
+        /*
+        if length(resultado) > 5 then
+			select left(resultado,length(resultado)-1) into resultado ;
+        end if;
+      
+        select length(rtrim(resultado))-1;
+        */
+          
+        select case when length(resultado) > 5  then  left(resultado,length(rtrim(resultado))-1)
+		else  resultado end into resultado ;
+        
+        select concat(rtrim(resultado),'}') as resultado;
+    CLOSE cur1;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `RecibeBotonRemoto` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -491,7 +555,7 @@ CREATE DEFINER=`frombakend`@`localhost` PROCEDURE `RecibeMSG`(
 IN V_mac char(17) ,
 IN V_tipo char(10),
 IN V_accion nvarchar(12),
-IN V_cama char(1),
+IN V_cama int,
 OUT salida char(14)
 )
 BEGIN
@@ -704,4 +768,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-17  9:01:24
+-- Dump completed on 2020-06-17  9:29:46

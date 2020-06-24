@@ -168,7 +168,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/apagardesdeapp",
+            url: "http://172.22.112.120:80/apagardesdeapp",
             success: function(msg) {
                 $('#modalapagaalerta').modal('hide');
                 $("#modalapagardesdeapp").attr('onClick', 'apagardesdeapp($(this))');
@@ -192,7 +192,7 @@
             data: "nada=" + 0 + "&nada2= '" + 0 + "'",
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/status",
+            url: "http://172.22.112.120:80/status",
             success: function(msg) {
                 $("#muestraError").html("");
                 var respuesta = JSON.parse(msg);

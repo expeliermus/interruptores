@@ -275,6 +275,7 @@
 
     function tomaDato(e) {
         $("#inputrfid").val(e.parent().parent().children().html());
+        console.log(e.parent().parent().html());
     }
 
     function tomaDatoBaja(e) {
@@ -294,7 +295,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/rfidalta",
+            url: "http://172.22.112.120:80/rfidalta",
             success: function(msg) {
                 //   console.log(msg);
                 var respuesta = JSON.parse(msg);
@@ -335,7 +336,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/rfidmodifica",
+            url: "http://172.22.112.120:80/rfidmodifica",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 //console.log(respuesta[0].hecho);
@@ -363,7 +364,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/rfidbaja",
+            url: "http://172.22.112.120:80/rfidbaja",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 //console.log(respuesta[0].hecho);
@@ -385,7 +386,7 @@
         $.ajax({
             type: "POST",
             data: { que: 1 },
-            url: "http://201.190.151.236:3001/rfidbajadesconocidas",
+            url: "http://172.22.112.120:80/rfidbajadesconocidas",
             success: function(msg) {
                 window.location.reload(false);
             },

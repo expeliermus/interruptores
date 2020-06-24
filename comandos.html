@@ -48,7 +48,7 @@
                         </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="http://201.190.151.236:3001/layout.html" target="_blank">
+                        <a class="nav-link" href="http://172.22.112.120:80/layout.html" target="_blank">
                             <i class="material-icons">dashboard</i>
                             <p>Layout</p>
                         </a>
@@ -291,7 +291,7 @@
         var infotosend = JSON.stringify(json);
         
         $.ajax({
-            url: "http://201.190.151.236:3001/seteatipohab",
+            url: "http://172.22.112.120:80/seteatipohab",
             type: "POST",
            
             data: {data :infotosend},
@@ -309,7 +309,7 @@
         $('#modalresethab').modal('hide');
         $.ajax({
             type: "POST",
-            url: "http://201.190.151.236:3001/resethab",
+            url: "http://172.22.112.120:80/resethab",
             success: function(msg) {
 
                 //console.log(msg);
@@ -412,7 +412,7 @@
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 mimeType: 'application/x-www-form-urlencoded',
-                url: "http://201.190.151.236:3001/usuario",
+                url: "http://172.22.112.120:80/usuario",
                 success: function(msg) {
                     //console.log(msg);
                     var respuesta = JSON.parse(msg);
@@ -448,7 +448,7 @@
 
         switch (x) {
             case 1:
-                $("#aquivatodo").css('display', 'none').load("http://201.190.151.236:3001/dashboard.html", function() {
+                $("#aquivatodo").css('display', 'none').load("http://172.22.112.120:80/dashboard.html", function() {
                     $("#aquivatodo").css("background-color", "#1a2035");
                     $("#aquivatodo").fadeIn();
                 });
@@ -458,7 +458,7 @@
                 break;
             case 2:
                 apagainterval();
-                $("#aquivatodo").css('display', 'none').load("http://201.190.151.236:3001/Habitaciones.html", function() {
+                $("#aquivatodo").css('display', 'none').load("http://172.22.112.120:80/Habitaciones.html", function() {
 
                     $("#aquivatodo").fadeIn();
                 });
@@ -466,44 +466,44 @@
 
                 break;
             case 3:
-                $("#aquivatodo").load("http://201.190.151.236:3001/mapaestados.html");
+                $("#aquivatodo").load("http://172.22.112.120:80/mapaestados.html");
                 $("#titulo").text("Mapa de estado de las alertas");
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 4:
-                $("#aquivatodo").load("http://201.190.151.236:3001/dispositivos");
+                $("#aquivatodo").load("http://172.22.112.120:80/dispositivos");
                 $("#titulo").text("ABM Dispositivos");
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 5:
-                $("#aquivatodo").load("http://201.190.151.236:3001/profesionales");
+                $("#aquivatodo").load("http://172.22.112.120:80/profesionales");
                 $("#titulo").text("ABM Profesionales");
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 6:
-                $("#aquivatodo").load("http://201.190.151.236:3001/controles");
+                $("#aquivatodo").load("http://172.22.112.120:80/controles");
                 $("#titulo").text("Listado de controles remotos");
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
 
             case 8:
-                $("#aquivatodo").load("http://201.190.151.236:3001/programartareas.html");
+                $("#aquivatodo").load("http://172.22.112.120:80/programartareas.html");
                 $("#titulo").html('<i class="material-icons">notifications</i> Tareas programadas');
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 9:
-                $("#aquivatodo").load("http://201.190.151.236:3001/Camas.html");
+                $("#aquivatodo").load("http://172.22.112.120:80/Camas.html");
                 $("#titulo").html('<i class="material-icons">notifications</i> Personas en cada cama');
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 10:
-                $("#aquivatodo").load("http://201.190.151.236:3001/Camas2.html");
+                $("#aquivatodo").load("http://172.22.112.120:80/Camas2.html");
                 $("#titulo").html('<i class="material-icons">notifications</i> Personas en cada cama');
                 $("#aquivatodo").css("background-color", "#1a2035");
 
