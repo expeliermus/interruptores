@@ -72,7 +72,7 @@ client.on("packetreceive", function(b) {
     // grabaEvento("packetreceive", b.topic);
 })
 client.on('message', function(topic, message, packet) {
-    console.log("MSG " + topic + ": " + message);
+    console.log("MSG " + topic + " " + message);
     /* 
     var q = JSON.parse(JSON.stringify(packet.payload));
     w = String.fromCharCode.apply(String, q.data);
@@ -136,16 +136,16 @@ client.on('message', function(topic, message, packet) {
 
                 altamac(accion[0]);
             } else {
-
+                //aqui va el grueso, SQL define que hacer
                 if (parte[0].length <= 17 && parte[1].length <= 10 && accion[0].length <= 12 && parseInt(accion[1]) < 999) {
-                    laquery = "call RecibeMSG(?,?,?,?, @resultado);";
+                    laquery = "call RecibeMSG(?,?,?,?, @resultado,@lamac);";
                     todo = [parte[0], parte[1], accion[0], parseInt(accion[1])];
                     conn.query(laquery, todo, (err, rows, fields) => {
                         if (err) {
                             console.log('error en la consulta: ' + laquery + ' ' + todo);
                         } else {
                             if (rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
-                                client.publish(parte[0] + '/estado', rows[0][0].resultado.toString(), { qos: 2 });
+                                client.publish(rows[0][0].lamac + '/estado', rows[0][0].resultado.toString(), { qos: 2 });
                             }
                         }
 
@@ -401,8 +401,10 @@ app.get('/g_demoraprom.html', function(req, res) {
 app.post('/resethab', function(req, res) {
     console.log("recibio pedido de reiniciar la info de las tablas");
     var laquery = "call reiniciar('sos');";
-    conn.query(laquery, function(err, rows) {});
-    resetcoloreshab('todas');
+    conn.query(laquery, function(err, rows) {
+        if (!err) {resetcoloreshab('todas')}
+    });
+    
     //res.redirect(req.baseUrl + '/');
     res.json([{ 'error': false }]);
 });
@@ -414,18 +416,16 @@ app.post('/apagardesdeapp', function(req, res) {
         if (req.body.como == 'tarjremota') {
             console.log("recibio pedido apagardesdeapp por tarjeta remota");
             var laquery = "call accionhab('apagarremoto',?,?,?);";
+            // opcion en desuso, era para apagar determinada habitacion desde menu.  falta cambiarle el color a la luz de habitacion
         } else {
             console.log("recibio pedido apagardesdeapp por opcion de pantalla");
+            // solamente pone un registro en la tabla apagarremota
             var laquery = "call accionhab('apagar',?,?,?);";
         }
         if (req.body.hab.length <= 20 && req.body.quien.length <= 45 && req.body.como.length <= 10) {
             var todo = [req.body.hab, req.body.quien, req.body.como];
             conn.query(laquery, todo, (err, rows, fields) => {
                 if (err) {console.error(err)}
-                    else {
-                        setTimeout(resetcoloreshab.bind(null, 'todas'), 2000);
-                        //setTimeout(resetcoloreshab.bind(null,req.body.hab), 2000);
-                    }
             });
             
             res.json([{ 'error': false }]);
@@ -435,7 +435,7 @@ app.post('/apagardesdeapp', function(req, res) {
 
 app.get('/profesionales', function(req, res) {
     console.log("recibio  /profesionales");
-    var laquery = "SELECT rfid,nombre, DATE_FORMAT(alta, '%d/%m/%Y') as alta FROM rfid order by alta desc;";
+    var laquery = "SELECT rfid,nombre, DATE_FORMAT(alta, '%d/%m/%Y') as altaf FROM rfid order by alta desc;";
     conn.query(laquery, function(err, rows) {
 
         fs.readFile("abm_rfid.html", function(err, html) {
@@ -450,19 +450,18 @@ app.get('/profesionales', function(req, res) {
 });
 
 app.post('/rfidmodifica', function(req, res) {
-    console.log("recibio pedido de modificar rfid-profesional");
     var rfid = req.body.rfid;
     var profesional = req.body.profesional;
     var laquery = "update rfid set alta=CURRENT_TIMESTAMP,nombre='" + profesional + "' where rfid='" + rfid + "';"
-    console.log(laquery);
+    console.log("recibio pedido de modificar rfid-profesional: "+ rfid + "-" + profesional);
     conn.query(laquery, function(err, rows) {
         if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
     });
 });
 
 app.post('/rfidbaja', function(req, res) {
-    console.log("recibio pedido de baja rfid");
     var rfid = req.body.rfid;
+    console.log("recibio pedido de baja rfid: " + rfid );
     var laquery = "delete from rfid where rfid='" + rfid + "';";
     conn.query(laquery, function(err, rows) {
         if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }

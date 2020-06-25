@@ -314,7 +314,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://172.22.112.120:80/macalta",
+            url: "http://201.190.151.236:3001/macalta",
             success: function(msg) {
                 //   console.log(msg);
                 var respuesta = JSON.parse(msg);
@@ -358,7 +358,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://172.22.112.120:80/macmodifica",
+            url: "http://201.190.151.236:3001/macmodifica",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 //console.log(respuesta[0].hecho);
@@ -386,7 +386,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://172.22.112.120:80/macbaja",
+            url: "http://201.190.151.236:3001/macbaja",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 if (respuesta[0].error != '0') {

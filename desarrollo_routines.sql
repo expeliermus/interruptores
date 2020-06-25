@@ -554,38 +554,78 @@ DELIMITER ;;
 CREATE DEFINER=`frombakend`@`localhost` PROCEDURE `RecibeMSG`(
 IN V_mac char(17) ,
 IN V_tipo char(10),
-IN V_accion nvarchar(12),
+IN V_msg nvarchar(12),
 IN V_cama int,
-OUT salida char(14)
+OUT salida char(14),
+OUT salida2 char(17) 
 )
 BEGIN
 	declare V_habitacion nvarchar(20) default 'Error';
     declare V_auxestado  smallint default 1;
     declare V_profesional nvarchar(45) default '';
     declare V_cierre nvarchar(45) default 'tarjeta';
+    declare V_macsalida char(17) default V_mac;
     declare out_number int;
     set out_number=0;
-
+    
     
     update mac set ultrespuesta = CURRENT_TIMESTAMP where mac=V_mac;
-    
+
+/* Primero se fija si esa mac ya tiene habitacion y la pone en V_habitacion
+   si no, da de alta esa mac pero volviendo a chequear que no haya una duplicada
+*/    
 	if exists( select 1 from mac where mac=V_mac and habitacion != 'desconocida') then
 		select habitacion into V_habitacion from mac where mac=V_mac;
         else
-        select V_mac into V_habitacion ;
+        /* error select V_mac into V_habitacion ;*/
 		INSERT INTO mac (mac,habitacion)
 		SELECT * FROM (SELECT V_mac, 'desconocida') AS tmp
 		WHERE NOT EXISTS (
 		SELECT 1 FROM mac WHERE mac = V_mac
 		) LIMIT 1;
     end if;
-	
+
+/* ahora, hay 2 tipos de mensages a tratar, las alertas y las provenientes de un RFID
+*/        
+	if (V_tipo = 'alerta') then
+		if (V_msg = 4 and V_auxestado != 4) then
+			update dashboard set estado=4, cama=V_cama,profesional='',DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
+            CALL evento(V_habitacion, 4, '', '');
+            set out_number=4;
+		end if;
+		if (V_msg = 3 and (V_auxestado=2 or V_auxestado=1)) then
+			update dashboard set estado=3, cama=V_cama,profesional='',DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
+            CALL evento(V_habitacion, 3, '', '');            
+            set out_number=3;
+		end if;
+        if (V_msg = 2 and V_auxestado=1) then
+			update dashboard set estado=2, cama=V_cama,profesional='',DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
+            CALL evento(V_habitacion, 2, '', '');            
+            set out_number=2;
+		end if;
+	end if;
+ 
+/* Para las rfid indispensable verificar que es una asignada a un profesional y va en V_profesional, sino darla de alta
+	en enfermeria puede haber un lector rfid. todo es distinto desde él, chequea en apagarremota si hay alguna habitacion para apagar
+    si no es de enfermeria es de habitacion. la pasa a estado 5 (azul) salvo que ya esté en el, y entonces lo apaga
+*/   	
+if (V_tipo = 'rfid') then
+if not exists( select 1 from rfid where rfid=V_msg and nombre != 'desconocida' ) then
+	INSERT INTO rfid (rfid,nombre)
+	SELECT * FROM (SELECT V_msg, 'desconocida') AS tmp
+	WHERE NOT EXISTS (
+		SELECT 1 FROM rfid WHERE rfid = V_msg
+	) LIMIT 1;
+else     
+	SELECT nombre into V_profesional FROM rfid where rfid=V_msg;
+
     if (V_habitacion = 'enfermeria' ) then
        /*primero se pide apagar la hab en forma remota y se tien e 30 segundos para pasar la tarjeta*/
 	   if exists( select 1 from apagarremota where cuando >  NOW() - INTERVAL 30 SECOND ) then 
 			select habitacion into V_habitacion from apagarremota order by cuando desc LIMIT 1;
+            select mac into V_macsalida from mac where habitacion = V_habitacion;
             set V_cierre = 'tarjeta remota';
-            SELECT nombre into V_profesional FROM rfid where rfid=V_accion and nombre != 'desconocida';
+            SELECT nombre into V_profesional FROM rfid where rfid=V_msg and nombre != 'desconocida';
             /* ahora ejecuta un resumende lo que haría una tarjeta en situacion normal solo que está puesto que finalmente cierre la alerta*/
 	        select estado into V_auxestado from dashboard where habitacion=V_habitacion;            
             if ( V_auxestado != 5) then
@@ -600,52 +640,25 @@ BEGIN
        end if;
 	else
 	   select estado into V_auxestado from dashboard where habitacion=V_habitacion;
-    end if;
-	if (V_tipo = 'alerta') then
-		if (V_accion = 4 and V_auxestado != 4) then
-			update dashboard set estado=4, cama=V_cama,profesional='',DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
-            CALL evento(V_habitacion, 4, '', '');
-            set out_number=4;
+		if ( V_auxestado = 5) then
+			update dashboard set estado=1,profesional='',cama=0,DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
+			CALL evento(V_habitacion, 1, V_profesional, V_cierre);
+			set out_number=1;
+		else
+			update dashboard set estado=5,profesional=V_profesional,DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
+			CALL evento(V_habitacion, 5, V_profesional, V_cierre);
+			set out_number=5;
 		end if;
-		if (V_accion = 3 and (V_auxestado=2 or V_auxestado=1)) then
-			update dashboard set estado=3, cama=V_cama,profesional='',DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
-            CALL evento(V_habitacion, 3, '', '');            
-            set out_number=3;
-		end if;
-        if (V_accion = 2 and V_auxestado=1) then
-			update dashboard set estado=2, cama=V_cama,profesional='',DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
-            CALL evento(V_habitacion, 2, '', '');            
-            set out_number=2;
-		end if;
+        
 	end if;
-    
-	if (V_tipo = 'rfid' && V_habitacion != 'enfermeria') then
-		if exists( select 1 from rfid where rfid=V_accion and nombre != 'desconocida' ) then
-			SELECT nombre into V_profesional FROM rfid where rfid=V_accion and nombre != 'desconocida';
-			if ( V_auxestado = 5) then
-				update dashboard set estado=1,profesional='',cama=0,DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
-				CALL evento(V_habitacion, 1, V_profesional, V_cierre);
-                set out_number=1;
-			else
-				update dashboard set estado=5,profesional=V_profesional,DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
-                CALL evento(V_habitacion, 5, V_profesional, V_cierre);
-                set out_number=5;
-			end if;
-        else
-
-			INSERT INTO rfid (rfid,nombre)
-			SELECT * FROM (SELECT V_accion, 'desconocida') AS tmp
-			WHERE NOT EXISTS (
-				SELECT 1 FROM rfid WHERE rfid = V_accion
-			) LIMIT 1;
-            
-		end if;
-	end if;
-    
+end if;
+end if;    
+/* Finalmente devuelve el color que otorgó
+*/ 
     if (out_number = 0) then
 		select '0' as resultado;
     else
-		select colordisp as resultado from color where estado=out_number;
+		select colordisp as resultado,V_macsalida as lamac from color where estado=out_number;
 	end if;
   
 END ;;
@@ -768,4 +781,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-17  9:29:46
+-- Dump completed on 2020-06-24 23:24:34

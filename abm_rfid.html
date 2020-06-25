@@ -215,7 +215,7 @@
 
     var linea = '';
     for (var caso of JSON.parse(datosDesdeSQL)) {
-        agregaLinea(caso.rfid, caso.nombre, caso.alta.substr(0, 10), 0);
+        agregaLinea(caso.rfid, caso.nombre, caso.altaf.substr(0, 10), 0);
         //console.log(caso.rfid + ' ' + caso.nombre+ ' ' + caso.alta.substr(0,10));
     }
 
@@ -238,7 +238,7 @@
         var linea = '';
         //background: #4FC6FF;
         linea = linea + '<tr style=" color:' + vcolor + '" >'
-        /*linea = linea + '<td data-label="Tarjeta" class="' + adicional + ' d-none d-sm-none d-md-block">' + a + '</td>'*/
+        linea = linea + '<td data-label="Tarjeta" class="' + adicional + ' d-none ">' + a + '</td>'
         linea = linea + ' <td data-label="Nombre">' + b + '</td>'
         linea = linea + ' <td data-label="alta">' + c + '</td>'
         linea = linea + ' <td data-label="Acción" >'
@@ -295,7 +295,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://172.22.112.120:80/rfidalta",
+            url: "http://201.190.151.236:3001/rfidalta",
             success: function(msg) {
                 //   console.log(msg);
                 var respuesta = JSON.parse(msg);
@@ -336,7 +336,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://172.22.112.120:80/rfidmodifica",
+            url: "http://201.190.151.236:3001/rfidmodifica",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 //console.log(respuesta[0].hecho);
@@ -364,7 +364,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://172.22.112.120:80/rfidbaja",
+            url: "http://201.190.151.236:3001/rfidbaja",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 //console.log(respuesta[0].hecho);
@@ -386,7 +386,7 @@
         $.ajax({
             type: "POST",
             data: { que: 1 },
-            url: "http://172.22.112.120:80/rfidbajadesconocidas",
+            url: "http://201.190.151.236:3001/rfidbajadesconocidas",
             success: function(msg) {
                 window.location.reload(false);
             },

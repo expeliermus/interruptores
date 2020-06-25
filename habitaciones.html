@@ -168,13 +168,13 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://172.22.112.120:80/apagardesdeapp",
+            url: "http://201.190.151.236:3001/apagardesdeapp",
             success: function(msg) {
                 $('#modalapagaalerta').modal('hide');
                 $("#modalapagardesdeapp").attr('onClick', 'apagardesdeapp($(this))');
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                $("#muestraError").html("no está conectado a la base de datos");
+                $("#muestraError").html("no conecta con la base de datos ");
                 $("#modalapagardesdeapp").attr('onClick', 'apagardesdeapp($(this))');
             }
         });
@@ -192,7 +192,7 @@
             data: "nada=" + 0 + "&nada2= '" + 0 + "'",
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://172.22.112.120:80/status",
+            url: "http://201.190.151.236:3001/status",
             success: function(msg) {
                 $("#muestraError").html("");
                 var respuesta = JSON.parse(msg);
@@ -264,6 +264,9 @@
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {
                 $("#muestraError").html("no está conectado a la base de datos");
+                //console.log(XMLHttpRequest);
+                //console.log(textStatus);
+                //console.log(errorThrown);
             }
         });
     }
