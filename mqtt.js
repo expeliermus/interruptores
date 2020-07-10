@@ -19,8 +19,14 @@ var app = express();
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+let laquery = "CALL mantenimiento();";
+let todo = [];
+conn.query(laquery, todo, (err, rows, fields) => {
+    if (err) {
+        console.log('atención que al arrancar hubo error con SQL');
+    }
+});
 /////////////// fin algunos seteos conexion SQL y WEB
-
 
 ///////////////////// conexion por MQTT
 options = {
@@ -50,7 +56,6 @@ client.on("close", function() {
     console.log("ocurrio un close");
     grabaEvento("close", "");
 })
-
 client.on("disconnect", function(b) {
     console.log("ocurrio un disconnect");
     grabaEvento("disconnect", b);
@@ -90,30 +95,30 @@ client.on('message', function(topic, message, packet) {
     if (accion[1] === undefined) { accion[1] = 0 };
     if (parte[1] != 'vivo' && parte[1] != 'controles' && parte[1] != 'estado') {
         if (parte[0].substring(0, 1) == 'P') {
-            // no hay mac que comience con P  entonces se trata de un boton remoto
-            if (parte[0].length <= 17 && parte[1].length <= 10 && accion[0].length <= 12 && parseInt(accion[1]) < 999) {
-                laquery = "call RecibeBotonRemoto(?,?,?,?, @resultado);";
+            // no hay mac que comience con P  entonces se trata de un boton remoto OJO si aumenta el tamaño del TOKEN
+            if (parte[0].length <= 17 && parte[1].length <= 10 && accion[0].length <= 12 && parseInt(accion[1]) <= 999999) {
+                laquery = "call RecibeBotonRemoto(?,?,?,?,@resultado,@lamac,@resultadodisp);";
                 todo = [parte[0], parte[1], accion[0], accion[1]];
+                //console.log(laquery+ ' ' + todo)
                 conn.query(laquery, todo, (err, rows, fields) => {
                     if (err) {
                         console.log('error en la consulta: ' + laquery + ' ' + todo);
                     } else {
+                        //console.log(rows[0][0].resultado);
                         if (rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
                             client.publish(parte[0] + '/estado', rows[0][0].resultado.toString(), { qos: 2 });
                         }
+                        if (rows[0][0].resultadodisp != '0' && rows[0][0].resultadodisp != undefined) {
+                            client.publish(rows[0][0].lamac + '/estado', rows[0][0].resultadodisp.toString(), { qos: 2 });
+                        }
+
+
                     }
 
                 });
             }
-
         } else {
-
-
-
             if (parte[0] == 'alta') {
-
-
-
                 // esta parte registra en la tabla TODO unicamente cuando recibe un alta, sirve para saber si una placa está dando problemas
                 var q = JSON.parse(JSON.stringify(packet.payload));
                 w = String.fromCharCode.apply(String, q.data);
@@ -126,14 +131,6 @@ client.on('message', function(topic, message, packet) {
                     }
                 });
                 // fin
-
-
-
-
-
-
-
-
                 altamac(accion[0]);
             } else {
                 //aqui va el grueso, SQL define que hacer
@@ -199,22 +196,25 @@ function altamac(mac) {
                         });
                     }
                 });
+            } 
+            else {
+                laquery = "select mac,colordisp from mac m join dashboard d on m.habitacion=d.habitacion join color c on c.estado=d.estado where mac='" + mac + "';";
+                conn.query(laquery, function(err, rows) {
+                    if (rows.length > 0) {
+                        client.publish(rows[0]['mac'] + '/estado', rows[0]['colordisp'], { qos: 2 });
+                    }
+                });
             }
         }
     });
-    laquery = "select mac,colordisp from mac m join dashboard d on m.habitacion=d.habitacion join color c on c.estado=d.estado where mac='" + mac + "';";
-    conn.query(laquery, function(err, rows) {
-        if (rows.length > 0) {
-            client.publish(rows[0]['mac'] + '/estado', rows[0]['colordisp'], { qos: 2 });
-        }
-    });
+
 }
 
 
 
 ////////// SUBSCRIBIRSE
-let laquery = "SELECT mac FROM mac order by mac asc;";
-let todo = [];
+laquery = "SELECT mac FROM mac order by mac asc;";
+todo = [];
 conn.query(laquery, todo, (err, rows, fields) => {
     if (err) {
         console.log('no se obtuvo la lista de MACs de las tarjetas');
@@ -281,9 +281,10 @@ function subscribeBotonRemoto() {
             console.log('no se obtuvo la lista de habitaciones de la tabla botonremoto');
         } else {
             for (var caso of rows) {
-                client.subscribe(caso.mac + '/alta', { qos: 2 }, function(err, granted) {});
-                client.subscribe(caso.mac + '/estado', { qos: 2 }, function(err, granted) {});
-                client.subscribe(caso.mac + '/alerta', { qos: 0 }, function(err, granted) {});
+
+                client.subscribe(caso.cod + '/alta', { qos: 2 }, function(err, granted) { console.log('Subscripto: ' + granted[0].topic + '     qos:' + granted[0].qos); });
+                client.subscribe(caso.cod + '/estado', { qos: 2 }, function(err, granted) { console.log('Subscripto: ' + granted[0].topic + '   qos:' + granted[0].qos); });
+                client.subscribe(caso.cod + '/alerta', { qos: 0 }, function(err, granted) { console.log('Subscripto: ' + granted[0].topic + '   qos:' + granted[0].qos); });
             }
         }
     });
@@ -324,11 +325,6 @@ app.get('/comandos.html', function(req, res) {
         });
     });
 });
-
-
-
-
-
 
 app.get('/habitaciones.html', function(req, res) {
     fs.readFile("habitaciones.html", function(err, html) {
@@ -402,9 +398,9 @@ app.post('/resethab', function(req, res) {
     console.log("recibio pedido de reiniciar la info de las tablas");
     var laquery = "call reiniciar('sos');";
     conn.query(laquery, function(err, rows) {
-        if (!err) {resetcoloreshab('todas')}
+        if (!err) { resetcoloreshab('todas') }
     });
-    
+
     //res.redirect(req.baseUrl + '/');
     res.json([{ 'error': false }]);
 });
@@ -425,9 +421,9 @@ app.post('/apagardesdeapp', function(req, res) {
         if (req.body.hab.length <= 20 && req.body.quien.length <= 45 && req.body.como.length <= 10) {
             var todo = [req.body.hab, req.body.quien, req.body.como];
             conn.query(laquery, todo, (err, rows, fields) => {
-                if (err) {console.error(err)}
+                if (err) { console.error(err) }
             });
-            
+
             res.json([{ 'error': false }]);
         }
     }
@@ -453,7 +449,7 @@ app.post('/rfidmodifica', function(req, res) {
     var rfid = req.body.rfid;
     var profesional = req.body.profesional;
     var laquery = "update rfid set alta=CURRENT_TIMESTAMP,nombre='" + profesional + "' where rfid='" + rfid + "';"
-    console.log("recibio pedido de modificar rfid-profesional: "+ rfid + "-" + profesional);
+    console.log("recibio pedido de modificar rfid-profesional: " + rfid + "-" + profesional);
     conn.query(laquery, function(err, rows) {
         if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
     });
@@ -461,7 +457,7 @@ app.post('/rfidmodifica', function(req, res) {
 
 app.post('/rfidbaja', function(req, res) {
     var rfid = req.body.rfid;
-    console.log("recibio pedido de baja rfid: " + rfid );
+    console.log("recibio pedido de baja rfid: " + rfid);
     var laquery = "delete from rfid where rfid='" + rfid + "';";
     conn.query(laquery, function(err, rows) {
         if (err) { return res.json([{ 'hecho': 0 }]); } else { return res.json([{ 'hecho': 1 }]); }
@@ -531,7 +527,6 @@ app.post('/seteacontroles', function(req, res) {
     });
 });
 
-
 app.post('/macalta', function(req, res) {
     console.log("recibio pedido de alta mac");
     var mac = req.body.mac;
@@ -588,7 +583,6 @@ app.post('/macmodifica', function(req, res) {
     // esto es para dar de alta la habitacion si es que no existe
     laquery = "INSERT INTO dashboard (habitacion) SELECT * FROM (SELECT  '" + habitacion + "') AS tmp WHERE NOT EXISTS ( SELECT 1 FROM dashboard WHERE habitacion = '" + habitacion + "') LIMIT 1;"
     conn.query(laquery, function(err, rows) {});
-
 });
 
 app.post('/macbaja', function(req, res) {
@@ -765,8 +759,6 @@ app.post('/seteatipohab', function(req, res) {
     } else {
         return res.json([{ 'error': 0 }]);
     }
-
-
 });
 
 app.listen(3001, function() {

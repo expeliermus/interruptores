@@ -30,6 +30,16 @@ CREATE TABLE `rfid` (
   UNIQUE KEY `rfid_UNIQUE` (`rfid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rfid`
+--
+
+LOCK TABLES `rfid` WRITE;
+/*!40000 ALTER TABLE `rfid` DISABLE KEYS */;
+INSERT INTO `rfid` VALUES ('1','Gutierrez S.','2020-06-26 01:24:15'),('11','Hernandez H.','2020-05-31 12:14:05'),('12','Cooper M.','2020-06-25 13:31:47'),('1237043353','Marquez O.','2020-06-26 01:48:09'),('14434130','Ortiz A.','2020-06-23 15:19:53'),('1700543401','Suarez M.','2020-06-23 15:26:35'),('2','Pierri J.','2020-06-26 01:24:58'),('3','Mendez J.','2020-06-26 01:25:28'),('3120474467','Rizzi A.','2020-06-23 15:26:00'),('3794322652','Mirno A.','2020-06-23 15:20:52'),('4','Fernandez U.','2020-06-26 02:21:23'),('472428715','Perez J.','2020-06-23 15:19:18'),('5','Campos J.','2020-06-26 02:21:32'),('6','Quiroz G.','2020-06-26 02:21:14'),('7','Ortiz A.','2020-06-26 02:21:05'),('958841497','Gimenez A.','2020-05-22 20:14:12'),('hhb','Davis P.','2020-06-26 11:35:59');
+/*!40000 ALTER TABLE `rfid` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -40,4 +50,4 @@ CREATE TABLE `rfid` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-17  9:29:20
+-- Dump completed on 2020-07-10 12:15:41

@@ -384,14 +384,14 @@
         function g_prof_race() {
             $("#graficos").load("/g_prof_race.html", function() {
                 $("[aria-labelledby='id-66-title']").remove();
-                setTimeout(g_demoraprom, 10 * 60000);
+                setTimeout(g_demoraprom, 5 * 60000);
 
             });
         }
 
         function g_demoraprom() {
             $("#graficos").load("/g_demoraprom.html", function() {
-                setTimeout(g_prof_race, 10 * 60000);
+                setTimeout(g_prof_race, 2 * 60000);
                 $("[aria-labelledby='id-66-title']").remove();
                 $("[aria-labelledby='id-179-title']").remove();
                 $("[aria-labelledby='id-292-title']").remove();

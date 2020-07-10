@@ -30,6 +30,16 @@ CREATE TABLE `dashboard` (
   `desde` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dashboard`
+--
+
+LOCK TABLES `dashboard` WRITE;
+/*!40000 ALTER TABLE `dashboard` DISABLE KEYS */;
+INSERT INTO `dashboard` VALUES ('desconocida',1,0,'','2020-06-26 02:47:13'),('enfermeria',1,0,'','2020-06-28 22:08:56'),('13',1,0,'','2020-06-28 22:08:56'),('14',1,0,'','2020-06-28 22:08:56'),('11',1,0,'','2020-06-28 22:08:56'),('3',1,0,'','2020-06-28 22:08:56'),('4',1,0,'','2020-06-28 22:08:56'),('2',1,0,'','2020-06-28 22:08:56'),('7',1,0,'','2020-06-28 22:08:56'),('9',1,0,'','2020-06-28 22:08:56'),('6',1,0,'','2020-06-28 22:08:56'),('5',1,0,'','2020-07-09 20:59:05'),('15',1,0,'','2020-06-28 22:08:56'),('8',1,0,'','2020-06-28 22:08:56'),('12',1,0,'','2020-06-28 22:08:56'),('10',1,0,'','2020-06-28 22:08:56'),('1',3,1,'','2020-07-04 19:20:37');
+/*!40000 ALTER TABLE `dashboard` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -40,4 +50,4 @@ CREATE TABLE `dashboard` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-17  9:29:34
+-- Dump completed on 2020-07-10 12:15:56
