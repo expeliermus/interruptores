@@ -467,27 +467,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `mantenimiento` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`frombakend`@`localhost` PROCEDURE `mantenimiento`()
-BEGIN
-	delete from eventos where cuando < NOW() - INTERVAL 3 MONTH;
-	delete from todo where cuando < NOW() - INTERVAL 3 MONTH;
-	delete FROM rfid where nombre='desconocida';
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `RecibeBotonRemoto` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -503,9 +482,7 @@ IN V_cod char(17) ,
 IN V_topico char(10),
 IN V_msg1 nvarchar(12),
 IN V_msg2 int,
-OUT salida char(14),
-OUT salida2 char(14),
-OUT salida3 char(17) 
+OUT salida char(14)
 )
 BEGIN
 	declare V_piso char(2) default TRIM(LEADING '0' FROM right(left(V_cod,3),2)); 
@@ -515,7 +492,6 @@ BEGIN
     declare V_auxestado  smallint default 1;
     declare V_profesional nvarchar(45) default '';
     declare V_cierre nvarchar(45) default 'tarjeta';
-	declare V_macsalida char(17) default V_cod;
     declare out_number int;
     set out_number=0;
 
@@ -527,7 +503,6 @@ BEGIN
     end if;
     
     select token into v_token from botonremoto where cod=V_cod;
-    select mac into V_macsalida from mac where habitacion = V_habitacion;
     
     if (V_topico = 'alerta' and V_msg2 = v_token) then
 			update botonremoto set ultrespuesta = CURRENT_TIMESTAMP where cod=V_cod;
@@ -549,7 +524,7 @@ BEGIN
 			end if;
 
 		
-        select colordisp as resultado,colordisp as resultadodisp,V_macsalida as lamac from color where estado=out_number;
+        select color as resultado from  color c  where estado=out_number;   
 
     end if;
     
@@ -806,4 +781,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-10 12:16:09
+-- Dump completed on 2020-06-24 23:24:34

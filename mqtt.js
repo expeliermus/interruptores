@@ -412,19 +412,29 @@ app.post('/apagardesdeapp', function(req, res) {
         if (req.body.como == 'tarjremota') {
             console.log("recibio pedido apagardesdeapp por tarjeta remota");
             var laquery = "call accionhab('apagarremoto',?,?,?);";
-            // opcion en desuso, era para apagar determinada habitacion desde menu.  falta cambiarle el color a la luz de habitacion
-        } else {
-            console.log("recibio pedido apagardesdeapp por opcion de pantalla");
             // solamente pone un registro en la tabla apagarremota
+            if (req.body.hab.length <= 20 && req.body.quien.length <= 45 && req.body.como.length <= 10) {
+                var todo = [req.body.hab, req.body.quien, req.body.como];
+                conn.query(laquery, todo, (err, rows, fields) => {
+                    if (err) { console.error(err) }
+                });
+                res.json([{ 'error': false }]);
+            }
+        } else {
+             // opcion en desuso, era para apagar determinada habitacion desde menu.  falta cambiarle el color a la luz de habitacion
+            console.log("recibio pedido apagardesdeapp por opcion de pantalla");
             var laquery = "call accionhab('apagar',?,?,?);";
-        }
-        if (req.body.hab.length <= 20 && req.body.quien.length <= 45 && req.body.como.length <= 10) {
-            var todo = [req.body.hab, req.body.quien, req.body.como];
-            conn.query(laquery, todo, (err, rows, fields) => {
-                if (err) { console.error(err) }
-            });
+            if (req.body.hab.length <= 20 && req.body.quien.length <= 45 && req.body.como.length <= 10) {
+                var todo = [req.body.hab, req.body.quien, req.body.como];
+                conn.query(laquery, todo, (err, rows, fields) => {
+                    if (err) { console.error(err) }
+                       else{
+                        client.publish(rows[0][0].mac + '/estado', rows[0][0].color.toString(), { qos: 2 });                            
+                        }
+                });
+                res.json([{ 'error': false }]);
+            }
 
-            res.json([{ 'error': false }]);
         }
     }
 });
