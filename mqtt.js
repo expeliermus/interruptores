@@ -106,7 +106,7 @@ client.on('message', function(topic, message, packet) {
                     } else {
                         //console.log(rows[0][0].resultado);
                         if (rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
-                            client.publish(parte[0] + '/estado', rows[0][0].resultado.toString(), { qos: 2 });
+                            client.publish(parte[0] + '/estado', rows[0][0].resultadodisp.toString(), { qos: 2 });
                         }
                         if (rows[0][0].resultadodisp != '0' && rows[0][0].resultadodisp != undefined) {
                             client.publish(rows[0][0].lamac + '/estado', rows[0][0].resultadodisp.toString(), { qos: 2 });
@@ -196,8 +196,7 @@ function altamac(mac) {
                         });
                     }
                 });
-            } 
-            else {
+            } else {
                 laquery = "select mac,colordisp from mac m join dashboard d on m.habitacion=d.habitacion join color c on c.estado=d.estado where mac='" + mac + "';";
                 conn.query(laquery, function(err, rows) {
                     if (rows.length > 0) {
@@ -294,9 +293,15 @@ function subscribeBotonRemoto() {
 //////////// fin conexion MQTT
 
 
+
+
+
+
+
+
 ////////////  configuracion WEB
 app.use('/assets/', express.static('assets/')) ///// borrarlo es solo por la compatibilidad entre mi pc y el server
-//app.use('/graficos/', express.static('graficos/'))
+app.use('/download/', express.static('download/'))
 
 app.get('/', function(req, res) {
     var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 and habitacion not in ('enfermeria','desconocida') order by length(habitacion),habitacion;";
@@ -421,16 +426,15 @@ app.post('/apagardesdeapp', function(req, res) {
                 res.json([{ 'error': false }]);
             }
         } else {
-             // opcion en desuso, era para apagar determinada habitacion desde menu.  falta cambiarle el color a la luz de habitacion
+            // opcion en desuso, era para apagar determinada habitacion desde menu.  falta cambiarle el color a la luz de habitacion
             console.log("recibio pedido apagardesdeapp por opcion de pantalla");
             var laquery = "call accionhab('apagar',?,?,?);";
             if (req.body.hab.length <= 20 && req.body.quien.length <= 45 && req.body.como.length <= 10) {
                 var todo = [req.body.hab, req.body.quien, req.body.como];
                 conn.query(laquery, todo, (err, rows, fields) => {
-                    if (err) { console.error(err) }
-                       else{
-                        client.publish(rows[0][0].mac + '/estado', rows[0][0].color.toString(), { qos: 2 });                            
-                        }
+                    if (err) { console.error(err) } else {
+                        client.publish(rows[0][0].mac + '/estado', rows[0][0].color.toString(), { qos: 2 });
+                    }
                 });
                 res.json([{ 'error': false }]);
             }
@@ -717,8 +721,19 @@ app.get('/remoto.html', function(req, res) {
         res.end();
     });
 });
+app.get('/botonremoto.html', function(req, res) {
+    fs.readFile("botonremoto.html", function(err, html) {
+        if (err) console.error(err);
+        var html_string = html.toString();
+        res.writeHead(200);
+        res.write(html_string);
+        res.end();
+    });
+});
+
 
 app.post('/remotorecibe', function(req, res) {
+    //remotorecibe puede ser obsoleto, estos mensajes de alerta no tienen token, y reemplazado con /remotowebtoken
     console.log("recibio msg en formaremota");
     //console.log(req.body.hab);
     //console.log(req.body.alerta);
@@ -746,6 +761,59 @@ app.post('/remotorecibe', function(req, res) {
         }
     }
 });
+app.post('/remotowebtoken', function(req, res) {
+    // el SP RecibeBotonRemoto servirá tanto para la botonera remota WEB com para la app de android
+    if (req.body.topico == undefined || req.body.cod == undefined) {
+        console.log("ERROR recibio desde botonera remota WEB pero sin el topico o codigo");
+        return res.json([{ 'error': true }]);
+    } else {
+        var topico = req.body.topico;
+        var cod = req.body.cod;
+        var alerta = req.body.alerta;
+        var tokenactual = req.body.tokenactual;
+        console.log("recibio desde botonera remota WEB: " + topico + ", Para: " + cod);
+    }
+
+    //if (cod <= 17 && topico.length <= 10 && aaaa <= 12 && parseInt(aaaa) <= 999999) {
+    laquery = "call RecibeBotonRemoto(?,?,?,?,@resultado,@lamac,@resultadodisp);";
+    todo = [cod, topico, alerta, tokenactual];
+    console.log(laquery+ ' ' + todo);
+    conn.query(laquery, todo, (err, rows, fields) => {
+        
+        console.log(rows);
+        
+        if (err) {
+            console.log('error en la consulta: ' + laquery + ' ' + todo);
+        } else {
+            // solo hay dos topicos, Alta y Alerta
+            if (topico == 'alta' && rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
+                var resul = rows[0][0].resultado.split(";");
+                var color = resul[0];
+                var token = resul[1];
+                return res.json([{ 'error': false, 'color': color, 'token': token }]);
+            }
+            if (topico == 'alerta' && rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
+                var color = rows[0][0].resultado;
+                var colordisp = rows[0][0].resultadodisp;
+                var mac=rows[0][0].lamac;
+                client.publish(mac + '/estado', colordisp, { qos: 2 });
+                console.log(mac + '/estado ' +  colordisp);
+                return res.json([{ 'error': false, 'color': color }]);
+            }
+            if (topico == 'alerta' && rows[0][0].resultado == '0' ) {
+                // puede ser que el token esté equivocado (999) o que la hab ya está con alerta
+              if (rows[0][0].resultadodisp == '999' ) {
+                return res.json([{ 'error': false, 'token': 'equivocado' }]);
+              }
+              else {
+               return res.json([{ 'error': false, 'color': rows[0][0].resultadodisp }]); 
+              }
+            }
+
+        }
+    });
+    //}
+});
 
 app.post('/seteatipohab', function(req, res) {
     var laquery;
@@ -769,6 +837,26 @@ app.post('/seteatipohab', function(req, res) {
     } else {
         return res.json([{ 'error': 0 }]);
     }
+});
+
+app.get('/consultorios.html', function(req, res) {
+    fs.readFile("consultorios.html", function(err, html) {
+        if (err) console.error(err);
+        var html_string = html.toString();
+        res.writeHead(200);
+        res.write(html_string);
+        res.end();
+    });
+});
+
+app.get('/consultoriostablero.html', function(req, res) {
+    fs.readFile("consultoriostablero.html", function(err, html) {
+        if (err) console.error(err);
+        var html_string = html.toString();
+        res.writeHead(200);
+        res.write(html_string);
+        res.end();
+    });
 });
 
 app.listen(3001, function() {

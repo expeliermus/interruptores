@@ -44,15 +44,27 @@
                     <li class="nav-item ">
                         <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),2);">
                             <i class="material-icons">view_module</i>
-                            <p>Tablero</p>
+                            <p>Internación</p>
                         </a>
                     </li>
                     <li class="nav-item ">
                         <a class="nav-link" href="http://201.190.151.236:3001/layout.html" target="_blank">
                             <i class="material-icons">dashboard</i>
-                            <p>Layout</p>
+                            <p>panel de Internación</p>
                         </a>
                     </li>
+                    <li class="nav-item ">
+                        <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),20);">
+                            <i class="material-icons">date_range</i>
+                            <p>Consultorios</p>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),21);">
+                            <i class="material-icons">view_module</i>
+                            <p>panel de Consultorios</p>
+                        </a>
+                    </li>                    
                     <li class="nav-item">
                         <a class="nav-link menu3" href="javascript:;" onclick="menu($(this),3);">
                             <i class="material-icons">find_replace</i>
@@ -506,10 +518,27 @@
                 $("#aquivatodo").load("http://201.190.151.236:3001/Camas2.html");
                 $("#titulo").html('<i class="material-icons">notifications</i> Personas en cada cama');
                 $("#aquivatodo").css("background-color", "#1a2035");
-
                 apagainterval();
                 break;
+            case 20:
+                apagainterval();
+                $("#aquivatodo").css('display', 'none').load("http://201.190.151.236:3001/consultorios.html", function() {
+
+                    $("#aquivatodo").fadeIn();
+                });
+                $("#titulo").text("Consultorios");
+
+                break;
+            case 21:
+                apagainterval();
+                $("#aquivatodo").css('display', 'none').load("http://201.190.151.236:3001/consultoriostablero.html", function() {
+                    $("#aquivatodo").fadeIn();
+                });
+                $("#titulo").text("Consultorios");
+
+                break;                
             default:
+
 
         }
         var element = HTMLElement = document.getElementsByClassName('navbar-toggler')[0];

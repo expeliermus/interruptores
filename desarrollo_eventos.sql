@@ -28,8 +28,18 @@ CREATE TABLE `eventos` (
   `evento` varchar(45) DEFAULT NULL,
   `info` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1118 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2159 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eventos`
+--
+
+LOCK TABLES `eventos` WRITE;
+/*!40000 ALTER TABLE `eventos` DISABLE KEYS */;
+INSERT INTO `eventos` VALUES (2150,'2020-06-27 22:26:48','connect','\"connack\"'),(2151,'2020-06-27 22:28:04','connect','\"connack\"'),(2152,'2020-06-27 23:06:48','connect','\"connack\"'),(2153,'2020-06-28 16:39:20','connect','\"connack\"'),(2154,'2020-06-28 17:11:39','connect','\"connack\"'),(2155,'2020-06-28 17:19:14','connect','\"connack\"'),(2156,'2020-06-28 17:28:48','connect','\"connack\"'),(2157,'2020-06-28 17:40:51','connect','\"connack\"'),(2158,'2020-06-28 19:27:57','connect','\"connack\"');
+/*!40000 ALTER TABLE `eventos` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -40,4 +50,4 @@ CREATE TABLE `eventos` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-17  9:29:05
+-- Dump completed on 2020-07-10 12:15:27
