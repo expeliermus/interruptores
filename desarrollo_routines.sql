@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: desarrollo
 -- ------------------------------------------------------
--- Server version	5.7.30-0ubuntu0.18.04.1
+-- Server version	5.7.33-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -22,9 +22,9 @@
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -40,6 +40,7 @@ BEGIN
 		delete from dashboard where habitacion=hab;
 		INSERT INTO dashboard (habitacion) values (hab);
 		CALL evento(hab, 0, quien, como); 
+        select mac,colordisp as color from mac,color where mac.habitacion=hab and  color.estado=1;
     end if;
     if( accion= 'apagarremoto') then
 		INSERT INTO apagarremota (`habitacion`,`quien`) VALUES (hab,quien);
@@ -467,6 +468,27 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `mantenimiento` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`frombakend`@`localhost` PROCEDURE `mantenimiento`()
+BEGIN
+	delete from eventos where cuando < NOW() - INTERVAL 3 MONTH;
+	delete from todo where cuando < NOW() - INTERVAL 3 MONTH;
+	delete FROM rfid where nombre='desconocida';
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `RecibeBotonRemoto` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -482,7 +504,9 @@ IN V_cod char(17) ,
 IN V_topico char(10),
 IN V_msg1 nvarchar(12),
 IN V_msg2 int,
-OUT salida char(14)
+OUT salida char(14),
+OUT salida2 char(14),
+OUT salida3 char(17) 
 )
 BEGIN
 	declare V_piso char(2) default TRIM(LEADING '0' FROM right(left(V_cod,3),2)); 
@@ -492,20 +516,24 @@ BEGIN
     declare V_auxestado  smallint default 1;
     declare V_profesional nvarchar(45) default '';
     declare V_cierre nvarchar(45) default 'tarjeta';
+	declare V_macsalida char(17) default V_cod;
     declare out_number int;
     set out_number=0;
 
-    if (V_topico = 'alta' ) then
-		select FLOOR(RAND() * (999999 - 100 +1)) + 100 into v_token; 
-        update botonremoto set token= v_token where cod=V_cod;
-        select CONCAT(c.color , ';' , v_token) as resultado from dashboard d join color c on c.estado=d.estado where habitacion=V_habitacion;   
-		set out_number=99;
-    end if;
+if (V_topico = 'alta' ) then
+	select FLOOR(RAND() * (999999 - 100 +1)) + 100 into v_token; 
+    update botonremoto set token= v_token where cod=V_cod;
+    select CONCAT(c.color , ';' , v_token) as resultado, CONCAT(c.color , ';' , v_token) as resultadodisp , '0' as lamac from dashboard d join color c on c.estado=d.estado where habitacion=V_habitacion;   
+	set out_number=0;
+else
     
     select token into v_token from botonremoto where cod=V_cod;
-    
+    select mac into V_macsalida from mac where habitacion = V_habitacion;
+    select estado into V_auxestado from dashboard where habitacion=V_habitacion; 
+
     if (V_topico = 'alerta' and V_msg2 = v_token) then
 			update botonremoto set ultrespuesta = CURRENT_TIMESTAMP where cod=V_cod;
+            update mac set ultrespuesta = CURRENT_TIMESTAMP where habitacion=V_habitacion;
             
 			if (V_msg1 = 4 and V_auxestado != 4) then
 				update dashboard set estado=4, cama=V_cama,profesional='',DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
@@ -522,19 +550,18 @@ BEGIN
 				CALL evento(V_habitacion, 2, '', '');            
 				set out_number=2;
 			end if;
-
-		
-        select color as resultado from  color c  where estado=out_number;   
-
+		if (out_number = 0 ) then
+			select '0' as resultado,convert(V_auxestado, char(1)) as resultadodisp,'0' as lamac from dual;
+        else
+			select out_number as resultado,colordisp as resultadodisp,V_macsalida as lamac from color where estado=out_number;    
+		end if;
+    else
+		select '0' as resultado, '999' as resultadodisp,'0' as lamac  from dual;
     end if;
-    
-    
-    
-    
-    if (out_number = 0) then
-		select '0' as resultado;
-	end if;
   
+    
+
+end if;  
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -545,9 +572,9 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -576,6 +603,7 @@ BEGIN
 */    
 	if exists( select 1 from mac where mac=V_mac and habitacion != 'desconocida') then
 		select habitacion into V_habitacion from mac where mac=V_mac;
+        select estado into V_auxestado from dashboard where habitacion=V_habitacion; 
         else
         /* error select V_mac into V_habitacion ;*/
 		INSERT INTO mac (mac,habitacion)
@@ -781,4 +809,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-24 23:24:34
+-- Dump completed on 2021-04-19 16:17:20

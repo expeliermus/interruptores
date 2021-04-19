@@ -133,9 +133,9 @@
         // if (h % 6 == 0) { cuadrados = cuadrados + '</div><div class="row">' }
     }
         cuadrados = cuadrados + '<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 ">'
-        cuadrados = cuadrados + ' <div class="p-2  card  cuadro text-center" id="rfidenfermeria" style="display:block;">'
-        cuadrados = cuadrados + '<img class="img-thumbnail" src="assets/img/rfidenfermeria.png" style="width:100px;background-color:#202940;border:0px; " alt="sin lector en enfermeria">'
-        cuadrados = cuadrados + '  <h6 style="margin-bottom: 0px;text-align: center !important;padding-right: 20px;" >desconectado</h6>'
+        cuadrados = cuadrados + ' <div class="p-4  card  cuadro text-center"  style="display:block;">'
+        cuadrados = cuadrados + '<img class="img-thumbnail" id="rfidenfermeria" src="assets/img/rfidenfermeria.png" style="width:100px;background-color:#202940;border:0px; " alt="lector en enfermeria">'
+        //cuadrados = cuadrados + '  <h6 style="margin-bottom: 0px;text-align: center !important;padding-right: 20px;" >desconectado</h6>'
         cuadrados = cuadrados + '</div>'
         cuadrados = cuadrados + '</div>'
     cuadrados = cuadrados + '</div>'
@@ -175,7 +175,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/apagardesdeapp",
+            url: "http://xyzopqwebserver:xyzopqwebport/apagardesdeapp",
             success: function(msg) {
                 $('#modalapagaalerta').modal('hide');
                 $("#modalapagardesdeapp").attr('onClick', 'apagardesdeapp($(this))');
@@ -199,7 +199,7 @@
             data: "nada=" + 0 + "&nada2= '" + 0 + "'",
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/status",
+            url: "http://xyzopqwebserver:xyzopqwebport/status",
             success: function(msg) {
                 $("#muestraError").html("");
                 var respuesta = JSON.parse(msg);
@@ -208,10 +208,10 @@
                     var d2 = new Date(caso.ultrespuesta);
                     if (caso.habitacion == 'enfermeria') {
                         if (caso.ultrespuesta == null || (d - d2) / 60000 > 5) {
-                            $("#rfidenfermeria").css("display","block");
+                            $("#rfidenfermeria").attr("src","assets/img/rfidenfermeria.png");
                         }
                         else {
-                            $("#rfidenfermeria").css("display","none");
+                            $("#rfidenfermeria").attr("src","assets/img/rfidenfermeriaok.png")
                         }
                     }
                     else {

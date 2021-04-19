@@ -1,17 +1,21 @@
 {
-  "name": "SOS",
-  "version": "1.0.0",
+  "name": "SmartSOS",
+  "version": "1.1.0",
   "description": "Escucha llamados desde las habitaciones, los muestra en web y dispositivos IoT",
-  "main": "mqtt.js",
+  "main": "inicio.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node mqtt.js"
+    "start": "node inicio.js"
+  },
+  "engines" :{
+    "node": "v8.10.0"
   },
   "author": "Ariel Martin",
   "license": "UNLICENSED",
   "keywords": [],
   "dependencies": {
     "body-parser": "^1.19.0",
+    "config": "^3.3.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mqtt": "^4.0.0",

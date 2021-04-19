@@ -208,8 +208,8 @@
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="./assets/js/jquery.min.js" type="text/javascript"></script>
-    <script src="./assets/js/bootstrap-material-design.js"></script>
+    <!--script src="./assets/js/jquery.min.js" type="text/javascript"></script-->
+    <!--script src="./assets/js/bootstrap-material-design.js"></script-->
     <script>
     var datosDesdeSQL = 'xyzopqdatosdesdeelserver'
 
@@ -295,7 +295,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/rfidalta",
+            url: "http://xyzopqwebserver:xyzopqwebport/rfidalta",
             success: function(msg) {
                 //   console.log(msg);
                 var respuesta = JSON.parse(msg);
@@ -336,7 +336,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/rfidmodifica",
+            url: "http://xyzopqwebserver:xyzopqwebport/rfidmodifica",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 //console.log(respuesta[0].hecho);
@@ -364,7 +364,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/rfidbaja",
+            url: "http://xyzopqwebserver:xyzopqwebport/rfidbaja",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 //console.log(respuesta[0].hecho);
@@ -386,7 +386,7 @@
         $.ajax({
             type: "POST",
             data: { que: 1 },
-            url: "http://201.190.151.236:3001/rfidbajadesconocidas",
+            url: "http://xyzopqwebserver:xyzopqwebport/rfidbajadesconocidas",
             success: function(msg) {
                 window.location.reload(false);
             },

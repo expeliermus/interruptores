@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Alerta remota</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-material-design.min.css">
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <style>
+        @media screen and (orientation:portrait) {
+    #segunda {
+        background-image: linear-gradient(90deg, black, gray, lightgray, white, white, lightgray, gray, black);
+
+    }
+
+    .btnalerta {
+        width: 40%;
+        margin-top: 5%;
+        
+    }
+
+}
+
+@media screen and (orientation:landscape) {
+    #segunda {
+        background-image: linear-gradient(0deg, black, gray, lightgray, white, white, lightgray, gray, black);
+
+    }
+
+    .btnalerta {
+        width: 20%;
+
+
+    }
+
+
+}
+
+#segunda {
+    height: 100vh; 
+    width: 100vw; 
+}
+</style>
+</head>
+
+<body>
+    <div class="d-flex flex-xl-row flex-lg-row flex-md-row flex-sm-row flex-column align-items-center  justify-content-sm-around pantalla" id="segunda">
+        <img class="btnalerta" src="assets/img/b1.png" alt="alerta 1" id="boton1">
+        <img class="btnalerta" src="assets/img/b2.png" alt="alerta 2" id="boton2">
+        <img class="btnalerta" src="assets/img/alerta1.png" id="resultado" style="visibility: hidden;">
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+    var token = localStorage.getItem("token");
+    var cod = localStorage.getItem("cod");
+    if (typeof token == 'undefined' || token == null || typeof cod == 'undefined' || cod == null) {
+        //console.log("volver a la primer pantalla");
+        primerpantalla();
+
+    } else {
+        //P01H01C1
+        if (cod.substring(0, 1) == 'P' && cod.substring(3, 4) == 'H' && cod.substring(6, 7) == 'C') {
+            segundapantalla();
+        } else {
+            primerpantalla();
+        }
+    }
+
+
+
+    function primerpantalla() {
+        var donde = window.location.href;
+        donde = donde.replace('/botonremoto.', '/remoto.');
+        //console.log(donde);
+        window.location.href = donde;
+    }
+
+    function borraregistroYPrimerPantalla() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("cod");
+        setTimeout(function() {
+           primerpantalla();
+        }, 200);
+    }
+
+    function segundapantalla() {
+        //if (window.innerHeight > window.innerWidth) {
+        //  $("body").css("background-image", "linear-gradient(90deg, black,white, black)");
+        //} else {
+        //  $("body").css("background-image", "linear-gradient(0deg, black,white, black)");
+        //}
+
+        //if (typeof sttoken == 'undefined' || sttoken == null ){
+        //    conseguirtoken();    
+        // }
+        //else {
+        //    
+        // }
+        habilitabotones();
+    }
+
+    function habilitabotones() {
+
+        setTimeout(function() {
+            $("#boton1").attr('onClick', 'enviaalerta(2)');
+            $("#boton2").attr('onClick', 'enviaalerta(3)');
+        }, 1000);
+
+
+    }
+
+
+    function colorPasaAAlerta(a) {
+        var str = $("#segunda").css("background-image");
+        //esta funcion falla porque si bien puede hacer el cambio de color del degradé del fondo, pierde la orientacion 90grados o 0 grados
+        //rgb(0, 0, 0), rgb(128, 128, 128), rgb(211, 211, 211), rgb(255, 255, 255), rgb(255, 255, 255), rgb(211, 211, 211), rgb(128, 128, 128), rgb(0, 0, 0))
+        setTimeout(function(a) {
+            var str = $("#segunda").css("background-image");
+
+            str = str.replace("rgb(211, 211, 211)", "rgb(254, 254, 254)");
+            str = str.replace("rgb(211, 211, 211)", "rgb(254, 254, 254)"); //209,205,94
+            $("#segunda").css("background-image", str);
+        }, 100, a);
+        setTimeout(function(a) {
+            var str = $("#segunda").css("background-image");
+
+            str = str.replace("rgb(128, 128, 128)", "rgb(253, 253, 253)");
+            str = str.replace("rgb(128, 128, 128)", "rgb(253, 253, 253)"); //128,127,98
+            $("#segunda").css("background-image", str);
+        }, 200, a);
+        if (a == 2) {
+            setTimeout(function() {
+                var str = $("#segunda").css("background-image");
+
+                str = str.replace("rgb(255, 255, 255)", "rgb(128, 255, 89)");
+                str = str.replace("rgb(255, 255, 255)", "rgb(128, 255, 89)");
+                str = str.replace("rgb(254, 254, 254)", "rgb(128, 254, 89)");
+                str = str.replace("rgb(254, 254, 254)", "rgb(128, 254, 89)");
+                str = str.replace("rgb(253, 253, 253)", "rgb(128, 253, 89)");
+                str = str.replace("rgb(253, 253, 253)", "rgb(128, 253, 89)"); //209,205,94
+                $("#segunda").css("background-image", str);
+            }, 300);
+            setTimeout(function() {
+                var str = $("#segunda").css("background-image");
+
+                str = str.replace("rgb(128, 253, 89)", "rgb(103, 125, 96)");
+                str = str.replace("rgb(128, 253, 89)", "rgb(103, 125, 96)");
+                $("#segunda").css("background-image", str);
+            }, 400);
+            setTimeout(function() {
+                var str = $("#segunda").css("background-image");
+
+                str = str.replace("rgb(128, 254, 89)", "rgb(107, 212, 72)");
+                str = str.replace("rgb(128, 254, 89)", "rgb(107, 212, 72)");
+                $("#segunda").css("background-image", str);
+            }, 500);
+
+        }
+        if (a == 3) {
+            setTimeout(function() {
+                var str = $("#segunda").css("background-image");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                $("#segunda").css("background-image", str);
+            }, 300);
+            setTimeout(function() {
+                var str = $("#segunda").css("background-image");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                str = str.replace("rgb(211, 211, 211)", "rgb(255,250,115)");
+                str = str.replace("rgb(211, 211, 211)", "rgb(255,250,115)"); //209,205,94
+                str = str.replace("rgb(128, 128, 128)", "rgb(128,127,98)");
+                str = str.replace("rgb(128, 128, 128)", "rgb(128,127,98)"); //128,127,98
+                $("#segunda").css("background-image", str);
+            }, 400);
+            setTimeout(function() {
+                var str = $("#segunda").css("background-image");
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)"); //255,250,115
+                str = str.replace("rgb(255, 255, 255)", "rgb(255,250,115)");
+                str = str.replace("rgb(211, 211, 211)", "rgb(209,205,94)");
+                str = str.replace("rgb(211, 211, 211)", "rgb(209,205,94)"); //209,205,94
+                str = str.replace("rgb(128, 128, 128)", "rgb(128,127,98)");
+                str = str.replace("rgb(128, 128, 128)", "rgb(128,127,98)"); //128,127,98
+                $("#segunda").css("background-image", str);
+            }, 600);
+        }
+        setTimeout(function() {
+            var str = $("#segunda").css("background-image");
+
+            str = str.replace("rgb(128, 253, 89)", "rgb(128, 128, 128)");
+            str = str.replace("rgb(128, 253, 89)", "rgb(128, 128, 128)");
+
+            str = str.replace("rgb(107, 212, 72)", "rgb(211, 211, 211)");
+            str = str.replace("rgb(107, 212, 72)", "rgb(211, 211, 211)");
+
+            str = str.replace("rgb(128, 255, 89)", "rgb(255, 255, 255)");
+            str = str.replace("rgb(128, 255, 89)", "rgb(255, 255, 255)");
+
+
+
+            $("#segunda").css("background-image", str);
+        }, 1 * 10 * 1000);
+
+    }
+
+    function enviaalerta(a) {
+        $("#boton1").attr('onClick', '');
+        $("#boton2").attr('onClick', '');
+
+
+        //console.log(token);
+
+        $.ajax({
+            type: "POST",
+            data: {
+                cod: cod,
+                topico: 'alerta',
+                alerta: a,
+                tokenactual: token
+            },
+            contentType: 'application/x-www-form-urlencoded',
+            mimeType: 'application/x-www-form-urlencoded',
+            url: "http://xyzopqwebserver:xyzopqwebport/remotowebtoken",
+            success: function(msg) {
+                var respuesta = JSON.parse(msg);
+                //console.log(msg);
+                //console.log(respuesta[0].error);
+                if (respuesta[0].error == true) {
+                    alert("hay un error en la aplicacion: no se envió el topico o código");
+                } else {
+                    if (respuesta[0].token == 'equivocado') {
+                        alert('Solamente puede haber una botonera remota por cada cama, la suya no es la mas reciente');
+                        borraregistroYPrimerPantalla();
+                       
+                    } else {
+                        var color = respuesta[0].color;
+                        if (color == '2') {
+                            //colorPasaAAlerta(color);
+                        }
+                        if (color >= '1' && color <= '5') {
+                            var imagen = 'assets/img/alerta' + color + '.png';
+                            $("#resultado").attr('src', imagen).css("visibility", "visible");
+                            setTimeout(function() {
+                                $("#resultado").attr('src', 'assets/img/alerta1.png').css("visibility", "hidden");
+                            }, 10000);
+                        }
+
+                    }
+                }
+
+                habilitabotones();
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                $("#muestraError").html("no está conectado a la base de datos");
+                habilitabotones();
+            }
+        });
+
+    }
+
+    function getUrlVars() {
+        var vars = [],
+            hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    function replaceAll(string, search, replace) {
+        return string.split(search).join(replace);
+    }
+    $(document).ready(function() {});
+    </script>
+</body>
+
+</html>

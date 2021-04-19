@@ -118,9 +118,9 @@
         </div>
 
     </div>
-    <script src="./assets/js/jquery.min.js" type="text/javascript"></script>
-    <script src="./assets/js/popper.js"></script>
-    <script src="./assets/js/bootstrap-material-design.js"></script>
+    <!--script src="./assets/js/jquery.min.js" type="text/javascript"></script-->
+    <!--script src="./assets/js/popper.js"></script-->
+    <!--script src="./assets/js/bootstrap-material-design.js"></script-->
     <script type="text/javascript">
     var datosDesdeSQL = 'xyzopqdatosdesdeelserver'
     var linea = '';
@@ -170,7 +170,7 @@
             },
             contentType: 'application/x-www-form-urlencoded',
             mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
-            url: "http://201.190.151.236:3001/seteacontroles",
+            url: "http://xyzopqwebserver:xyzopqwebport/seteacontroles",
             success: function(msg) {
                 var respuesta = JSON.parse(msg);
                 if (respuesta[0].error == '0') {alert("correcto, no hubo errores")}

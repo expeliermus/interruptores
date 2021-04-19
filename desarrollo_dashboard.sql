@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: desarrollo
 -- ------------------------------------------------------
--- Server version	5.7.30-0ubuntu0.18.04.1
+-- Server version	5.7.33-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -21,7 +21,7 @@
 
 DROP TABLE IF EXISTS `dashboard`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `dashboard` (
   `habitacion` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `estado` smallint(6) DEFAULT '1',
@@ -37,7 +37,7 @@ CREATE TABLE `dashboard` (
 
 LOCK TABLES `dashboard` WRITE;
 /*!40000 ALTER TABLE `dashboard` DISABLE KEYS */;
-INSERT INTO `dashboard` VALUES ('desconocida',1,0,'','2020-06-26 02:47:13'),('enfermeria',1,0,'','2020-06-28 22:08:56'),('13',1,0,'','2020-06-28 22:08:56'),('14',1,0,'','2020-06-28 22:08:56'),('11',1,0,'','2020-06-28 22:08:56'),('3',1,0,'','2020-06-28 22:08:56'),('4',1,0,'','2020-06-28 22:08:56'),('2',1,0,'','2020-06-28 22:08:56'),('7',1,0,'','2020-06-28 22:08:56'),('9',1,0,'','2020-06-28 22:08:56'),('6',1,0,'','2020-06-28 22:08:56'),('5',1,0,'','2020-07-09 20:59:05'),('15',1,0,'','2020-06-28 22:08:56'),('8',1,0,'','2020-06-28 22:08:56'),('12',1,0,'','2020-06-28 22:08:56'),('10',1,0,'','2020-06-28 22:08:56'),('1',3,1,'','2020-07-04 19:20:37');
+INSERT INTO `dashboard` VALUES ('enfermeria',1,0,'','2021-04-16 20:41:24'),('14',1,0,'','2021-04-16 20:41:24'),('11',1,0,'','2021-04-16 20:41:24'),('3',1,0,'','2021-04-19 13:15:44'),('4',1,0,'','2021-04-16 20:41:24'),('2',3,0,'','2021-04-19 13:08:12'),('7',1,0,'','2021-04-16 20:41:24'),('9',1,0,'','2021-04-16 20:41:25'),('6',1,0,'','2021-04-16 20:41:25'),('5',3,1,'','2021-04-19 15:19:35'),('15',1,0,'','2021-04-16 20:41:25'),('8',1,0,'','2021-04-16 20:41:25'),('12',1,0,'','2021-04-16 20:41:25'),('10',1,0,'','2021-04-16 20:41:25'),('desconocida',1,0,'','2021-04-16 20:41:25'),('13',1,0,'','2021-04-19 14:31:00'),('1',1,0,'','2021-04-19 14:31:58');
 /*!40000 ALTER TABLE `dashboard` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-07-10 12:15:56
+-- Dump completed on 2021-04-19 16:17:08

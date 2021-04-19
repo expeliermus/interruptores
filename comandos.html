@@ -44,15 +44,29 @@
                     <li class="nav-item ">
                         <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),2);">
                             <i class="material-icons">view_module</i>
-                            <p>Tablero</p>
+                            <p>Internación</p>
                         </a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="http://201.190.151.236:3001/layout.html" target="_blank">
+                        <a class="nav-link" href="http://xyzopqwebserver:xyzopqwebport/layout.html" target="_blank">
                             <i class="material-icons">dashboard</i>
-                            <p>Layout</p>
+                            <p>panel de Internación</p>
                         </a>
                     </li>
+                    <!--
+                    <li class="nav-item ">
+                        <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),20);">
+                            <i class="material-icons">date_range</i>
+                            <p>Consultorios</p>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),21);">
+                            <i class="material-icons">view_module</i>
+                            <p>panel de Consultorios</p>
+                        </a>
+                    </li>                    
+                    -->
                     <li class="nav-item">
                         <a class="nav-link menu3" href="javascript:;" onclick="menu($(this),3);">
                             <i class="material-icons">find_replace</i>
@@ -260,7 +274,7 @@
     });
     $("#btnmodalresethab").attr('onClick', 'mandarresethab()');
 
-    var datosDesdeSQL = 'xyzopqdatosdesdeelserver'
+    var datosDesdeSQL = 'xyzopqdatosdesdeelserver';
     var cuerpotxt = '<div class="row">';
     var puntero;
     for (var caso of JSON.parse(datosDesdeSQL)) {
@@ -291,7 +305,7 @@
         var infotosend = JSON.stringify(json);
         
         $.ajax({
-            url: "http://201.190.151.236:3001/seteatipohab",
+            url: "http://xyzopqwebserver:xyzopqwebport/seteatipohab",
             type: "POST",
            
             data: {data :infotosend},
@@ -309,11 +323,11 @@
         $('#modalresethab').modal('hide');
         $.ajax({
             type: "POST",
-            url: "http://201.190.151.236:3001/resethab",
+            url: "http://xyzopqwebserver:xyzopqwebport/resethab",
             success: function(msg) {
 
-                //console.log(msg);
-
+                console.log(msg[0]);
+                $('#modalresethab').modal('hide');
 
 
             },
@@ -412,7 +426,7 @@
                 },
                 contentType: 'application/x-www-form-urlencoded',
                 mimeType: 'application/x-www-form-urlencoded',
-                url: "http://201.190.151.236:3001/usuario",
+                url: "http://xyzopqwebserver:xyzopqwebport/usuario",
                 success: function(msg) {
                     //console.log(msg);
                     var respuesta = JSON.parse(msg);
@@ -448,7 +462,7 @@
 
         switch (x) {
             case 1:
-                $("#aquivatodo").css('display', 'none').load("http://201.190.151.236:3001/dashboard.html", function() {
+                $("#aquivatodo").css('display', 'none').load("http://xyzopqwebserver:xyzopqwebport/dashboard.html", function() {
                     $("#aquivatodo").css("background-color", "#1a2035");
                     $("#aquivatodo").fadeIn();
                 });
@@ -458,7 +472,7 @@
                 break;
             case 2:
                 apagainterval();
-                $("#aquivatodo").css('display', 'none').load("http://201.190.151.236:3001/Habitaciones.html", function() {
+                $("#aquivatodo").css('display', 'none').load("http://xyzopqwebserver:xyzopqwebport/Habitaciones.html", function() {
 
                     $("#aquivatodo").fadeIn();
                 });
@@ -466,50 +480,67 @@
 
                 break;
             case 3:
-                $("#aquivatodo").load("http://201.190.151.236:3001/mapaestados.html");
+                $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/mapaestados.html");
                 $("#titulo").text("Mapa de estado de las alertas");
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 4:
-                $("#aquivatodo").load("http://201.190.151.236:3001/dispositivos");
+                $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/dispositivos");
                 $("#titulo").text("ABM Dispositivos");
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 5:
-                $("#aquivatodo").load("http://201.190.151.236:3001/profesionales");
+                $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/profesionales");
                 $("#titulo").text("ABM Profesionales");
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 6:
-                $("#aquivatodo").load("http://201.190.151.236:3001/controles");
+                $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/controles");
                 $("#titulo").text("Listado de controles remotos");
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
 
             case 8:
-                $("#aquivatodo").load("http://201.190.151.236:3001/programartareas.html");
+                $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/programartareas.html");
                 $("#titulo").html('<i class="material-icons">notifications</i> Tareas programadas');
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 9:
-                $("#aquivatodo").load("http://201.190.151.236:3001/Camas.html");
+                $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/Camas.html");
                 $("#titulo").html('<i class="material-icons">notifications</i> Personas en cada cama');
                 $("#aquivatodo").css("background-color", "#1a2035");
                 apagainterval();
                 break;
             case 10:
-                $("#aquivatodo").load("http://201.190.151.236:3001/Camas2.html");
+                $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/Camas2.html");
                 $("#titulo").html('<i class="material-icons">notifications</i> Personas en cada cama');
                 $("#aquivatodo").css("background-color", "#1a2035");
-
                 apagainterval();
                 break;
+            case 20:
+                apagainterval();
+                $("#aquivatodo").css('display', 'none').load("http://xyzopqwebserver:xyzopqwebport/consultorios.html", function() {
+
+                    $("#aquivatodo").fadeIn();
+                });
+                $("#titulo").text("Consultorios");
+
+                break;
+            case 21:
+                apagainterval();
+                $("#aquivatodo").css('display', 'none').load("http://xyzopqwebserver:xyzopqwebport/consultoriostablero.html", function() {
+                    $("#aquivatodo").fadeIn();
+                });
+                $("#titulo").text("Consultorios");
+
+                break;                
             default:
+
 
         }
         var element = HTMLElement = document.getElementsByClassName('navbar-toggler')[0];
