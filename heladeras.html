@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <style>
+        .bd-docs.dark-edition .bd-example {
+            background-color: #1a2035;
+            border: 0;
+            border-radius: 10px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .bd-docs.dark-edition {
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+<body class="dark-edition">
+    <div class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="card card-chart">
+                    <div class="card-header card-header-success">
+                        <div class="ct-chart" id="temperatura"></div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Heladera 1</h4>
+                        <p class="card-category">
+                            <span class="text-success">Vacunas COVID-19
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">access_time</i> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--div class="row">
+                <div class="card card-chart">
+                    <div class="card-header card-header-success">
+                        <div class="ct-chart" id="temperatura2"></div>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Heladera 1</h4>
+                        <p class="card-category">
+                            <span class="text-success">Vacunas COVID-19
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">access_time</i> hora actual:
+                        </div>
+                    </div>
+                </div>
+            </div-->
+        </div>
+    </div>
+    <script src="assets/js/chartist.min.js"></script>
+
+    <script>
+        
+
+
+        $(document).ready(function () {
+
+            window_width = $(window).width();
+
+            // Javascript method's body can be found in assets/js/demos.js
+            md.initDashboardPageCharts();
+
+            var temperatdatos = xyzopqdatosdesdeelserver;
+            var temperatrango = xyzopqdatosdesdeelserverrango;
+
+console.log(temperatrango);
+            temperatdatos1 = {
+                labels: ['E', 'P', 'A', 'J', 'V', 'S', 'D'],
+                series: [{
+                    name: 'medicion',
+                    data: [-12, -17, -7, -37, -23, -18, -38]
+                }, {
+                    name: 'minimo',
+                    data: [-30, -30, -30, -30, -30, -30, -30]
+                }, {
+                    name: 'maximo',
+                    data: [-5, -5, -5, -5, -5, -5, -5]
+                }]
+            };
+
+            temperatoptions = {
+                lineSmooth: Chartist.Interpolation.simple({
+                    divisor: 3
+                }),
+                low: temperatrango[0],
+                high: temperatrango[1], // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                chartPadding: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0
+                },
+                height: '300px',
+                scaleMinSpace: 1,
+                axisY: {
+    // The offset of the labels to the chart area
+    offset: 40,
+    // Position where labels are placed. Can be set to `start` or `end` where `start` is equivalent to left or top on vertical axis and `end` is equivalent to right or bottom on horizontal axis.
+    position: 'start',
+    // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+    labelOffset: {
+      x: 0,
+      y: 0
+    },
+    // If labels should be shown or not
+    showLabel: true,
+    // If the axis grid should be drawn or not
+    showGrid: true,
+    // Interpolation function that allows you to intercept the value from the axis label
+    labelInterpolationFnc: Chartist.noop,
+    // Set the axis type to be used to project values on this axis. If not defined, Chartist.AutoScaleAxis will be used for the Y-Axis, where the high and low options will be set to the global high and low options. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
+    type: undefined,
+    // This value specifies the minimum height in pixel of the scale steps
+    scaleMinSpace: 20,
+    // Use only integer values (whole numbers) for the scale steps
+    onlyInteger: true
+  },
+                showArea: false,
+                showLine: true,
+                showPoint: false,
+                fullWidth: true,
+                axisX: {
+                    showLabel: false,
+                    showGrid: false
+                },
+                series: {
+                    'medicion': {
+                        //lineSmooth: Chartist.Interpolation.step()
+                    },
+                    'minimo': {
+                        //lineSmooth: Chartist.Interpolation.simple(),
+                    },
+                    'maximo': {
+                        //showPoint: true
+                        showArea: false
+                    }
+                }
+            }
+
+            temperatoptions1 = {
+                lineSmooth: Chartist.Interpolation.cardinal({
+                    tension: 0
+                }),
+                low: -50,
+                high: 0, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
+                chartPadding: {
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0
+                },
+                showArea: false,
+                showLine: true,
+                showPoint: false,
+                fullWidth: true,
+                axisX: {
+                    showLabel: false,
+                    showGrid: false
+                },
+                axisY: {
+                    showLabel: true,
+                    showGrid: true
+                }
+            }
+
+            //var epa = new Chartist.Line('#temperatura', temperatdatos, temperatoptions1);
+
+            
+
+            new Chartist.Line('#temperatura', temperatdatos, temperatoptions);
+
+
+
+
+        });
+
+
+
+    </script>
+</body>
+
+</html>

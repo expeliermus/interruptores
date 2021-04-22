@@ -204,7 +204,7 @@ router.post('/rfidbajadesconocidas', function(req, res) {
 });
 
 router.get('/dispositivos', function(req, res) {
-  console.log("recibio  /dispositivos");
+  //console.log("recibio  /dispositivos");
   var laquery = 'select * from mac order by mac;';
   conn.query(laquery, function(err, rows) {
 
@@ -410,6 +410,21 @@ router.get('/dashboard.html', function(req, res) {
   });
 });
 
+router.get('/heladeras.html', function(req, res) {
+    var laquery = 'call g_heladera_temperatura(100);';
+    conn.query(laquery, function(err, rows) {
+        fs.readFile("heladeras.html", function(err, html) {
+            if (err) console.error(err);
+            var html_string = html.toString();
+            html_string = html_string.replace("xyzopqdatosdesdeelserver", rows[1][0].resultado);
+            html_string = html_string.replace("xyzopqdatosdesdeelserverrango", rows[0][0].rango);
+            res.writeHead(200);
+            res.write(html_string);
+            res.end();
+        });
+    });
+  });
+
 router.post('/usuario', function(req, res) {
   console.log("recibio pedido logueo");
   var laquery = "select grupo from usuarios where usuario=? and password=?;";
@@ -585,5 +600,26 @@ router.get('/consultoriostablero.html', function(req, res) {
   });
 });
 
+
+function resetcoloreshab(cual) {
+    if (cual == 'todas') {
+        laquery = "select mac,colordisp from mac m join dashboard d on m.habitacion=d.habitacion join color c on c.estado=d.estado;";
+        conn.query(laquery, function(err, rows) {
+            for (var caso of rows) {
+                client.publish(caso.mac + '/estado', caso.colordisp, { qos: 2 });
+            }
+        });
+    } else {
+        laquery = "select mac,colordisp from mac m join dashboard d on m.habitacion=d.habitacion join color c on c.estado=d.estado where d.habitacion=" + cual + ";";
+        conn.query(laquery, function(err, rows) {
+            for (var caso of rows) {
+                client.publish(caso.mac + '/estado', caso.colordisp, { qos: 2 });
+            }
+        });
+    }
+}
+
+//setTimeout(resetcoloreshab2, 2000);
+setTimeout(resetcoloreshab.bind(null, 'todas'), 1000);
 
 module.exports = router;
