@@ -2,7 +2,11 @@
 --
 -- Host: localhost    Database: desarrollo
 -- ------------------------------------------------------
+<<<<<<< HEAD
 -- Server version	5.7.33-0ubuntu0.18.04.1
+=======
+-- Server version	5.7.31-0ubuntu0.18.04.1
+>>>>>>> master
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -48,4 +52,8 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+<<<<<<< HEAD
 -- Dump completed on 2021-04-19 16:17:01
+=======
+-- Dump completed on 2020-08-19 20:23:03
+>>>>>>> master
