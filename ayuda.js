@@ -33,3 +33,19 @@ preload(
     "assets/img/alerta4.png",
     "assets/img/alerta5.png"
 )
+
+global.nadador=  (n) => {
+    console.log('------------------------------------');
+    console.log('---    ' + n);
+    console.log('------------------------------------');
+  }
+
+ 
+functions.js look  like:
+        "use strict";
+        module.exports.echo = function echo(input) {
+            process.stdout.write(input);
+        }
+Then in your main script do something like:
+    var functions = require("./functions.js");
+    functions.echo("Hello, World");        

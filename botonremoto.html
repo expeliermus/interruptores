@@ -20,10 +20,9 @@
     <style>
         .btnalerta {
             width: 40%;
+            
             margin-top: 5%;
-
         }
-
         .centrar {
             display: flex;
             justify-content: center;
@@ -35,20 +34,36 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="d-flex flex-xl-row flex-lg-row flex-md-row flex-sm-row flex-column centrar pantalla" id="segunda">
 
 
+    <div>
+        <section class="py-2">
+            <div class="container text-center centrar">
 
-
-
-            <div class="col-md-4 col-lg-12"><img class="btnalerta" src="assets/img/b1.png" alt="alerta 1" id="boton1">
+                <div class="jumbotron shadow ">
+                    <h2>Hospital Universitario</h2>
+                  
+                    <div class="row">
+                        <div class="col-md-4 col-lg-12"><img class="btnalerta" src="assets/img/b1.png" alt="alerta 1" id="boton1">
+                        </div>
+                        <div class="col-md-4 col-lg-12"><img class="btnalerta" src="assets/img/b2.png" alt="alerta 2" id="boton2">
+                        </div>
+                        <div class="col-md-4 col-lg-12"><img class="btnalerta" id="resultado" style="visibility:hidden;"></div>
+                    </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4 col-lg-12"><img class="btnalerta" src="assets/img/b2.png" alt="alerta 2" id="boton2">
-            </div>
-            <div class="col-md-4 col-lg-12"><img class="btnalerta" id="resultado" style="visibility: hidden;"></div>
-        </div>
+        </section>
     </div>
+
+
+
+
+
+
+
+
+
     <script type="text/javascript">
 
         var images = [];
@@ -107,8 +122,8 @@
         function habilitabotones() {
             //parece queera para evitar las tocadas iniciales por error
             //setTimeout(function () {
-                $("#boton1").attr('onClick', 'enviaalerta(2)');
-                $("#boton2").attr('onClick', 'enviaalerta(3)');
+            $("#boton1").attr('onClick', 'enviaalerta(2)');
+            $("#boton2").attr('onClick', 'enviaalerta(3)');
             //}, 1000);
 
 
@@ -175,7 +190,7 @@
 
         }
 
-        
+
     </script>
 </body>
 

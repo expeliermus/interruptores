@@ -338,11 +338,8 @@
                 type: "POST",
                 url: "http://xyzopqwebserver:xyzopqwebport/resethab",
                 success: function (msg) {
-
-                    console.log(msg[0]);
                     $('#modalresethab').modal('hide');
-
-
+                    setTimeout(chequeaStatus, 200);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) { alert("No hay conexion, no se grabó el cambio"); }
             });
