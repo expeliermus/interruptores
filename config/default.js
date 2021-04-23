@@ -11,6 +11,6 @@ module.exports = {
         "password": "SOS2020",
         "serverurl" : "mqtt://localhost"
     },
-    "webserver":"190.113.153.30",
-    "webserverpuerto":"3001"
+    "webserver":"172.22.112.120",
+    "webserverpuerto":"80"
 }

@@ -571,8 +571,8 @@
             }
         }
     </script>
-        <script src='/socket.io/socket.io.js'></script>
-        <script src="assets/js/adapter-latest.js"></script>
+    <script src='/socket.io/socket.io.js'></script>
+    <script src="assets/js/adapter-latest.js"></script>
     <script>
         var heladera = "white";
         var puerta = 'cerrada';
@@ -615,23 +615,25 @@
         socket.on('temperatura', function (data) {
             $("#FtemperaturaH1").html(data.situacion + "°C");
         });
-        
-        socket.on('habitacion', function (caso) {
-            console.log(caso);
-            $("#Hcolor" + caso.habitacion).css('background-color', '#' + caso.color)
-                                    if (caso.estado == 1) {
-                                        $("#Hcolor" + caso.habitacion).removeClass("d-block").addClass("d-none");
-                                    } else {
-                                        $("#Hcolor" + caso.habitacion).removeClass("d-none").addClass("d-block");
-                                    }  
 
+        socket.on('habitacion', function (caso) {
+            console.log(caso.habitacion, caso.estado);
+            /*
+            $("#Hcolor" + caso.habitacion).css('background-color', '#' + caso.color)
+            if (caso.estado == 1) {
+                $("#Hcolor" + caso.habitacion).removeClass("d-block").addClass("d-none");
+            } else {
+                $("#Hcolor" + caso.habitacion).removeClass("d-none").addClass("d-block");
+            }
+            */
+            chequeaStatus();
         });
-        
+
         socket.on('error', console.error.bind(console));
         socket.on('message', console.log.bind(console));
         window.onbeforeunload = function () {
             socket.emit('meDesconecto');
-             socket.close();
+            socket.close();
         };
 
     </script>

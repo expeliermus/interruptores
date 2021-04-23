@@ -95,10 +95,19 @@
             console.log("puerta " + accion[0]);
             io.to('habitaciones').emit('puerta', { situacion: accion[0] });
         }
+        if (parte[1] == 'vivoconf') {
+            //console.log("vivoconf interceptado " + accion[0]);
+            laquery = "update mac set ultrespuesta = CURRENT_TIMESTAMP where mac=?;";
+            todo = [parte[0]];
+            conn.query(laquery, todo) ;
+        }
+        
 
-        if (parte[1] != 'vivo' && parte[1] != 'controles' && parte[1] != 'estado' && parte[1] != 'mide' && parte[1] != 'puerta') {
+
+        if (parte[1] != 'vivo' && parte[1] != 'controles' && parte[1] != 'estado' && parte[1] != 'mide' && parte[1] != 'puerta' && parte[1] != 'vivoconf') {
             if (parte[0].substring(0, 1) == 'P') {
                 // no hay mac que comience con P  entonces se trata de un boton remoto OJO si aumenta el tamaño del TOKEN
+                // codigo en desuso, era para cuando habia un apk con mqtt
                 if (parte[0].length <= 17 && parte[1].length <= 10 && accion[0].length <= 12 && parseInt(accion[1]) <= 999999) {
                     laquery = "call RecibeBotonRemoto(?,?,?,?,@resultado,@lamac,@resultadodisp);";
                     todo = [parte[0], parte[1], accion[0], accion[1]];
@@ -180,7 +189,7 @@
             } else {
                 //length==0 significa no hubo resultados, no hay link o paso el tiempo. En este caso es que no se duplicará
                 if (rows.length == 0) {
-                    var laquery = "insert into mac (mac,habitacion) values ('" + mac + "' , '" + habitacion + "')";
+                    var laquery = "insert into mac (mac,habitacion,ultrespuesta) values ('" + mac + "' , '" + habitacion + "',CURRENT_TIMESTAMP)"; //chequear porque agregué ultrespuesta , CURRENT_TIMESTAMP
                     conn.query(laquery, function (err, rows) {
                         if (err) {
                             console.log('No se dió de alta el dispositovo, el formato de los datos no es aceptado, tal vez sea la longitud de ellos');
@@ -199,12 +208,22 @@
                         }
                     });
                 } else {
+                    
+                    /// resulta que cuando un aplaca se conecta enesguida manda el alta/
+                    // entonces me cuelgo de esto para apagar la habitacion negra y pasarla al color que corresponda.  Inmediatamente.  sin espetart al chequeastatus()
+                    laquery = "update mac set ultrespuesta = CURRENT_TIMESTAMP where mac=?;";
+                    todo = [mac];
+                    conn.query(laquery, todo) ;
+
                     laquery = "select mac,colordisp from mac m join dashboard d on m.habitacion=d.habitacion join color c on c.estado=d.estado where mac='" + mac + "';";
                     conn.query(laquery, function (err, rows) {
                         if (rows.length > 0) {
                             client.publish(rows[0]['mac'] + '/estado', rows[0]['colordisp'], { qos: 2 });
                         }
                     });
+
+                    io.to('habitaciones').emit('habitacion', { 'habitacion': 'todas','color':'todos','estado':'alta' });
+
                 }
             }
         });
@@ -254,7 +273,7 @@
 
 
 
-    subscribeBotonRemoto();
+    //subscribeBotonRemoto(); no, esto era para cuando habia un apk con mqtt
     client.subscribe('alta/', { qos: 2 }, function (err, granted) {
         //console.log('Subscripto: ' + granted[0].topic + '   qos:' + granted[0].qos);
     });
