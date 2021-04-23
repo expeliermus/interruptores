@@ -2,11 +2,7 @@
 --
 -- Host: localhost    Database: desarrollo
 -- ------------------------------------------------------
-<<<<<<< HEAD
 -- Server version	5.7.33-0ubuntu0.18.04.1
-=======
--- Server version	5.7.31-0ubuntu0.18.04.1
->>>>>>> master
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -137,7 +133,7 @@ if (V_id is not null ) then
 	update sucesos 
 		set quiencierra='sistema',
 		cuandocierra=CURRENT_TIMESTAMP,
-		comocierra=concat('01 varios sucesos abiertos, se cierra éste y se deja aquel con id: ' , CAST( V_id AS CHAR))
+        comocierra=concat('01 varios sucesos abiertos, se cierra éste y se deja aquel con id: ' , CAST( V_id AS CHAR))
 		where habitacion =V_auxhabitacion and id != V_id and cuandocierra IS NULL;
 end if;
 /*en este punto del codigo, puede no haber registro de la habitacion, puede haber muchos cerrados, puede haber maximo 1 abierto*/
@@ -321,6 +317,107 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `g_heladera_temperatura` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`frombakend`@`localhost` PROCEDURE `g_heladera_temperatura`(
+IN cuantos smallint
+)
+BEGIN
+declare resultado MEDIUMTEXT;
+declare t_label varchar(10000);
+declare t_medido varchar(10000);
+declare t_minimo varchar(10000);
+declare t_maximo varchar(10000);
+
+declare v_min decimal(4,2);
+declare v_max decimal(4,2);
+declare v_auxmin decimal(4,2);
+declare v_auxmax decimal(4,2);
+
+/*
+select count(distinct CONCAT(day(cuando1) , '/' , month(cuando1)  , ' ' , hour(cuando1) , 'hs') ) into cuantoencursor from sucesos where quienatiende in (select distinct nombre from rfid where nombre != 'desconocida' and nombre is not null) and cuando1 >  date_sub(current_date, interval pasado day) ;
+
+
+{labels: ['E', 'P', 'A', 'J', 'V', 'S', 'D']
+,series: [{name: 'medicion',	data: 
+[-12, -17, -7, -37, -23, -18, -38]
+},{name: 'minimo',data: 
+[-30, -30, -30, -30, -30, -30, -30]
+},{name: 'maximo',data: 
+[-5, -5, -5, -5, -5, -5, -5]
+}]};
+{labels: ["26.00", "26.00", "26.00"]
+,series:[{name:"medicion",data:
+["-10", "-15", "-14"]
+},{name: "minimo",data:
+ ["-30", "-30", "-30"]
+ },{name: "maximo",data: 
+ ["-5", "-5", "-5"]
+ }]};
+*/
+
+
+select '{labels: ' into resultado;
+
+select  CONVERT(JSON_ARRAYAGG(medido) , char) into t_label FROM (
+	select  medido FROM Heladeratemperatura order by id desc LIMIT cuantos
+) l;   	
+select concat (resultado,t_label,',series:[{name:"medicion",data:') into resultado;
+
+select  JSON_ARRAYAGG(medido) into t_medido FROM (
+	select  medido FROM Heladeratemperatura order by id desc LIMIT cuantos
+) l;   	
+select concat (resultado,t_medido,'},{name: "minimo",data: ') into resultado;
+				
+select  JSON_ARRAYAGG(min) into t_minimo FROM (
+	select  min FROM Heladeratemperatura order by id desc LIMIT cuantos
+) l;   	
+select concat (resultado,t_minimo,'},{name: "maximo",data: ') into resultado;
+
+select  JSON_ARRAYAGG(max) into t_maximo FROM (
+	select  max FROM Heladeratemperatura order by id desc LIMIT cuantos
+) l;   	
+select concat (resultado,t_maximo,'}]};') into resultado;		
+
+
+
+select  min(convert(medido,DECIMAL)) , max(convert(medido,DECIMAL)) into v_min,v_max FROM (
+	select  medido FROM Heladeratemperatura order by id desc LIMIT cuantos
+) l;   	
+
+select  min(convert(min,DECIMAL)) into v_auxmin FROM (
+	select  min FROM Heladeratemperatura order by id desc LIMIT cuantos
+) l;   
+if (v_auxmin < v_min) then 
+		set v_min = v_auxmin ;
+end if;
+
+select  max(convert(max,DECIMAL)) into v_auxmax FROM (
+	select  max FROM Heladeratemperatura order by id desc LIMIT cuantos
+) l;   
+if (v_auxmax > v_max) then 
+		set v_max = v_auxmax ;
+end if;
+set v_min = v_min-1 ;
+set v_max = v_max+1 ;
+select concat('[',v_min,',',v_max,']') as rango; 		
+select resultado;
+	    
+    
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `g_prof_race` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -408,70 +505,6 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `g_prof_raceBKP` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`frombakend`@`localhost` PROCEDURE `g_prof_raceBKP`(
-IN pasado smallint
-)
-BEGIN
-declare resultado varchar(21800);
-declare aux varchar(10000);
-Declare cuando char(10);
-DECLARE done INT DEFAULT FALSE;
-DECLARE cur1 CURSOR FOR select distinct CONCAT(day(cuando1) , '/' , month(cuando1)  , ' ' , hour(cuando1) , 'hs') as cuando from sucesos where quienatiende in (select distinct nombre from rfid where nombre != 'desconocida' and nombre is not null) and cuando1 >  date_sub(current_date, interval pasado day) ;
-DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-select '{' into resultado;
-    OPEN cur1;
-		read_loop: LOOP
-			FETCH cur1 INTO cuando;
-			IF done THEN
-			  LEAVE read_loop;
-			END IF;
-
-
-				select concat('"', cuando ,'":', JSON_ARRAYAGG(JSON_OBJECT('profesional',p.nombre,'MAU',COALESCE(cant,0)))) into aux
-				from ( 
-						select quienatiende as quien,count(*) as cant 
-						from sucesos 
-						where quienatiende in (select distinct quienatiende from sucesos where quienatiende is not null and length(quienatiende)>1 and cuando1 > date_sub(current_date, interval pasado day) )
-                        and CONCAT(day(cuando1) , '/' , month(cuando1)  , ' ' , hour(cuando1) , 'hs')=cuando
-						group by quienatiende 
-				) r
-				 right join (select distinct nombre from rfid r join sucesos s on r.nombre=s.quienatiende where  s.cuando1 >  date_sub(current_date, interval pasado day) ) p
-				on p.nombre=r.quien;
-	
-			select concat (resultado,aux,',') into resultado;
-            
-	
-		END LOOP;
-       
-        /*
-        if length(resultado) > 5 then
-			select left(resultado,length(resultado)-1) into resultado ;
-        end if;
-      
-        select length(rtrim(resultado))-1;
-        */
-          
-        select case when length(resultado) > 5  then  left(resultado,length(rtrim(resultado))-1)
-		else  resultado end into resultado ;
-        
-        select concat(rtrim(resultado),'}') as resultado;
-    CLOSE cur1;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `mantenimiento` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -497,9 +530,9 @@ DELIMITER ;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
@@ -524,20 +557,19 @@ BEGIN
     declare out_number int;
     set out_number=0;
 
-if (V_topico = 'alta' ) then
-	select FLOOR(RAND() * (999999 - 100 +1)) + 100 into v_token; 
-    update botonremoto set token= v_token where cod=V_cod;
-    select CONCAT(c.color , ';' , v_token) as resultado, CONCAT(c.color , ';' , v_token) as resultadodisp , '0' as lamac from dashboard d join color c on c.estado=d.estado where habitacion=V_habitacion;   
-	set out_number=0;
-else
+    if (V_topico = 'alta' ) then
+		select FLOOR(RAND() * (999999 - 100 +1)) + 100 into v_token; 
+        update botonremoto set token= v_token where cod=V_cod;
+        select CONCAT(c.color , ';' , v_token) as resultado from dashboard d join color c on c.estado=d.estado where habitacion=V_habitacion;   
+		set out_number=0;
+    end if;
     
     select token into v_token from botonremoto where cod=V_cod;
     select mac into V_macsalida from mac where habitacion = V_habitacion;
     select estado into V_auxestado from dashboard where habitacion=V_habitacion; 
-
+    
     if (V_topico = 'alerta' and V_msg2 = v_token) then
 			update botonremoto set ultrespuesta = CURRENT_TIMESTAMP where cod=V_cod;
-            update mac set ultrespuesta = CURRENT_TIMESTAMP where habitacion=V_habitacion;
             
 			if (V_msg1 = 4 and V_auxestado != 4) then
 				update dashboard set estado=4, cama=V_cama,profesional='',DESDE=CURRENT_TIMESTAMP where habitacion=V_habitacion;
@@ -554,18 +586,20 @@ else
 				CALL evento(V_habitacion, 2, '', '');            
 				set out_number=2;
 			end if;
-		if (out_number = 0 ) then
-			select '0' as resultado,convert(V_auxestado, char(1)) as resultadodisp,'0' as lamac from dual;
-        else
-			select out_number as resultado,colordisp as resultadodisp,V_macsalida as lamac from color where estado=out_number;    
-		end if;
-    else
-		select '0' as resultado, '999' as resultadodisp,'0' as lamac  from dual;
-    end if;
-  
-    
 
-end if;  
+		
+    end if;
+    
+    
+    
+    
+    if (out_number = 0) then
+        select '0' as resultado,'0' as resultadodisp,'0' as lamac ;
+	else
+        
+        select out_number as resultado,colordisp as resultadodisp,V_macsalida as lamac,V_habitacion as lahabitacion , out_number as estado , color from color where estado=out_number;  
+	end if;
+  
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -607,7 +641,7 @@ BEGIN
 */    
 	if exists( select 1 from mac where mac=V_mac and habitacion != 'desconocida') then
 		select habitacion into V_habitacion from mac where mac=V_mac;
-        select estado into V_auxestado from dashboard where habitacion=V_habitacion; 
+		select estado into V_auxestado from dashboard where habitacion=V_habitacion; 
         else
         /* error select V_mac into V_habitacion ;*/
 		INSERT INTO mac (mac,habitacion)
@@ -690,7 +724,8 @@ end if;
     if (out_number = 0) then
 		select '0' as resultado;
     else
-		select colordisp as resultado,V_macsalida as lamac from color where estado=out_number;
+		select colordisp as resultado,V_macsalida as lamac,V_habitacion as lahabitacion , out_number as estado , color from color where estado=out_number;
+
 	end if;
   
 END ;;
@@ -813,8 +848,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-<<<<<<< HEAD
--- Dump completed on 2021-04-19 16:17:20
-=======
--- Dump completed on 2020-08-19 20:23:10
->>>>>>> master
+-- Dump completed on 2021-04-22 22:05:29

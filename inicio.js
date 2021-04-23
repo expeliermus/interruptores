@@ -10,8 +10,8 @@ app.use(bodyParser.json());
 app.use('/assets/', express.static('assets/')) ///// borrarlo es solo por la compatibilidad entre mi pc y el server
 app.use('/download/', express.static('download/'))
 
-var ruteaRaiz = require('./routes/raiz');
-  app.use('/', ruteaRaiz);
+
+
 
 
 const http = require('http');
@@ -60,9 +60,18 @@ function onListening() {
   console.log('Listening on ' + bind);
 }
 
+global.nadador=  (n) => {
+  console.log('------------------------------------');
+  console.log('---    ' + n);
+  console.log('------------------------------------');
+}
 
-const io = socketio(server);
-require('./routes/mqttapp')(io);
+
+global.io = socketio(server);
+
+require('./routes/mqttapp');
+app.use('/', require('./routes/raiz'));
+
 io.on('connection', (socket) => {
   require('./routes/ioapp')(socket);
   

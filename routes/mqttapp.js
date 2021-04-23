@@ -1,5 +1,10 @@
-module.exports = function (options) {
-    const io = options;
+//module.exports = function (options) {
+
+    //nadador('viaje');
+    
+    
+
+  //  const io = options;
     const conn = require('../sql.js');
     const client = require('../mqttconf');
 
@@ -296,4 +301,4 @@ module.exports = function (options) {
     }
     //////////  FIN SUBSCRIBIRSE
 
-};
+//};

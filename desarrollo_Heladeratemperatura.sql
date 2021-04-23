@@ -16,27 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `apagarremota`
+-- Table structure for table `Heladeratemperatura`
 --
 
-DROP TABLE IF EXISTS `apagarremota`;
+DROP TABLE IF EXISTS `Heladeratemperatura`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `apagarremota` (
-  `habitacion` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
-  `quien` varchar(20) CHARACTER SET utf8 NOT NULL,
-  `cuando` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE `Heladeratemperatura` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `cuando` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `cual` varchar(45) DEFAULT NULL,
+  `medido` char(6) DEFAULT NULL,
+  `min` char(6) DEFAULT NULL,
+  `max` char(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `apagarremota`
+-- Dumping data for table `Heladeratemperatura`
 --
 
-LOCK TABLES `apagarremota` WRITE;
-/*!40000 ALTER TABLE `apagarremota` DISABLE KEYS */;
-INSERT INTO `apagarremota` VALUES ('11','desconocido','2021-04-21 16:46:37');
-/*!40000 ALTER TABLE `apagarremota` ENABLE KEYS */;
+LOCK TABLES `Heladeratemperatura` WRITE;
+/*!40000 ALTER TABLE `Heladeratemperatura` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Heladeratemperatura` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-04-22 22:05:12
+-- Dump completed on 2021-04-22 22:04:54

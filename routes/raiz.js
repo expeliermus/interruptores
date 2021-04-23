@@ -521,7 +521,7 @@ router.post('/remotowebtoken', function(req, res) {
   console.log(laquery+ ' ' + todo);
   conn.query(laquery, todo, (err, rows, fields) => {
       
-      console.log(rows);
+      
       
       if (err) {
           console.log('error en la consulta: ' + laquery + ' ' + todo);
@@ -539,6 +539,7 @@ router.post('/remotowebtoken', function(req, res) {
               var mac=rows[0][0].lamac;
               client.publish(mac + '/estado', colordisp, { qos: 2 });
               console.log(mac + '/estado ' +  colordisp);
+              io.to('habitaciones').emit('habitacion', { 'habitacion': rows[0][0].lahabitacion,'color':rows[0][0].color,'estado':rows[0][0].estado });
               return res.json([{ 'error': false, 'color': color }]);
           }
           if (topico == 'alerta' && rows[0][0].resultado == '0' ) {
