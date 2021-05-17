@@ -54,7 +54,7 @@
         // grabaEvento("packetreceive", b.topic);
     })
     client.on('message', function (topic, message, packet) {
-        console.log("MSG " + topic + " " + message);
+        //console.log("MSG " + topic + " " + message);
         /* 
         var q = JSON.parse(JSON.stringify(packet.payload));
         w = String.fromCharCode.apply(String, q.data);
@@ -71,7 +71,7 @@
         var accion = message.toString().split(";");
         if (accion[1] === undefined) { accion[1] = 0 };
         if (parte[1] == 'mide' && accion[0] != '0.0') {
-            console.log('---------------------------------------------');
+            //console.log('---------------------------------------------');
             let laquery = "INSERT INTO Heladeratemperatura(`cual`,`medido`,`min`,`max`) values ('h1',?,?,?);"
             let todo = [accion[0], accion[1], accion[2]];
             conn.query(laquery, todo, (err, rows, fields) => {
@@ -80,19 +80,18 @@
                     console.log('error en la consulta: ' + laquery + ' ' + todo);
                 }
             });
-
             if (parseFloat(accion[1]) < parseFloat(accion[0]) && parseFloat(accion[0]) < parseFloat(accion[2])) {
                 io.to('habitaciones').emit('heladera', { situacion: 'normal' });
-                console.log("temp normal");
+                //console.log("temp normal");
             }
             else {
                 io.to('habitaciones').emit('heladera', { situacion: 'alerta' });
-                console.log("temp mal");
+                //console.log("temp mal");
             }
             io.to('habitaciones').emit('temperatura', { situacion: accion[0] });
         }
         if (parte[1] == 'puerta') {
-            console.log("puerta " + accion[0]);
+            //console.log("puerta " + accion[0]);
             io.to('habitaciones').emit('puerta', { situacion: accion[0] });
         }
         if (parte[1] == 'vivoconf') {
@@ -101,9 +100,6 @@
             todo = [parte[0]];
             conn.query(laquery, todo) ;
         }
-        
-
-
         if (parte[1] != 'vivo' && parte[1] != 'controles' && parte[1] != 'estado' && parte[1] != 'mide' && parte[1] != 'puerta' && parte[1] != 'vivoconf') {
             if (parte[0].substring(0, 1) == 'P') {
                 // no hay mac que comience con P  entonces se trata de un boton remoto OJO si aumenta el tamaño del TOKEN
@@ -166,7 +162,7 @@
     });
 
     function grabaEvento(a, b) {
-        let laquery = "INSERT INTO `desarrollo`.`eventos` (`evento`,`info`) VALUES (?,?);";
+        let laquery = "INSERT INTO eventos (`evento`,`info`) VALUES (?,?);";
         let todo = [a, JSON.stringify(b)];
         conn.query(laquery, todo, (err, rows, fields) => {
             if (err) {

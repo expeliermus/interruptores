@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="assets/img/favicon-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="assets/img/favicon-160x160.png" sizes="160x160">
+    <link rel="icon" type="image/png" href="assets/img/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/png" href="assets/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="assets/img/favicon-16x16.png" sizes="16x16">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title> Tablero de comandos </title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+        name='viewport' />
+    <link rel="stylesheet" type="text/css" href="assets/css/fonts.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link href="assets/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
+</head>
+<style type="text/css">
+    .menu1,
+    .menu4,
+    .menu5,
+    .menu6,
+    .menu7,
+    .menu8,
+    .menu9,
+    .menu10,
+    .menu11 {
+        display: none;
+    }
+</style>
+
+<body class="dark-edition">
+    <div class="wrapper ">
+        <div class="sidebar" data-color="azure" data-background-color="black" data-image="assets/img/sidebar-2.jpg">
+            <div class="logo"><a href="#" class="simple-text logo-normal"> Hospital Universitario </a></div>
+            <div class="sidebar-wrapper">
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link menu1" href="javascript:;" onclick="menu($(this),1);">
+                            <i class="material-icons">assessment</i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),2);">
+                            <i class="material-icons">view_module</i>
+                            <p>Internación</p>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="http://xyzopqwebserver:xyzopqwebport/layout.html" target="_blank">
+                            <i class="material-icons">dashboard</i>
+                            <p>panel de Internación</p>
+                        </a>
+                    </li>
+                    <!--
+                    <li class="nav-item ">
+                        <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),20);">
+                            <i class="material-icons">date_range</i>
+                            <p>Consultorios</p>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link menu2" href="javascript:;" onclick="menu($(this),21);">
+                            <i class="material-icons">view_module</i>
+                            <p>panel de Consultorios</p>
+                        </a>
+                    </li>                    
+                    -->
+                    <li class="nav-item">
+                        <a class="nav-link menu3" href="javascript:;" onclick="menu($(this),3);">
+                            <i class="material-icons">find_replace</i>
+                            <p>Mapa de estados</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu4" href="javascript:;" onclick="menu($(this),4);">
+                            <i class="material-icons">layers</i>
+                            <p>Dispositivos</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu5" href="javascript:;" onclick="menu($(this),5);">
+                            <i class="material-icons">content_paste</i>
+                            <p>Profesionales</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu6" href="javascript:;" onclick="menu($(this),6);">
+                            <i class="material-icons">perm_scan_wifi</i>
+                            <p>Controles remotos</p>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-toggle="modal" data-target="#modalresethab">
+                        <a class="nav-link menu7" href="javascript:;">
+                            <i class="material-icons">crop_din</i>
+                            <p>Resetea habitaciones</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu11" href="javascript:;" onclick="menu($(this),11);">
+                            <i class="material-icons">kitchen</i>
+                            <!--Ac Unit-->
+                            <p>heladeras</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu8" href="javascript:;" onclick="menu($(this),8);">
+                            <i class="material-icons">notifications</i>
+                            <p>Tareas programadas</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu9" href="javascript:;" onclick="menu($(this),9);">
+                            <i class="material-icons">local_hotel</i>
+                            <p>Camas</p>
+                        </a>
+                    </li>
+                    <div class="d-block d-sm-block d-md-none">
+                        <li class="nav-item" data-toggle="modal" data-target="#modalloguin">
+                            <a class="nav-link" href="javascript:void(0)">
+                                <i class="material-icons">person</i>
+                                <p id="nombreusuario2">&nbsp;</p>
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <nav class="float-right">
+                            <ul>
+                                <li>
+                                    <a href="http://www.smartsos.net">
+                                        #smartsos
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
+                <div class="container-fluid">
+                    <div class="navbar-wrapper">
+                        <a class="navbar-brand" href="javascript:void(0)" id="titulo">Cargando Página</a>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
+                        aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                        <span class="navbar-toggler-icon icon-bar"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end ">
+                        <ul class="navbar-nav" data-toggle="modal" data-target="#modalsettings" id="settings">
+                            <li class="nav-item">
+                                <a class="nav-link" href="javascript:void(0)" style="margin-right: 30px;">
+                                    <i class="material-icons">settings</i>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav" id="botondesloguearse">
+                            <li class="nav-item">
+                                <button class="btn btn-sm" onclick="desloguearse()">salir</button>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav" data-toggle="modal" data-target="#modalloguin">
+                            <li class="nav-item">
+                                <a class="nav-link" href="javascript:void(0)">
+                                    <i class="material-icons">person</i>
+                                    <p>
+                                        Account
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <div id="nombreusuario">&nbsp;</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <!-- End Navbar -->
+            <div class="content" id="aquivatodo">
+                No se pudo cargar la página principal
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalloguin" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered " role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Ingrese su usuario y clave</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline" action="" method="post">
+                        <div class="form-group">
+                            <label for="loguinnombre" class="bmd-label-floating">Usuario</label>
+                            <input type="text" class="form-control" id="loguinnombre" size="40%" style="color:black;" />
+                        </div>
+                        <div class="form-group">
+                            <label for="loguinpassword" class="bmd-label-floating">Password</label>
+                            <input type="password" class="form-control" id="loguinpassword" size="40%"
+                                style="color:black;" />
+                        </div>
+                        <span class="form-group bmd-form-group">
+                            <!-- needed to match padding for floating labels -->
+                            <button type="button" data-dismiss="modal" id="modalbotonentrar"
+                                class="btn btn-primary">entrar</button>
+                        </span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalresethab" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">¿Desea apagar las alertas de todas las habitaciónes?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <button type="button" data-dismiss="modal" class="btn btn-success">No</button>
+                    <button type="button" class="btn btn-warning" id="btnmodalresethab"
+                        style="margin-right: 20px; margin-left: 20px">Si</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalsettings" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Habitaciones con máximo aislamiento</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container" id="containersettings">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="modalbotontipohab">Grabar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js" type="text/javascript"></script>
+    <script src="assets/js/popper.min.js" type="text/javascript"></script>
+    <script src="assets/js/bootstrap-material-design.min.js" type="text/javascript"></script>
+    <script src="assets/js/perfect-scrollbar.jquery.min.js"></script>
+    <script src="assets/js/material-dashboard.min.js"></script>
+    </script>
+    <script>
+        var usuario;
+        var grupo;
+        usuario = localStorage.getItem("usuario");
+        grupo = localStorage.getItem("grupo");
+        if (typeof usuario == 'undefined' || usuario == null) { usuario = 'basico' }
+        if (typeof grupo == 'undefined' || grupo == null) { grupo = 'basico' }
+        $("#nombreusuario").html(usuario);
+        $("#nombreusuario2").html(usuario);
+        muestramenues(grupo);
+        $("#modalbotonentrar").attr('onClick', 'enviausuario()');
+        $('#modalloguin').on('shown.bs.modal', function () {
+            //$('#loguinnombre').trigger('focus');
+            $('#loguinnombre').focus();
+        });
+        $("#btnmodalresethab").attr('onClick', 'mandarresethab()');
+
+        var datosDesdeSQL = 'xyzopqdatosdesdeelserver';
+        var cuerpotxt = '<div class="row">';
+        var puntero;
+        for (var caso of JSON.parse(datosDesdeSQL)) {
+            cuerpotxt = cuerpotxt + '<div class="col-1"><div class="form-check"><label class="form-check-label pb-2 pr-0 pl-5"><input class="form-check-input" type="checkbox" value="' + caso.habitacion + '" ';
+            if (caso.tipohab == 1) { cuerpotxt = cuerpotxt + ' checked ' }
+            cuerpotxt = cuerpotxt + '/><span class="form-check-sign"><span class="check"></span></span></label></div></div><div class="col-3 pl-0">Hab: ' + caso.habitacion + '</div>';
+            puntero = puntero + 1;
+            if (puntero == 3) {
+                puntero = 0;
+                cuerpotxt = cuerpotxt + '</div><div class="row">';
+            }
+        }
+        cuerpotxt = cuerpotxt + '<div class="row">';
+        $("#containersettings").append(cuerpotxt);
+        $("#modalbotontipohab").attr('onClick', 'mandartipohab()');
+
+
+        function mandartipohab() {
+            var json = [];
+            json.push({ "hab": "0", "maxaisla": "1" });
+            var aux;
+            $("#containersettings input[type=checkbox]").each(function () {
+                if ($(this).is(':checked')) { aux = "1" } else { aux = "0" }
+                json.push({ "hab": $(this).val(), "maxaisla": aux });
+
+            });
+
+            var infotosend = JSON.stringify(json);
+
+            $.ajax({
+                url: "http://xyzopqwebserver:xyzopqwebport/seteatipohab",
+                type: "POST",
+
+                data: { data: infotosend },
+
+                success: function (response) {
+                    chequeaStatus();
+                    $('#modalsettings').modal('hide');
+                }
+
+            });
+
+        }
+
+
+        function mandarresethab() {
+            $('#modalresethab').modal('hide');
+            $.ajax({
+                type: "POST",
+                url: "http://xyzopqwebserver:xyzopqwebport/resethab",
+                success: function (msg) {
+                    $('#modalresethab').modal('hide');
+                    setTimeout(chequeaStatus, 200);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) { alert("No hay conexion, no se grabó el cambio"); }
+            });
+        }
+
+
+        $(document).ready(function () {
+            menu(0, 2);
+        });
+
+        function desloguearse() {
+            localStorage.setItem('usuario', 'basico');
+            localStorage.setItem('grupo', 'basico');
+            usuario = 'basico';
+            grupo = 'basico';
+            $("#nombreusuario").html('basico');
+            $("#nombreusuario2").html('basico');
+            muestramenues('basico');
+            menu(0, 2);
+        }
+
+        function muestramenues(grupo) {
+            switch (grupo) {
+                case 'todo':
+                    $(".nav-link").css('display', 'block');
+                    $("#botondesloguearse").css('display', 'block');
+                    $("#settings").css('display', 'block');
+                    break;
+                case 'sistemas':
+                    $(".menu1").css('display', 'none');
+                    $(".menu2").css('display', 'block');
+                    $(".menu3").css('display', 'block');
+                    $(".menu4").css('display', 'none');
+                    $(".menu5").css('display', 'block');
+                    $(".menu6").css('display', 'none');
+                    $(".menu7").css('display', 'block');
+                    $(".menu8").css('display', 'none');
+                    $(".menu9").css('display', 'none');
+                    $(".menu10").css('display', 'none');
+                    $(".menu11").css('display', 'block');
+                    $("#botondesloguearse").css('display', 'block');
+                    $("#settings").css('display', 'block');
+                    break;
+                case 'supervisor':
+                    $(".menu1").css('display', 'none');
+                    $(".menu2").css('display', 'block');
+                    $(".menu3").css('display', 'block');
+                    $(".menu4").css('display', 'none');
+                    $(".menu5").css('display', 'none');
+                    $(".menu6").css('display', 'none');
+                    $(".menu7").css('display', 'block');
+                    $(".menu8").css('display', 'none');
+                    $(".menu9").css('display', 'none');
+                    $(".menu10").css('display', 'none');
+                    $(".menu11").css('display', 'block');
+                    $("#botondesloguearse").css('display', 'block');
+                    $("#settings").css('display', 'none');
+                    break;
+                case 'basico':
+                    $(".menu1").css('display', 'none');
+                    $(".menu2").css('display', 'block');
+                    $(".menu3").css('display', 'block');
+                    $(".menu4").css('display', 'none');
+                    $(".menu5").css('display', 'none');
+                    $(".menu6").css('display', 'none');
+                    $(".menu7").css('display', 'none');
+                    $(".menu8").css('display', 'none');
+                    $(".menu9").css('display', 'none');
+                    $(".menu10").css('display', 'none');
+                    $(".menu11").css('display', 'block');
+                    $("#botondesloguearse").css('display', 'none');
+                    $("#settings").css('display', 'none');
+
+                    break;
+            }
+        }
+
+        function enviausuario() {
+            $("#ModalBotonUsuario").attr('onClick', '');
+            var usr = $("#loguinnombre").val();
+            var pass = $("#loguinpassword").val();
+            //alert(usr + '--' + pass);
+            if (usr == 'basico') {
+                localStorage.setItem('usuario', 'basico');
+                localStorage.setItem('grupo', 'basico');
+                usuario = 'basico';
+                grupo = 'basico';
+                $("#nombreusuario").html(usuario);
+                $("#nombreusuario2").html(usuario);
+                muestramenues('basico');
+            } else {
+                $.ajax({
+                    type: "post",
+                    data: {
+                        usuario: usr,
+                        pass: pass
+                    },
+                    contentType: 'application/x-www-form-urlencoded',
+                    mimeType: 'application/x-www-form-urlencoded',
+                    url: "http://xyzopqwebserver:xyzopqwebport/usuario",
+                    success: function (msg) {
+                        //console.log(msg);
+                        var respuesta = JSON.parse(msg);
+                        if (respuesta[0].error == false) {
+
+                            localStorage.setItem('usuario', usr);
+                            localStorage.setItem('grupo', respuesta[0].grupo);
+                            usuario = usr;
+                            grupo = respuesta[0].grupo;
+                            $("#nombreusuario").html(usuario);
+                            $("#nombreusuario2").html(usuario);
+                            muestramenues(grupo);
+
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("No hay conexion, no se grabó el cambio");
+                        $('#ModalHabBotonalta').attr('onClick', 'enviaModif()');
+                    }
+                });
+            }
+            $("#ModalBotonUsuario").attr('onClick', ' enviausuario()');
+        }
+
+        function apagainterval() {
+            for (var i = 1; i < 99999; i++)
+                window.clearInterval(i);
+        }
+
+
+        function menu(seleccionar, x) {
+            //console.log (seleccionar.parent().html());
+
+            switch (x) {
+                case 1:
+                    $("#aquivatodo").css('display', 'none').load("http://xyzopqwebserver:xyzopqwebport/dashboard.html", function () {
+                        $("#aquivatodo").css("background-color", "#1a2035");
+                        $("#aquivatodo").fadeIn();
+                    });
+                    $("#titulo").html("<i class='material-icons'>assessment</i> Dashboard");
+                    apagainterval();
+
+                    break;
+                case 2:
+                    apagainterval();
+                    $("#aquivatodo").css('display', 'none').load("http://xyzopqwebserver:xyzopqwebport/Habitaciones.html", function () {
+
+                        $("#aquivatodo").fadeIn();
+                    });
+                    $("#titulo").text("Esquema");
+
+                    break;
+                case 3:
+                    $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/mapaestados.html");
+                    $("#titulo").text("Mapa de estado de las alertas");
+                    $("#aquivatodo").css("background-color", "#1a2035");
+                    apagainterval();
+                    break;
+                case 4:
+                    $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/dispositivos");
+                    $("#titulo").text("ABM Dispositivos");
+                    $("#aquivatodo").css("background-color", "#1a2035");
+                    apagainterval();
+                    break;
+                case 5:
+                    $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/profesionales");
+                    $("#titulo").text("ABM Profesionales");
+                    $("#aquivatodo").css("background-color", "#1a2035");
+                    apagainterval();
+                    break;
+                case 6:
+                    $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/controles");
+                    $("#titulo").text("Listado de controles remotos");
+                    $("#aquivatodo").css("background-color", "#1a2035");
+                    apagainterval();
+                    break;
+
+                case 8:
+                    $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/programartareas.html");
+                    $("#titulo").html('<i class="material-icons">notifications</i> Tareas programadas');
+                    $("#aquivatodo").css("background-color", "#1a2035");
+                    apagainterval();
+                    break;
+                case 9:
+                    $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/Camas.html");
+                    $("#titulo").html('<i class="material-icons">notifications</i> Personas en cada cama');
+                    $("#aquivatodo").css("background-color", "#1a2035");
+                    apagainterval();
+                    break;
+                case 10:
+
+                    break;
+                case 11:
+                    $("#aquivatodo").load("http://xyzopqwebserver:xyzopqwebport/heladeras.html");
+                    $("#titulo").html('<i class="material-icons">kitchen</i> Heladeras');
+                    $("#aquivatodo").css("background-color", "#1a2035");
+                    apagainterval();
+                    break;
+                case 20:
+                    apagainterval();
+                    $("#aquivatodo").css('display', 'none').load("http://xyzopqwebserver:xyzopqwebport/consultorios.html", function () {
+
+                        $("#aquivatodo").fadeIn();
+                    });
+                    $("#titulo").text("Consultorios");
+
+                    break;
+                case 21:
+                    apagainterval();
+                    $("#aquivatodo").css('display', 'none').load("http://xyzopqwebserver:xyzopqwebport/consultoriostablero.html", function () {
+                        $("#aquivatodo").fadeIn();
+                    });
+                    $("#titulo").text("Consultorios");
+
+                    break;
+                default:
+
+
+            }
+            var element = HTMLElement = document.getElementsByClassName('navbar-toggler')[0];
+            if (element.getAttribute('aria-expanded') == 'true') {
+                element.click();
+            }
+        }
+    </script>
+    <script src='/socket.io/socket.io.js'></script>
+    <script src="assets/js/adapter-latest.js"></script>
+    <script>
+        var heladera = "white";
+        var puerta = 'cerrada';
+
+        var socket = io();
+        socket.on('welcome', function (data) {
+            console.log(data.message);
+            socket.emit('i am client', { app: 'habitaciones', id: data.id });
+        });
+        socket.on('puerta', function (data) {
+            console.log(data.situacion);
+            if (data.situacion == 'abierta') {
+                puerta = 'abierta';
+                $("#FcolorH1").css('color', 'black');
+                $("#FcolorH1").css('background-color', 'cyan');
+            }
+            if (data.situacion == 'cerrada') {
+                puerta = 'cerrada';
+                $("#FcolorH1").css('color', 'black');
+                $("#FcolorH1").css('background-color', heladera);
+            }
+        });
+        socket.on('heladera', function (data) {
+            //console.log(data.situacion);
+            if (data.situacion == 'normal') {
+                heladera = "white";
+                if (puerta == 'cerrada') {
+                    $("#FcolorH1").css('color', 'black');
+                    $("#FcolorH1").css('background-color', "white");
+                }
+            }
+            if (data.situacion == 'alerta') {
+                heladera = "yellow";
+                if (puerta == 'cerrada') {
+                    $("#FcolorH1").css('color', 'black');
+                    $("#FcolorH1").css('background-color', 'yellow');
+                }
+            }
+        });
+        socket.on('temperatura', function (data) {
+            $("#FtemperaturaH1").html(data.situacion + "°C");
+        });
+
+        socket.on('habitacion', function (caso) {
+            console.log(caso.habitacion, caso.estado);
+            /*
+            $("#Hcolor" + caso.habitacion).css('background-color', '#' + caso.color)
+            if (caso.estado == 1) {
+                $("#Hcolor" + caso.habitacion).removeClass("d-block").addClass("d-none");
+            } else {
+                $("#Hcolor" + caso.habitacion).removeClass("d-none").addClass("d-block");
+            }
+            */
+            chequeaStatus();
+        });
+
+        socket.on('error', console.error.bind(console));
+        socket.on('message', console.log.bind(console));
+        window.onbeforeunload = function () {
+            socket.emit('meDesconecto');
+            socket.close();
+        };
+
+    </script>
+</body>
+
+</html>

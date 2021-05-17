@@ -72,7 +72,7 @@
                     <div class="form-check">
                         <label class="form-check-label">
                             <input class="form-check-input" type="radio" name="opcioncierre" value="cobid1">
-                            cobid atención por celular
+                            covid atención por celular
                             <span class="circle">
                                 <span class="check"></span>
                             </span>
@@ -194,6 +194,7 @@
                 success: function (msg) {
                     $('#modalapagaalerta').modal('hide');
                     $("#modalapagardesdeapp").attr('onClick', 'apagardesdeapp($(this))');
+                    setTimeout(chequeaStatus, 200);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     $("#muestraError").html("no conecta con la base de datos ");
@@ -230,7 +231,7 @@
                             }
                         }
                         else {
-                            if (caso.ultrespuesta == null || (d - d2) / 60000 > 5) {
+                            if (caso.ultrespuesta == null ) {
                                 //si resulta que el dispositivo no se reporta desde hace X minutos entonces ignoro el estado de la habitacion por obsoleto y muestro un estado de "roto"
                                 $("#Hcolor" + caso.habitacion).data("alarma", 0);
                                 $("#Hcolor" + caso.habitacion).css('background-color', 'black');

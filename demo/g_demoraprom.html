@@ -1,0 +1,281 @@
+<!-- Styles -->
+<style>
+#chartdiv1, #chartdiv2, #chartdiv3 {
+    width: 33%;
+    height: 320px;
+}
+
+body {
+    font-family: "frutiger";
+}
+
+</style>
+<!-- Resources -->
+<script src="/assets/js/core.js"></script>
+<script src="/assets/js/charts.js"></script>
+<script src="/assets/js/kelly.js"></script>
+
+<!-- Chart code -->
+<script>
+var allData = xyzopqdatosdesdeelserver
+    
+var color1="#ACFFA4";
+var color2="#00FF00";
+var color3="#EBEB80";
+var color4="#FFFB00";
+var color5="#FF9D97";
+var color6="#FF002C";
+var valor1=allData["alerta1"]/60;
+var valor2=allData["alerta2"]/60;
+var valor3=allData["alerta3"]/60;
+
+
+
+am4core.ready(function() {
+uno();
+dos();
+tres();
+function uno(){
+    am4core.useTheme(am4themes_kelly);
+
+    var chart = am4core.create("chartdiv1", am4charts.GaugeChart);
+    chart.innerRadius = am4core.percent(82);
+
+    var axis = chart.xAxes.push(new am4charts.ValueAxis());
+    axis.min = 0;
+    axis.max = 30;
+    axis.strictMinMax = true;
+    axis.renderer.radius = am4core.percent(80);
+    axis.renderer.inside = true;
+    axis.renderer.line.strokeOpacity = 1;
+    axis.renderer.ticks.template.disabled = false
+    axis.renderer.ticks.template.strokeOpacity = 1;
+    axis.renderer.ticks.template.length = 10;
+    axis.renderer.grid.template.disabled = true;
+    axis.renderer.labels.template.radius = 40;
+    
+    axis.renderer.labels.template.adapter.add("text", function(text) {
+        return text + "min";
+    })
+
+    var colorSet = new am4core.ColorSet();
+
+    var axis2 = chart.xAxes.push(new am4charts.ValueAxis());
+    axis2.min = 0;
+    axis2.max = 30;
+    axis2.strictMinMax = true;
+    axis2.renderer.labels.template.disabled = true;
+    axis2.renderer.ticks.template.disabled = true;
+    axis2.renderer.grid.template.disabled = true;
+
+    var range0 = axis2.axisRanges.create();
+    range0.value = 0;
+    range0.endValue = 15;
+    range0.axisFill.fillOpacity = 1;
+    range0.axisFill.fill = am4core.color(color1);
+
+    var range1 = axis2.axisRanges.create();
+    range1.value = 15;
+    range1.endValue = 30;
+    range1.axisFill.fillOpacity = 1;
+    range1.axisFill.fill = am4core.color(color2);
+
+    var label = chart.radarContainer.createChild(am4core.Label);
+    label.isMeasured = true;
+    label.fontSize = 35;
+    label.x = am4core.percent(50);
+    label.y = am4core.percent(100);
+    label.horizontalCenter = "middle";
+    label.verticalCenter = "bottom";
+    label.text = "50%";
+
+    var hand = chart.hands.push(new am4charts.ClockHand());
+    hand.axis = axis2;
+    hand.innerRadius = am4core.percent(20);
+    hand.startWidth = 10;
+    hand.pin.disabled = true;
+    hand.value = 30;
+
+    hand.events.on("propertychanged", function(ev) {
+        range0.endValue = ev.target.value;
+        range1.value = ev.target.value;
+        label.text = axis2.positionToValue(hand.currentPosition).toFixed(1);
+        axis2.invalidate();
+    });
+
+    
+        var value = valor1;
+        var animation = new am4core.Animation(hand, {
+            property: "value",
+            to: value
+        }, 4000, am4core.ease.cubicOut).start();
+    
+}
+function dos(){
+    am4core.useTheme(am4themes_kelly);
+
+    var chart = am4core.create("chartdiv2", am4charts.GaugeChart);
+    chart.innerRadius = am4core.percent(82);
+
+    var axis = chart.xAxes.push(new am4charts.ValueAxis());
+    axis.min = 0;
+    axis.max = 30;
+    axis.strictMinMax = true;
+    axis.renderer.radius = am4core.percent(80);
+    axis.renderer.inside = true;
+    axis.renderer.line.strokeOpacity = 1;
+    axis.renderer.ticks.template.disabled = false
+    axis.renderer.ticks.template.strokeOpacity = 1;
+    axis.renderer.ticks.template.length = 10;
+    axis.renderer.grid.template.disabled = true;
+    axis.renderer.labels.template.radius = 40;
+    
+    axis.renderer.labels.template.adapter.add("text", function(text) {
+        return text + "min";
+    })
+
+    var colorSet = new am4core.ColorSet();
+
+    var axis2 = chart.xAxes.push(new am4charts.ValueAxis());
+    axis2.min = 0;
+    axis2.max = 30;
+    axis2.strictMinMax = true;
+    axis2.renderer.labels.template.disabled = true;
+    axis2.renderer.ticks.template.disabled = true;
+    axis2.renderer.grid.template.disabled = true;
+
+    var range0 = axis2.axisRanges.create();
+    range0.value = 0;
+    range0.endValue = 15;
+    range0.axisFill.fillOpacity = 1;
+    range0.axisFill.fill = am4core.color(color3);
+
+    var range1 = axis2.axisRanges.create();
+    range1.value = 15;
+    range1.endValue = 30;
+    range1.axisFill.fillOpacity = 1;
+    range1.axisFill.fill = am4core.color(color4);
+
+    var label = chart.radarContainer.createChild(am4core.Label);
+    label.isMeasured = true;
+    label.fontSize = 35;
+    label.x = am4core.percent(50);
+    label.y = am4core.percent(100);
+    label.horizontalCenter = "middle";
+    label.verticalCenter = "bottom";
+    label.text = "50%";
+
+    var hand = chart.hands.push(new am4charts.ClockHand());
+    hand.axis = axis2;
+    hand.innerRadius = am4core.percent(20);
+    hand.startWidth = 10;
+    hand.pin.disabled = true;
+    hand.value = 30;
+
+    hand.events.on("propertychanged", function(ev) {
+        range0.endValue = ev.target.value;
+        range1.value = ev.target.value;
+        label.text = axis2.positionToValue(hand.currentPosition).toFixed(1);
+        axis2.invalidate();
+    });
+
+    
+        var value = valor2;
+        var animation = new am4core.Animation(hand, {
+            property: "value",
+            to: value
+        }, 4000, am4core.ease.cubicOut).start();
+    
+}
+function tres(){
+    am4core.useTheme(am4themes_kelly);
+
+    var chart = am4core.create("chartdiv3", am4charts.GaugeChart);
+    chart.innerRadius = am4core.percent(82);
+
+    var axis = chart.xAxes.push(new am4charts.ValueAxis());
+    axis.min = 0;
+    axis.max = 30;
+    axis.strictMinMax = true;
+    axis.renderer.radius = am4core.percent(80);
+    axis.renderer.inside = true;
+    axis.renderer.line.strokeOpacity = 1;
+    axis.renderer.ticks.template.disabled = false
+    axis.renderer.ticks.template.strokeOpacity = 1;
+    axis.renderer.ticks.template.length = 10;
+    axis.renderer.grid.template.disabled = true;
+    axis.renderer.labels.template.radius = 40;
+    
+    axis.renderer.labels.template.adapter.add("text", function(text) {
+        return text + "min";
+    })
+
+    var colorSet = new am4core.ColorSet();
+
+    var axis2 = chart.xAxes.push(new am4charts.ValueAxis());
+    axis2.min = 0;
+    axis2.max = 30;
+    axis2.strictMinMax = true;
+    axis2.renderer.labels.template.disabled = true;
+    axis2.renderer.ticks.template.disabled = true;
+    axis2.renderer.grid.template.disabled = true;
+
+    var range0 = axis2.axisRanges.create();
+    range0.value = 0;
+    range0.endValue = 15;
+    range0.axisFill.fillOpacity = 1;
+    range0.axisFill.fill = am4core.color(color5);
+
+    var range1 = axis2.axisRanges.create();
+    range1.value = 15;
+    range1.endValue = 30;
+    range1.axisFill.fillOpacity = 1;
+    range1.axisFill.fill = am4core.color(color6);
+
+    var label = chart.radarContainer.createChild(am4core.Label);
+    label.isMeasured = true;
+    label.fontSize = 35;
+    label.x = am4core.percent(50);
+    label.y = am4core.percent(100);
+    label.horizontalCenter = "middle";
+    label.verticalCenter = "bottom";
+    label.text = "50%";
+
+    var hand = chart.hands.push(new am4charts.ClockHand());
+    hand.axis = axis2;
+    hand.innerRadius = am4core.percent(20);
+    hand.startWidth = 10;
+    hand.pin.disabled = true;
+    hand.value = 30;
+
+    hand.events.on("propertychanged", function(ev) {
+        range0.endValue = ev.target.value;
+        range1.value = ev.target.value;
+        label.text = axis2.positionToValue(hand.currentPosition).toFixed(1);
+        axis2.invalidate();
+    });
+
+    
+        var value = valor3;
+        var animation = new am4core.Animation(hand, {
+            property: "value",
+            to: value
+        }, 4000, am4core.ease.cubicOut).start();
+    
+}
+}); // end am4core.ready()
+</script>
+<!-- HTML -->
+<h3>Demora promedio</h3>
+<div class="row">
+<div id="chartdiv1"></div>
+<div id="chartdiv2"></div>
+<div id="chartdiv3"></div>
+</div>
+
+
+
+
+
+
+

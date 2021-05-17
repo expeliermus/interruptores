@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+        name='viewport' />
+    <style type="text/css">
+        .card {
+            border: 2px;
+            margin-bottom: 30px;
+            margin-top: 30px;
+            border-radius: 16px;
+
+
+
+            color: rgba(0, 0, 0, 0.87);
+            background: #ffffff;
+            width: 100%;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            word-wrap: break-word;
+
+            font-size: .875rem;
+
+        }
+    </style>
+</head>
+
+<body class="">
+    <span id="muestraError" style="color: red; position: absolute;left: 50px;top:20px;"></span>
+    <audio id="alerta1">
+        <source src="./assets/mp3/alerta1.mp3" muted="muted" type="audio/mpeg" />
+    </audio>
+    <audio id="alerta2">
+        <source src="./assets/mp3/alerta2.mp3" muted="muted" type="audio/mpeg" />
+    </audio>
+    <audio id="alerta3">
+        <source src="./assets/mp3/alerta3.mp3" muted="muted" type="audio/mpeg" />
+    </audio>
+    <div class="section section-tabs" style="padding-top: 0px;">
+        <div class="container" id="cuadradosHabitaciones">
+        </div>
+        <div class="container" id="alertamaxima" style="display:none;">
+        </div>
+    </div>
+    <div class="modal fade" id="modalapagaalerta" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">¿Desea apagar la alerta de la habitación <span id="modalhab2"></span>? </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="material-icons">clear</i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="opcioncierre" value="tarjremota" checked>
+                            Cerrar con tarjeta en los prox 30 segundos
+                            <span class="circle">
+                                <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="radio" name="opcioncierre" value="cobid1">
+                            cobid atención por celular
+                            <span class="circle">
+                                <span class="check"></span>
+                            </span>
+                        </label>
+                    </div>
+                    <script type="text/javascript">
+                        /*
+
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="radio" name="opcioncierre" value="cobid2" >
+                                Cobid atención presencial sin tarjeta
+                                <span class="circle">
+                                    <span class="check"></span>
+                                </span>
+                            </label>
+                        </div>
+                        */
+                        /*  para recordar como deshabilitar una opcion
+
+                          <div class="form-check disabled">
+                            <label class="form-check-label">
+                              <input class="form-check-input" type="radio" name="opcioncierre" value="cobid3" disabled>
+                              Opcion en desuso
+                              <span class="circle">
+                                <span class="check"></span>
+                              </span>
+                            </label>
+                          </div>
+                          */
+                    </script>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-default">No</button>
+                    <button type="button" class="btn btn-primary" id="modalapagardesdeapp"
+                        style="margin-right: 20px; margin-left: 20px">apagar hab <span id="modalhab"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--   Core JS Files   -->
+    <script>
+        var cantAlertaMaxima = 0;
+        var arrHabAlertaMaxima = [];
+        var arrCamaAlertaMaxima = [];
+
+        function disparaAlertaMaxima() {
+
+
+        }
+
+
+        var cuadrados = '<div class="row">';
+        for (var h = 1; h <= 15; h++) {
+            cuadrados = cuadrados + '<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 ">'
+            cuadrados = cuadrados + ' <div class="p-3  card text-center cuadro d-none d-sm-block" id="Hcolor' + h + '">'
+            cuadrados = cuadrados + '  <h1>' + h + '</h1>'
+            cuadrados = cuadrados + '  <p style="margin-bottom: 0px;" id="Htexto' + h + '">&nbsp;</p>'
+            cuadrados = cuadrados + '  <h6 style="margin-bottom: 0px;text-align: right !important;padding-right: 20px;" id="Hantiguedad' + h + '">&nbsp;</h6>'
+            cuadrados = cuadrados + ' </div>'
+            cuadrados = cuadrados + '</div>'
+            // if (h % 6 == 0) { cuadrados = cuadrados + '</div><div class="row">' }
+        }
+
+        cuadrados = cuadrados + '<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 ">'
+        cuadrados = cuadrados + ' <div class="p-3  card text-center cuadro d-none d-sm-block" id="FcolorH1">'
+        cuadrados = cuadrados + '  <h1>H1</h1>'
+        cuadrados = cuadrados + '  <p style="margin-bottom: 0px;" id="FtextoH1">&nbsp;</p>'
+        cuadrados = cuadrados + '  <h6 style="margin-bottom: 0px;text-align: right !important;padding-right: 20px;" id="FtemperaturaH1">&nbsp;</h6>'
+        cuadrados = cuadrados + ' </div>'
+        cuadrados = cuadrados + '</div>'
+
+        cuadrados = cuadrados + '<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 ">'
+        cuadrados = cuadrados + ' <div class="p-4  card  cuadro text-center"  style="display:block;">'
+        cuadrados = cuadrados + '<img class="img-thumbnail" id="rfidenfermeria" src="assets/img/rfidenfermeria.png" style="width:100px;background-color:#202940;border:0px; " alt="lector en enfermeria">'
+        //cuadrados = cuadrados + '  <h6 style="margin-bottom: 0px;text-align: center !important;padding-right: 20px;" >desconectado</h6>'
+        cuadrados = cuadrados + '</div>'
+        cuadrados = cuadrados + '</div>'
+
+        cuadrados = cuadrados + '</div>'
+
+        $("#cuadradosHabitaciones").html(cuadrados).promise().done(function () {
+            $(".cuadro").on('click', function (event) {
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                var alarma = $(this).data("alarma");
+                var tipohab = $(this).data("tipohab");
+                //console.log($(this).data( "alarma"));
+                if ((alarma == 2 || alarma == 3 || alarma == 5) && tipohab == 1) {
+                    var hab = $(this).children("h1").text();
+                    $("#modalhab").text(hab);
+                    $("#modalhab2").text(hab);
+                    $('#modalapagaalerta').modal('show');
+                }
+            });
+        });
+
+        $("#modalapagardesdeapp").attr('onClick', 'apagardesdeapp($(this))');
+
+        function apagardesdeapp(c) {
+            $("#modalapagardesdeapp").attr('onClick', '');
+            var como = $('input[name=opcioncierre]:checked').val();
+            var usuario = localStorage.getItem("usuario");
+            if (usuario == undefined || usuario.length < 1) { usuario = "desconocido" }
+            var hab = c.children("span").text()
+            //console.log(como);
+            //console.log(c.children("span").text());
+            $.ajax({
+                type: "POST",
+                data: {
+                    hab: hab,
+                    quien: usuario,
+                    como: como
+                },
+                contentType: 'application/x-www-form-urlencoded',
+                mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
+                url: "http://xyzopqwebserver:xyzopqwebport/apagardesdeapp",
+                success: function (msg) {
+                    $('#modalapagaalerta').modal('hide');
+                    $("#modalapagardesdeapp").attr('onClick', 'apagardesdeapp($(this))');
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $("#muestraError").html("no conecta con la base de datos ");
+                    $("#modalapagardesdeapp").attr('onClick', 'apagardesdeapp($(this))');
+                }
+            });
+
+        }
+
+
+        function chequeaStatus() {
+            cantAlertaMaxima = 0;
+            arrHabAlertaMaxima = [];
+            arrCamaAlertaMaxima = [];
+            $("#alertamaxima").html('');
+            $.ajax({
+                type: "POST",
+                data: "nada=" + 0 + "&nada2= '" + 0 + "'",
+                contentType: 'application/x-www-form-urlencoded',
+                mimeType: 'application/x-www-form-urlencoded', //Property added in 1.5.1
+                url: "http://xyzopqwebserver:xyzopqwebport/status",
+                success: function (msg) {
+                    $("#muestraError").html("");
+                    var respuesta = JSON.parse(msg);
+                    var d = Date.now();
+                    for (var caso of respuesta) {
+                        var d2 = new Date(caso.ultrespuesta);
+                        if (caso.habitacion == 'enfermeria') {
+                            if (caso.ultrespuesta == null || (d - d2) / 60000 > 5) {
+                                $("#rfidenfermeria").attr("src", "assets/img/rfidenfermeria.png");
+                            }
+                            else {
+                                $("#rfidenfermeria").attr("src", "assets/img/rfidenfermeriaok.png")
+                            }
+                        }
+                        else {
+                            if (caso.ultrespuesta == null ) {
+                                //si resulta que el dispositivo no se reporta desde hace X minutos entonces ignoro el estado de la habitacion por obsoleto y muestro un estado de "roto"
+                                $("#Hcolor" + caso.habitacion).data("alarma", 0);
+                                $("#Hcolor" + caso.habitacion).css('background-color', 'black');
+                                $("#Hcolor" + caso.habitacion).css('color', 'white');
+                                $("#Htexto" + caso.habitacion).html('&nbsp;');
+                                $("#Hcolor" + caso.habitacion).removeClass("d-none").addClass("d-block");
+                                $("#Hantiguedad" + caso.habitacion).html('&nbsp;');
+                            } else {
+                                $("#Hcolor" + caso.habitacion).css('color', 'black');
+                                $("#Hcolor" + caso.habitacion).data("alarma", caso.estado);
+                                /// 4444 es 
+                                if (caso.estado != 1) { $("#Hantiguedad" + caso.habitacion).html(caso.antiguedad); } else { $("#Hantiguedad" + caso.habitacion).html('&nbsp;'); }
+                                if (caso.estado != 4444) {
+                                    $("#Hcolor" + caso.habitacion).css('background-color', '#' + caso.color)
+                                    if (caso.estado == 1) {
+                                        $("#Hcolor" + caso.habitacion).removeClass("d-block").addClass("d-none");
+                                    } else {
+                                        $("#Hcolor" + caso.habitacion).removeClass("d-none").addClass("d-block");
+                                    }
+                                }
+
+                                if (caso.estado == 4444) {
+                                    $("#Hcolor" + caso.habitacion).css('background-color', '#' + caso.color);
+                                    $("#Hcolor" + caso.habitacion).removeClass("d-none").addClass("d-block");
+                                    cantAlertaMaxima++;
+                                    arrHabAlertaMaxima.push(caso.habitacion);
+                                    arrCamaAlertaMaxima.push(caso.cama);
+                                }
+                                if (caso.cama == 0 && caso.profesional == '') {
+                                    $("#Htexto" + caso.habitacion).html('&nbsp;');
+                                } else {
+                                    if (caso.profesional != '') {
+                                        $("#Htexto" + caso.habitacion).html(caso.profesional);
+                                    } else {
+                                        $("#Htexto" + caso.habitacion).html('cama: ' + caso.cama.toString());
+                                    }
+                                }
+                            }
+                            $("#Hcolor" + caso.habitacion).data("tipohab", caso.tipohab);
+                            if (caso.tipohab == 1) {
+                                $("#Hcolor" + caso.habitacion).css('border-style', 'solid');
+                                $("#Hcolor" + caso.habitacion).css('border-color', 'red');
+
+                            }
+                            if (caso.tipohab == 0) {
+                                $("#Hcolor" + caso.habitacion).css('border-style', 'hidden');
+
+                            }
+                            if (cantAlertaMaxima > 0) {
+                                disparaAlertaMaxima();
+
+                                if (cantAlertaMaxima == 1) { $("#alerta1").trigger("play"); }
+                                if (cantAlertaMaxima == 2) { $("#alerta2").trigger("play"); }
+                                if (cantAlertaMaxima > 2) { $("#alerta3").trigger("play"); }
+                                //var wwx = document.getElementById("alerta1");
+                                //wwx.play();
+                                //$("#alerta3").get(0).play();
+                                //
+                                //$("#alerta1").get(0).play();
+                            } else { $("#cuadradosHabitaciones").css("display", "block"); }
+                        }
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    $("#muestraError").html("no está conectado a la base de datos");
+                    //console.log(XMLHttpRequest);
+                    //console.log(textStatus);
+                    //console.log(errorThrown);
+                }
+            });
+            
+        }
+        setInterval(chequeaStatus, 60 * 1000);
+        chequeaStatus();
+    </script>
+
+</body>
+
+</html>

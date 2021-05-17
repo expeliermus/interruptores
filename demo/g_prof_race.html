@@ -1,0 +1,198 @@
+<!-- Styles -->
+<style>
+#chartdiv {
+    width: 100%;
+    height: 320px;
+}
+
+body {
+    font-family: "frutiger";
+}
+</style>
+<!-- Resources -->
+<script src="/assets/js/core.js"></script>
+<script src="/assets/js/charts.js"></script>
+<script src="/assets/js/animated.js"></script>
+<!-- Chart code -->
+<script>
+am4core.ready(function() {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("chartdiv", am4charts.XYChart);
+    chart.padding(40, 40, 40, 40);
+    chart.numberFormatter.numberFormat = "#.";
+
+
+    chart.numberFormatter.bigNumberPrefixes = [
+        { "number": 1e+3, "suffix": "K" },
+        { "number": 1e+6, "suffix": "M" },
+        { "number": 1e+9, "suffix": "B" }
+    ];
+
+    var label = chart.plotContainer.createChild(am4core.Label);
+    label.x = am4core.percent(90);
+    label.y = am4core.percent(95);
+    label.horizontalCenter = "right";
+    label.verticalCenter = "middle";
+    label.dx = -15;
+    label.fontSize = 50;
+
+
+    var playButton = chart.plotContainer.createChild(am4core.PlayButton);
+    playButton.x = am4core.percent(97);
+    playButton.y = am4core.percent(95);
+    playButton.dy = -2;
+    playButton.verticalCenter = "middle";
+    playButton.events.on("toggled", function(event) {
+        if (event.target.isActive) {
+            play();
+        } else {
+            stop();
+        }
+    })
+
+    var stepDuration = 4000;
+
+    var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.dataFields.category = "profesional";
+    categoryAxis.renderer.minGridDistance = 1;
+    categoryAxis.renderer.inversed = true;
+    categoryAxis.renderer.grid.template.disabled = true;
+
+    var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+    valueAxis.min = 0;
+    valueAxis.rangeChangeEasing = am4core.ease.linear;
+    valueAxis.rangeChangeDuration = stepDuration;
+    valueAxis.extraMax = 0.1;
+    valueAxis.gridCount = 1;
+    valueAxis.numberFormatter.numberFormat = "#.";
+
+
+    var series = chart.series.push(new am4charts.ColumnSeries());
+    series.dataFields.categoryY = "profesional";
+    series.dataFields.valueX = "MAU";
+    series.tooltipText = "{valueX.value}"
+    series.columns.template.strokeOpacity = 0;
+    series.columns.template.column.cornerRadiusBottomRight = 5;
+    series.columns.template.column.cornerRadiusTopRight = 5;
+    series.interpolationDuration = stepDuration;
+    series.interpolationEasing = am4core.ease.linear;
+
+    var labelBullet = series.bullets.push(new am4charts.LabelBullet())
+    labelBullet.label.horizontalCenter = "right";
+    labelBullet.label.text = "{values.valueX.workingValue.formatNumber('#.')}";
+    labelBullet.label.textAlign = "end";
+    labelBullet.label.dx = -10;
+
+    chart.zoomOutButton.disabled = true;
+
+    // as by default columns of the same series are of the same color, we add adapter which takes colors from chart.colors color set
+    series.columns.template.adapter.add("fill", function(fill, target) {
+        return chart.colors.getIndex(target.dataItem.index);
+    });
+
+
+
+    function play() {
+        interval = setInterval(function() {
+            nextYear();
+        }, stepDuration)
+        nextYear();
+    }
+
+    function stop() {
+        if (interval) {
+            clearInterval(interval);
+        }
+    }
+
+    function nextYear() {
+        parte++
+        if (parte == parteT.length) {
+            stop()
+        } else {
+            var newData = allData[parteT[parte]];
+            var itemsWithNonZero = 0;
+            for (var i = 0; i < chart.data.length; i++) {
+                chart.data[i].MAU = newData[i].MAU + chart.data[i].MAU;
+                if (chart.data[i].MAU > 0) {
+                    itemsWithNonZero++;
+                }
+            }
+
+            if (parte == 0) {
+                series.interpolationDuration = stepDuration / 4;
+                valueAxis.rangeChangeDuration = stepDuration / 4;
+            } else {
+                series.interpolationDuration = stepDuration;
+                valueAxis.rangeChangeDuration = stepDuration;
+            }
+
+            chart.invalidateRawData();
+            label.text = parteT[parte].toString();
+
+            categoryAxis.zoom({ start: 0, end: itemsWithNonZero / categoryAxis.dataItems.length });
+        }
+    }
+
+
+    categoryAxis.sortBySeries = series;
+
+    var allData = xyzopqdatosdesdeelserver
+//console.log(allData);
+
+    var interval;
+    var parte = 0;
+    var parteT = [];
+    var valoresT = {};
+    for (t in allData) {
+        parteT.push(t);
+    }
+    /*
+        for (cuando in allData[parteT[parte]]) {
+            console.log (allData[parteT[parte]][cuando]["MAU"]);   
+            console.log (allData[parteT[parte]][cuando]["profesional"]);   
+            //console.log (allData[cuando]);
+            }
+    */
+    label.text = parteT[parte].toString();
+    //console.log(parteT[0]);
+    //console.log(allData[parteT[0]]);
+    //console.log(JSON.parse(JSON.stringify(allData[parteT[0]])));
+    //console.log(allData);
+
+
+    chart.data = JSON.parse(JSON.stringify(allData[parteT[0]]));
+
+
+    categoryAxis.zoom({ start: 0, end: 1 / chart.data.length });
+
+    series.events.on("inited", function() {
+        setTimeout(function() {
+            playButton.isActive = true; // this starts interval
+        }, 2000)
+    })
+
+}); // end am4core.ready()
+</script>
+<!-- HTML -->
+<h3>Cantidad de atenciones</h3>
+<div id="chartdiv"></div>
+<g opacity="0.4" aria-labelledby="id-66-title" style="cursor: pointer;" transform="translate(0,299)" filter="url(&quot;#filter-id-66&quot;)">
+    <g fill="#ffffff" opacity="0">
+        <rect width="66" height="21"></rect>
+    </g>
+    <g>
+        <g shape-rendering="auto" fill="none" stroke-opacity="1" stroke-width="1.7999999999999998" stroke="#3cabff">
+            <path d=" M15,15  C17.4001,15 22.7998,15.0001 27,15 C31.2002,14.9999 33.2999,6 36,6 C38.7001,6 38.6999,10.5 40.5,10.5 C42.3001,10.5 42.2999,6 45,6 C47.7001,6 50.9999,14.9999 54,15 C57.0002,15.0001 58.7999,15 60,15"></path>
+        </g>
+        <g shape-rendering="auto" fill="none" stroke-opacity="1" stroke-width="1.7999999999999998" stroke="url(&quot;#gradient-id-69&quot;)">
+            <path d=" M6,15  C8.2501,15 9.7498,15.0001 15,15 C20.2502,14.9999 20.7748,3.6 27,3.6 C33.2252,3.6 33.8998,14.9999 39.9,15 C45.9002,15.0001 45.9748,15 51,15 C56.0252,15 57.7499,15 60,15"></path>
+        </g>
+    </g>
+    <title id="id-66-title">Chart created using amCharts library</title>
+</g>

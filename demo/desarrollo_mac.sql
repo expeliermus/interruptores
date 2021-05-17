@@ -1,0 +1,55 @@
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+--
+-- Host: localhost    Database: desarrollo
+-- ------------------------------------------------------
+-- Server version	5.7.33-0ubuntu0.18.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `mac`
+--
+
+DROP TABLE IF EXISTS `mac`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mac` (
+  `mac` char(17) NOT NULL,
+  `habitacion` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
+  `rf` varchar(41) DEFAULT NULL,
+  `ultrespuesta` datetime DEFAULT NULL,
+  `tipohab` smallint(6) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`mac`),
+  UNIQUE KEY `mac_UNIQUE` (`mac`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mac`
+--
+
+LOCK TABLES `mac` WRITE;
+/*!40000 ALTER TABLE `mac` DISABLE KEYS */;
+INSERT INTO `mac` VALUES ('84:0D:8E:83:9D:8A','14','15','2021-04-22 22:03:47',1),('84:0D:8E:83:9E:11','15','nn','2021-04-22 22:03:47',1),('84:0D:8E:8C:86:F5','13','nn','2021-04-22 22:03:47',1),('84:0D:8E:8C:88:DC','2','4','2021-04-22 22:03:47',1),('84:0D:8E:8C:89:F5','12','nn','2021-04-22 22:03:47',1),('84:0D:8E:8C:8A:FA','6','nn','2021-04-22 22:03:47',1),('84:0D:8E:8C:8B:7F','7','nn','2021-04-22 22:03:47',1),('A0:20:A6:0B:42:81','5','nn','2021-04-22 22:03:47',1),('B4:E6:2D:69:CE:83','4','nn','2021-04-22 22:03:47',1),('B4:E6:2D:69:D1:82','8','nn','2021-04-22 22:03:47',1),('C8:2B:96:08:96:26','11','nn','2021-04-22 22:03:47',1),('CC:50:E3:09:89:D6','3','nn','2021-04-22 22:03:47',1),('CC:50:E3:11:08:D4','9','nn','2021-04-22 22:03:47',1),('DC:4F:22:5E:C5:E2','10','11','2021-04-22 22:03:47',1),('DC:4F:22:5E:C7:AF','enfermeria',NULL,'2021-04-22 16:11:45',0),('DC:4F:22:5E:C8:81','1','nn','2021-04-22 22:03:47',1);
+/*!40000 ALTER TABLE `mac` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2021-04-22 22:05:15

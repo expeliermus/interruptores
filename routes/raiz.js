@@ -7,7 +7,10 @@ const client= require('../mqttconf');
 
 const webserver = config.get("webserver");
 const webport = config.get("webserverpuerto");
+const ambiente = config.get("ambiente");
+const titulo = config.get("titulo");
 
+console.log("Ambiente : " , ambiente);
 router.get('/', function(req, res) {
   var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 and habitacion not in ('enfermeria','desconocida') order by length(habitacion),habitacion;";
   conn.query(laquery, function(err, rows) {
@@ -17,6 +20,8 @@ router.get('/', function(req, res) {
           html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
           html_string = html_string.replace(/xyzopqwebserver/g, webserver);
           html_string = html_string.replace(/xyzopqwebport/g, webport);
+          html_string = html_string.replace("xyzopqdatodeambiente", ambiente);    
+          html_string = html_string.replace(/xyzopqdatodetitulo/g, titulo); 
           res.writeHead(200);
           res.write(html_string);
           res.end();
@@ -33,6 +38,8 @@ router.get('/comandos.html', function(req, res) {
           html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
           html_string = html_string.replace(/xyzopqwebserver/g, webserver);
           html_string = html_string.replace(/xyzopqwebport/g, webport);            
+          html_string = html_string.replace(/xyzopqdatodeambiente/g, ambiente);      
+          html_string = html_string.replace(/xyzopqdatodetitulo/g, titulo);               
           res.writeHead(200);
           res.write(html_string);
           res.end();
@@ -238,6 +245,7 @@ router.get('/controles', function(req, res) {
       });
   });
 });
+
 router.post('/seteacontroles', function(req, res) {
   console.log("recibio pedido de setear controles");
   var mac = req.body.mac;
@@ -382,20 +390,6 @@ router.get('/camas.html', function(req, res) {
   });
 });
 
-router.get('/camas2.html', function(req, res) {
-  var laquery = 'SELECT TRIM(habitacion) as habitacion,TRIM(cama) as cama,TRIM(Paciente) as Paciente FROM camas order by LENGTH (habitacion),habitacion,cama;';
-  conn.query(laquery, function(err, rows) {
-      fs.readFile("camas2.html", function(err, html) {
-          if (err) console.error(err);
-          var html_string = html.toString();
-          html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
-          res.writeHead(200);
-          res.write(html_string);
-          res.end();
-      });
-  });
-});
-
 router.get('/dashboard.html', function(req, res) {
   var laquery = 'call g_dashboard(7);';
   conn.query(laquery, function(err, rows) {
@@ -450,23 +444,38 @@ router.get('/prueba.html', function(req, res) {
   });
 });
 
+router.get('/demobotonremoto.html', function(req, res) {
+    fs.readFile("demobotonremoto.html", function(err, html) {
+        if (err) console.error(err);
+        var html_string = html.toString();
+        html_string = html_string.replace(/xyzopqwebserver/g, webserver);
+        html_string = html_string.replace(/xyzopqwebport/g, webport);
+        res.writeHead(200);
+        res.write(html_string);
+        res.end();
+    });
+  });
+
 router.get('/remoto.html', function(req, res) {
   fs.readFile("remoto.html", function(err, html) {
       if (err) console.error(err);
       var html_string = html.toString();
       html_string = html_string.replace(/xyzopqwebserver/g, webserver);
       html_string = html_string.replace(/xyzopqwebport/g, webport);
+      html_string = html_string.replace(/xyzopqdatodetitulo/g, titulo); 
       res.writeHead(200);
       res.write(html_string);
       res.end();
   });
 });
+
 router.get('/botonremoto.html', function(req, res) {
   fs.readFile("botonremoto.html", function(err, html) {
       if (err) console.error(err);
       var html_string = html.toString();
       html_string = html_string.replace(/xyzopqwebserver/g, webserver);
       html_string = html_string.replace(/xyzopqwebport/g, webport);
+      html_string = html_string.replace(/xyzopqdatodetitulo/g, titulo); 
       res.writeHead(200);
       res.write(html_string);
       res.end();

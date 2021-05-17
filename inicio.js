@@ -71,6 +71,7 @@ global.io = socketio(server);
 
 require('./routes/mqttapp');
 app.use('/', require('./routes/raiz'));
+app.use('/exp', require('./routes/exp'));
 
 io.on('connection', (socket) => {
   require('./routes/ioapp')(socket);

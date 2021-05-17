@@ -18,6 +18,7 @@ $(document).ready(function () { });
 
 localStorage.removeItem("cod");
 var cod = localStorage.getItem("cod");
+localStorage.setItem("simulacion",val);
 
 var images = [];
 function preload() {
@@ -49,3 +50,7 @@ functions.js look  like:
 Then in your main script do something like:
     var functions = require("./functions.js");
     functions.echo("Hello, World");        
+
+
+    $("#boton2").attr('onClick', 'enviaalerta(3)');   
+    $("#boton2").attr('onClick', ''); 
