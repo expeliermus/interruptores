@@ -1,3 +1,22 @@
+let test = {
+    "sqlserver": {
+        "host": 'localhost',
+        "user": 'frombakend',
+        "password": 'backendpass',
+        "database": 'desarrollo'
+    },
+    "mqttserver" : {
+        "clientId": "SmartSOS.net:test",
+        "username": "UsuarioSOS",
+        "password": "SOS2020",
+        "serverurl" : "mqtt://localhost"
+    },
+    "webserver":"icuadrado.net",
+    "webserverpuerto":"3001",
+    "ambiente":"produccion",
+    "titulo":"test Smart S.O.S."
+}
+
 let demo = {
     "sqlserver": {
         "host": 'localhost',
@@ -17,7 +36,7 @@ let demo = {
     "titulo":"Demo Smart S.O.S."
 }
 
-module.exports = {
+let HU = {
     "sqlserver": {
         "host": 'localhost',
         "user": 'frombakend',
@@ -36,3 +55,4 @@ module.exports = {
     "titulo":"Hospital Universitario"
 }
 
+module.exports = HU;

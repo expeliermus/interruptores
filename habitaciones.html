@@ -231,7 +231,7 @@
                             }
                         }
                         else {
-                            if (caso.ultrespuesta == null ) {
+                            if (caso.ultrespuesta == null || (ambiente != "demo" && (d - d2) / 60000 > 5)) {
                                 //si resulta que el dispositivo no se reporta desde hace X minutos entonces ignoro el estado de la habitacion por obsoleto y muestro un estado de "roto"
                                 $("#Hcolor" + caso.habitacion).data("alarma", 0);
                                 $("#Hcolor" + caso.habitacion).css('background-color', 'black');

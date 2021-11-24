@@ -1,3 +1,0 @@
-13/5
-en comandos.html  puse chequeaStatus() en el modal de habitaciones con cobid luego de cambiarlas
-notable material-dashboard.css para que no quede letra blanca sobre fondo blanco
