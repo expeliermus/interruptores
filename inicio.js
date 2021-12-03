@@ -1,15 +1,16 @@
 const express = require('express');
+const morgan = require('morgan');
 const cors = require('cors');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 
 var app = express();
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use('/assets/', express.static('assets/')) ///// borrarlo es solo por la compatibilidad entre mi pc y el server
-app.use('/download/', express.static('download/'))
-
+app.use('/assets/', express.static('assets/')); ///// borrarlo es solo por la compatibilidad entre mi pc y el server
+app.use('/download/', express.static('download/'));
+app.use(morgan('tiny'));
 
 
 
@@ -60,21 +61,22 @@ function onListening() {
   console.log('Listening on ' + bind);
 }
 
-global.nadador=  (n) => {
+global.nadador = (n) => {
   console.log('------------------------------------');
   console.log('---    ' + n);
   console.log('------------------------------------');
-}
+};
 
 
 global.io = socketio(server);
 
-require('./routes/mqttapp');
+//require('./routes/mqttapp');
 app.use('/', require('./routes/raiz'));
 app.use('/exp', require('./routes/exp'));
+app.use('/demo', require('./routes/demo'));
 
 io.on('connection', (socket) => {
   require('./routes/ioapp')(socket);
-  
+
 });
 

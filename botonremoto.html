@@ -17,12 +17,16 @@
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+
     <style>
         .btnalerta {
             width: 40%;
-            
+
             margin-top: 5%;
         }
+
         .centrar {
             display: flex;
             justify-content: center;
@@ -42,18 +46,21 @@
 
                 <div class="jumbotron shadow ">
                     <h2>xyzopqdatodetitulo</h2>
-                  
+
                     <div class="row">
-                        <div class="col-md-4 col-lg-12"><img class="btnalerta" src="assets/img/b1.png" alt="alerta 1" id="boton1">
+                        <div class="col-md-4 col-lg-12"><img class="btnalerta" src="assets/img/b1.png" alt="alerta 1"
+                                id="boton1">
                         </div>
-                        <div class="col-md-4 col-lg-12"><img class="btnalerta" src="assets/img/b2.png" alt="alerta 2" id="boton2">
+                        <div class="col-md-4 col-lg-12"><img class="btnalerta" src="assets/img/b2.png" alt="alerta 2"
+                                id="boton2">
                         </div>
-                        <div class="col-md-4 col-lg-12"><img class="btnalerta" id="resultado" style="visibility:hidden;"></div>
-                    </div>
+                        <div class="col-md-4 col-lg-12"><img class="btnalerta" id="resultado"
+                                style="visibility:hidden;"></div>
                     </div>
                 </div>
             </div>
-        </section>
+    </div>
+    </section>
     </div>
 
 
@@ -65,6 +72,34 @@
 
 
     <script type="text/javascript">
+
+
+
+        var socket = io.connect();
+        var quiensoy;
+        socket.on('welcome', function (data) {
+            socket.emit('i am client', { app: 'test', country: 2, id: data.id });
+            quiensoy = data.id;
+        });
+
+        socket.on('testmsg', function (data) {
+            titulo.innerHTML = data;
+        });
+        socket.on('testactualizar', function (data) {
+            onlinetest = data;
+        });
+
+
+
+
+        window.onbeforeunload = function () {
+            //peer.close();
+            //pc = null;
+            socket.emit('test', 2);
+        };
+
+
+
 
         var images = [];
         function preload() {
@@ -82,111 +117,26 @@
         )
 
 
+        var cod = 'P01H01C1';
 
-        var token = localStorage.getItem("token");
-        var cod = localStorage.getItem("cod");
-        if (typeof token == 'undefined' || token == null || typeof cod == 'undefined' || cod == null) {
-            //console.log("volver a la primer pantalla");
-            primerpantalla();
 
-        } else {
-            //P01H01C1
-            if (cod.substring(0, 1) == 'P' && cod.substring(3, 4) == 'H' && cod.substring(6, 7) == 'C') {
-                segundapantalla();
-            } else {
-                primerpantalla();
-            }
-        }
+        $("#boton1").attr('onClick', 'enviaalerta(2)');
+        $("#boton2").attr('onClick', 'enviaalerta(3)');
 
 
 
-        function primerpantalla() {
-            var donde = window.location.href;
-            donde = donde.replace('/botonremoto.', '/remoto.');
-            //console.log(donde);
-            window.location.href = donde;
-        }
-
-        function borraregistroYPrimerPantalla() {
-            localStorage.removeItem("token");
-            localStorage.removeItem("cod");
-            setTimeout(function () {
-                primerpantalla();
-            }, 200);
-        }
-
-        function segundapantalla() {
-            habilitabotones();
-        }
-
-        function habilitabotones() {
-            //parece queera para evitar las tocadas iniciales por error
-            //setTimeout(function () {
-            $("#boton1").attr('onClick', 'enviaalerta(2)');
-            $("#boton2").attr('onClick', 'enviaalerta(3)');
-            //}, 1000);
 
 
-        }
 
 
-        function colorPasaAAlerta(a) {
-
-
-        }
 
         function enviaalerta(a) {
             $("#boton1").attr('onClick', '');
             $("#boton2").attr('onClick', '');
 
-
+            socket.emit('habitaciones', a);
             //console.log(token);
 
-            $.ajax({
-                type: "POST",
-                data: {
-                    cod: cod,
-                    topico: 'alerta',
-                    alerta: a,
-                    tokenactual: token
-                },
-                contentType: 'application/x-www-form-urlencoded',
-                mimeType: 'application/x-www-form-urlencoded',
-                url: "http://xyzopqwebserver:xyzopqwebport/remotowebtoken",
-                success: function (msg) {
-                    var respuesta = JSON.parse(msg);
-                    //console.log(msg);
-                    //console.log(respuesta[0].error);
-                    if (respuesta[0].error == true) {
-                        alert("hay un error en la aplicacion: no se envió el topico o código");
-                    } else {
-                        if (respuesta[0].token == 'equivocado') {
-                            alert('Solamente puede haber una botonera remota por cada cama, la suya no es la mas reciente');
-                            borraregistroYPrimerPantalla();
-
-                        } else {
-                            var color = respuesta[0].color;
-                            if (color == '2') {
-                                //colorPasaAAlerta(color);
-                            }
-                            if (color >= '1' && color <= '5') {
-                                var imagen = 'assets/img/alerta' + color + '.png';
-                                $("#resultado").attr('src', imagen).css("visibility", "visible");
-                                setTimeout(function () {
-                                    $("#resultado").attr('src', 'assets/img/alerta1.png').css("visibility", "hidden");
-                                }, 10000);
-                            }
-
-                        }
-                    }
-
-                    habilitabotones();
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    $("#muestraError").html("no está conectado a la base de datos");
-                    habilitabotones();
-                }
-            });
 
         }
 

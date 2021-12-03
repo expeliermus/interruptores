@@ -14,21 +14,20 @@ const titulo = config.get("titulo");
 
 console.log("Ambiente : ", ambiente);
 router.get('/', function (req, res) {
-    var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 and habitacion not in ('enfermeria','desconocida') order by length(habitacion),habitacion;";
-    //conn.query(laquery, function (err, rows) {
-    fs.readFile("botones.html", function (err, html) {
+
+    fs.readFile("habitaciones.html", function (err, html) {
         if (err) console.error(err);
         let html_string = html.toString();
         //html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
-        // html_string = html_string.replace(/xyzopqwebserver/g, webserver);
-        //html_string = html_string.replace(/xyzopqwebport/g, webport);
-        //html_string = html_string.replace("xyzopqdatodeambiente", ambiente);
-        //html_string = html_string.replace(/xyzopqdatodetitulo/g, titulo);
+        html_string = html_string.replace(/xyzopqwebserver/g, webserver);
+        html_string = html_string.replace(/xyzopqwebport/g, webport);
+        html_string = html_string.replace("xyzopqdatodeambiente", ambiente);
+        html_string = html_string.replace(/xyzopqdatodetitulo/g, titulo);
         res.writeHead(200);
         res.write(html_string);
         res.end();
     });
-    //});
+
 });
 
 router.get('/comandos.html', function (req, res) {
@@ -48,6 +47,32 @@ router.get('/comandos.html', function (req, res) {
     });
     //});
 });
+
+router.post('/remotowebtoken', function (req, res) {
+    // el SP RecibeBotonRemoto servirá tanto para la botonera remota WEB com para la app de android
+
+    var topico = req.body.topico;
+    var cod = req.body.cod;
+    var alerta = req.body.alerta;
+
+    console.log("recibio desde botonera remota WEB: " + topico + ", Para: " + cod);
+
+
+    //if (cod <= 17 && topico.length <= 10 && aaaa <= 12 && parseInt(aaaa) <= 999999) {
+
+
+
+    io.to('habitaciones').emit('habitacion', { 'habitacion': cod, 'color': '#ff0000', 'estado': alerta });
+    return res.json([{ 'error': false, 'color': color }]);
+
+
+
+    //});
+    //}
+});
+
+
+
 
 router.get('/habitaciones.html', function (req, res) {
     fs.readFile("habitaciones.html", function (err, html) {
@@ -490,60 +515,6 @@ router.post('/remotorecibe', function (req, res) {
             //      });
         }
     }
-});
-router.post('/remotowebtoken', function (req, res) {
-    // el SP RecibeBotonRemoto servirá tanto para la botonera remota WEB com para la app de android
-    if (req.body.topico == undefined || req.body.cod == undefined) {
-        console.log("ERROR recibio desde botonera remota WEB pero sin el topico o codigo");
-        return res.json([{ 'error': true }]);
-    } else {
-        var topico = req.body.topico;
-        var cod = req.body.cod;
-        var alerta = req.body.alerta;
-        var tokenactual = req.body.tokenactual;
-        console.log("recibio desde botonera remota WEB: " + topico + ", Para: " + cod);
-    }
-
-    //if (cod <= 17 && topico.length <= 10 && aaaa <= 12 && parseInt(aaaa) <= 999999) {
-    laquery = "call RecibeBotonRemoto(?,?,?,?,@resultado,@lamac,@resultadodisp);";
-    todo = [cod, topico, alerta, tokenactual];
-    console.log(laquery + ' ' + todo);
-    //conn.query(laquery, todo, (err, rows, fields) => {
-
-
-
-    if (err) {
-        console.log('error en la consulta: ' + laquery + ' ' + todo);
-    } else {
-        // solo hay dos topicos, Alta y Alerta
-        if (topico == 'alta' && rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
-            var resul = rows[0][0].resultado.split(";");
-            var color = resul[0];
-            var token = resul[1];
-            return res.json([{ 'error': false, 'color': color, 'token': token }]);
-        }
-        if (topico == 'alerta' && rows[0][0].resultado != '0' && rows[0][0].resultado != undefined) {
-            var color = rows[0][0].resultado;
-            var colordisp = rows[0][0].resultadodisp;
-            var mac = rows[0][0].lamac;
-            // client.publish(mac + '/estado', colordisp, { qos: 2 });
-            console.log(mac + '/estado ' + colordisp);
-            io.to('habitaciones').emit('habitacion', { 'habitacion': rows[0][0].lahabitacion, 'color': rows[0][0].color, 'estado': rows[0][0].estado });
-            return res.json([{ 'error': false, 'color': color }]);
-        }
-        if (topico == 'alerta' && rows[0][0].resultado == '0') {
-            // puede ser que el token esté equivocado (999) o que la hab ya está con alerta
-            if (rows[0][0].resultadodisp == '999') {
-                return res.json([{ 'error': false, 'token': 'equivocado' }]);
-            }
-            else {
-                return res.json([{ 'error': false, 'color': rows[0][0].resultadodisp }]);
-            }
-        }
-
-    }
-    //});
-    //}
 });
 
 router.post('/seteatipohab', function (req, res) {
