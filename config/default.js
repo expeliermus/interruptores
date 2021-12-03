@@ -32,7 +32,7 @@ let demo = {
         "serverurl": "mqtt://192.168.1.51"
     },
     "webserver": "localhost",
-    "webserverpuerto": "3000",
+    "webserverpuerto": "3002",
     "ambiente": "produccion",
     "titulo": "Interruptores"
 };
