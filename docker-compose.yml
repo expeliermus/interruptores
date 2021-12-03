@@ -3,14 +3,32 @@ version: "3.8"
 volumes:
   vol-emqx-data:
     name: foo-emqx-data
-#  vol-emqx-etc:
-#    name: foo-emqx-etc
+  #  vol-emqx-etc:
+  #    name: foo-emqx-etc
   vol-emqx-log:
     name: foo-emqx-log
 #
 
-
 services:
+  node:
+    container_name: node
+    image: "node:14"
+    restart: always
+    working_dir: /home/interruptores
+    volumes:
+      - ./interruptores/:/home/interruptores
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "80:3002"
+
+    links:
+      - emqx
+      - mongo
+
+    command: sh -c "echo 'delaying 30 seconds' && sleep 30 && yarn run start"
+    #command: sh -c "npm install"
+
   mongo:
     container_name: mongo
     image: mongo:4.4
@@ -43,11 +61,11 @@ services:
       - mongo
 
     extra_hosts:
-      - "localhost:192.168.1.16"
+      - "localhost:localhost"
 
     environment:
       EMQX_NAME: SSOSInterruptores
-      EMQX_HOST: localhost
+      EMQX_HOST: 127.0.0.1
 
       TZ: "America/Argentina/Buenos_Aires"
 
