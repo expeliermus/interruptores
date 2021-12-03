@@ -1,10 +1,10 @@
-let botonera = {
+let Interruptores = {
 
     "sqlserver": {
         "host": 'localhost',
-        "user": 'frombakend',
-        "password": 'backendpass',
-        "database": 'desarrollo'
+        "user": 'xxx',
+        "password": 'xxx',
+        "database": 'ssos'
     },
     "mqttserver": {
         "clientId": "ariel",
@@ -15,64 +15,25 @@ let botonera = {
     "webserver": "localhost",
     "webserverpuerto": "3000",
     "ambiente": "produccion",
-    "titulo": "test"
+    "titulo": "Interruptores"
 };
-
-let test = {
-    "sqlserver": {
-        "host": 'localhost',
-        "user": 'frombakend',
-        "password": 'backendpass',
-        "database": 'desarrollo'
-    },
-    "mqttserver": {
-        "clientId": "SmartSOS.net:test",
-        "username": "UsuarioSOS",
-        "password": "SOS2020",
-        "serverurl": "mqtt://localhost"
-    },
-    "webserver": "icuadrado.net",
-    "webserverpuerto": "3001",
-    "ambiente": "produccion",
-    "titulo": "test Smart S.O.S."
-};
-
 let demo = {
-    "sqlserver": {
-        "host": 'localhost',
-        "user": 'frombakend',
-        "password": 'backendpass',
-        "database": 'demo'
-    },
-    "mqttserver": {
-        "clientId": "SmartSOS.net:demo",
-        "username": "UsuarioSOS",
-        "password": "SOS2020",
-        "serverurl": "mqtt://localhost"
-    },
-    "webserver": "icuadrado.net",
-    "webserverpuerto": "8080",
-    "ambiente": "demo",
-    "titulo": "Demo Smart S.O.S."
-};
 
-let HU = {
     "sqlserver": {
         "host": 'localhost',
-        "user": 'frombakend',
-        "password": 'backendpass',
-        "database": 'desarrollo'
+        "user": 'xxx',
+        "password": 'xxx',
+        "database": 'ssos'
     },
     "mqttserver": {
         "clientId": "ariel",
         "username": "UsuarioSOS",
         "password": "SOS2020",
-        "serverurl": "mqtt://localhost"
+        "serverurl": "mqtt://192.168.1.51"
     },
-    "webserver": "172.22.112.120",
-    "webserverpuerto": "80",
+    "webserver": "localhost",
+    "webserverpuerto": "3000",
     "ambiente": "produccion",
-    "titulo": "Hospital Universitario"
+    "titulo": "Interruptores"
 };
-
-module.exports = botonera;
+module.exports = demo;

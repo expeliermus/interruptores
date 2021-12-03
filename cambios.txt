@@ -1,9 +1,0 @@
-13/5
-en comandos.html  puse chequeaStatus() en el modal de habitaciones con cobid luego de cambiarlas
-notable material-dashboard.css para que no quede letra blanca sobre fondo blanco
-
-15/5
-en config se imcluye "ambiente" que se usa para que si es demo que aparezca un menu con los QR que van al boton remoto de demo
-tambien define titulo de app y en pagiNa boton remoto
-
-RESULTA QUE FALTABA QUE SE REFREZQUE PRONTO AL APAGAR DESDE ENFERMERIA

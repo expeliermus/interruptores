@@ -35,8 +35,8 @@ services:
     #restart: always
     environment:
       TZ: "America/Argentina/Buenos_Aires"
-      MONGO_INITDB_ROOT_USERNAME: "usuariomongo"
-      MONGO_INITDB_ROOT_PASSWORD: "passwordmongo"
+      MONGO_INITDB_ROOT_USERNAME: "myUserMongo"
+      MONGO_INITDB_ROOT_PASSWORD: "passmongo"
     volumes:
       - ./mongodata:/data/db
     ports:
@@ -86,8 +86,8 @@ services:
       EMQX_AUTH__MONGO__SERVER: "mongo:27017"
       EMQX_AUTH__MONGO__POOL: 8
 
-      EMQX_AUTH__MONGO__LOGIN: "usuariomongo"
-      EMQX_AUTH__MONGO__PASSWORD: "passwordmongo"
+      EMQX_AUTH__MONGO__LOGIN: "myUserMongo"
+      EMQX_AUTH__MONGO__PASSWORD: "passmongo"
       EMQX_AUTH__MONGO__AUTH_SOURCE: admin
 
       EMQX_AUTH__MONGO__DATABASE: "SSOSapp"
