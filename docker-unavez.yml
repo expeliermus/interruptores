@@ -1,0 +1,16 @@
+version: "3.8"
+#
+
+services:
+  node:
+    container_name: node
+    image: "node:14"
+    working_dir: /home/interruptores
+    volumes:
+      - ./:/home/interruptores
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "80:3002"
+
+    command: sh -c "yarn install"

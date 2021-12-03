@@ -13,10 +13,10 @@ services:
   node:
     container_name: node
     image: "node:14"
-    restart: always
+    #restart: always
     working_dir: /home/interruptores
     volumes:
-      - ./interruptores/:/home/interruptores
+      - ./:/home/interruptores
     ports:
       - "3000:3000"
       - "3001:3001"
@@ -32,7 +32,7 @@ services:
   mongo:
     container_name: mongo
     image: mongo:4.4
-    restart: always
+    #restart: always
     environment:
       TZ: "America/Argentina/Buenos_Aires"
       MONGO_INITDB_ROOT_USERNAME: "usuariomongo"
@@ -45,7 +45,7 @@ services:
   emqx:
     container_name: emqx
     image: emqx/emqx:4.2.3
-    restart: always
+    #restart: always
     ports:
       - 18083:18083
       - 1883:1883

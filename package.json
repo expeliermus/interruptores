@@ -1,7 +1,7 @@
 {
   "name": "SmartSOS",
   "version": "1.1.0",
-  "description": "Escucha llamados desde las habitaciones, los muestra en web y dispositivos IoT",
+  "description": "Escucha dispositivos IoT, los muestra en web",
   "main": "inicio.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -17,8 +17,5 @@
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "mqtt": "^4.2.6",
-    "mysql": "^2.18.1",
-    "npm-check": "^5.9.2",
-    "socket.io": "^4.1.1"
   }
 }
