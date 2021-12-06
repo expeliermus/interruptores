@@ -34,37 +34,56 @@
         <section class="py-2">
             <div class="container text-center centrar">
                 <div class="jumbotron shadow ">
-                    <h2>simulacion</h2>
-                    <div class="row">
-                        <label for="mac">nueva mac
-                            <input id="mac" type="text" value="mac" />
-                        </label>
-                        <button id="btnclientid">Alta</button>
+
+
+                    <div class="container-fluid">
+                        <h2>simulacion</h2>
+                        <div class="row row-no-gutters">
+                            <div class="col-sm-4 mx-auto">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text shadow">Placa</span>
+                                    </div>
+                                    <input type="number" class="form-control shadow" placeholder="numero" id="placa"
+                                        value="1" name="username">
+                                </div>
+                            </div>
+                            <div class="col-sm-1"><button type="submit" class="btn btn-success shadow"
+                                    id="verde">verde</button></div>
+                            <div class="col-sm-1"><button type="submit" class="btn btn-danger shadow"
+                                    id="rojo">rojo</button>
+                            </div>
+                            <div class="col-sm-1"><button type="submit" class="btn btn-primary shadow"
+                                    id="click">Click</button></div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="row row-no-gutters">
+                            <div class="col-sm-4 mx-auto">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Topico</span>
+                                    </div>
+                                    <input type="text " disabled class="form-control" placeholder="vacio" id="topico"
+                                        name="username">
+                                </div>
+                            </div>
+                            <div class="col-sm-4 mx-auto">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">mensaje</span>
+                                    </div>
+                                    <input type="text" disabled class="form-control" placeholder="vacio" id="mensaje"
+                                        name="username">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="row">
-                        <label for="operarsobre">cambiar mac
-                            <input id="operarsobre" type="text" />
-                        </label>
-                        <button id="btnoperarsobre">click</button>
-                    </div>
-                    <div class="row">
-                        <label for="rfid">cual rfid?
-                            <input id="rfid" type="text" />
-                        </label>
-                        <button id="btnrfid">rfid</button>
-                    </div>
-                    <div class="row">
-                        <label for="alerta">cual alerta?
-                            <input id="alerta" type="text" />
-                        </label>
-                        <button id="btnalerta">alerta</button>
-                    </div>
-                    <div class="row">
-                        <h5>mas reciente estado de todos los topicos</h5>
-                        <div id="estado"></div>
-                        <div id="estadocolor" style="height: 150px; width: 150px; "></div>
-                    </div>
+
+
+
+
                 </div>
             </div>
         </section>
@@ -101,15 +120,11 @@
 
         client.on('error', function (err) {
             console.log(err)
-            client.end()
+            //client.end()
         })
-
         client.on('connect', function () {
-            console.log('client connected:' + clientId)
+            console.log('client connected:')
         })
-
-
-
         client.on('message', function (topic, message, pakcet) {
             console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic)
             var parte = topic.split("/");
@@ -123,52 +138,33 @@
             }
 
         })
-
         client.on('close', function () {
-            console.log(clientId + ' disconnected')
+            console.log(' disconnected')
         })
-
-        client.subscribe('+/estado', { qos: 0 });
+        client.subscribe('placa/+', { qos: 0 });
 
 
 
     </script>
     <script>
-        $("#btnclientid").attr('onClick', 'mqttalta()');
-        $("#btnoperarsobre").attr('onClick', 'cambiarfoco()');
-        $("#btnrfid").attr('onClick', 'rfid()');
-        $("#btnalerta").attr('onClick', 'alerta()');
-        document.getElementById('operandosobretexto').innerHTML = localStorage.getItem("simulacion");
+        $("#verde").attr('onClick', 'manda(0)');
+        $("#rojo").attr('onClick', 'manda(1)');
+        $("#click").attr('onClick', 'manda(9)');
+        function manda(q) {
+            let placa = $('#placa').val();
 
-        function cambiarfoco() {
-            let val = $('#operarsobre').val();
+            client.publish('placa/' + placa, q.toString(), { qos: 0, retained: false })
 
-            console.log(val);
-            document.getElementById('operandosobretexto').innerHTML = val;
+            $('#topico').val('placa/' + placa);
+            $('#mensaje').val(q.toString());
         };
 
-        function mqttalta() {
-            let mac = $("#mac").val();
 
-            //client.subscribe('alta/', { qos: 0 })
-            client.publish('alta/', mac, { qos: 0, retained: false })
-            console.log('alta/', mac, { qos: 0, retained: false });
-            document.getElementById('operandosobre').innerHTML = mac;
-        }
 
-        function rfid() {
-            let mac = $("#operandosobretexto").text();
-            let rfid = $("#rfid").val();
-            client.publish(mac + '/rfid', rfid, { qos: 0, retained: false });
-            console.log(mac + '/rfid', rfid, { qos: 0, retained: false });
-        }
 
-        function alerta() {
-            let mac = $("#operandosobretexto").text();
-            let alerta = $("#alerta").val();
-            client.publish(mac + '/alerta', alerta, { qos: 0, retained: false });
-            console.log(mac + '/alerta', alerta, { qos: 0, retained: false });
-        }
+
+
+
     </script>
 
 </body>
