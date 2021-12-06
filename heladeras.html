@@ -35,7 +35,7 @@
                     </div>
                     <div class="card-footer">
                         <div class="stats">
-                            <i class="material-icons">access_time</i> 
+                            <i class="material-icons">access_time</i>
                         </div>
                     </div>
                 </div>
@@ -63,7 +63,7 @@
     <script src="assets/js/chartist.min.js"></script>
 
     <script>
-        
+
 
 
         $(document).ready(function () {
@@ -76,7 +76,7 @@
             var temperatdatos = xyzopqdatosdesdeelserver;
             var temperatrango = xyzopqdatosdesdeelserverrango;
 
-console.log(temperatrango);
+            console.log(temperatrango);
             temperatdatos1 = {
                 labels: ['E', 'P', 'A', 'J', 'V', 'S', 'D'],
                 series: [{
@@ -106,28 +106,28 @@ console.log(temperatrango);
                 height: '300px',
                 scaleMinSpace: 1,
                 axisY: {
-    // The offset of the labels to the chart area
-    offset: 40,
-    // Position where labels are placed. Can be set to `start` or `end` where `start` is equivalent to left or top on vertical axis and `end` is equivalent to right or bottom on horizontal axis.
-    position: 'start',
-    // Allows you to correct label positioning on this axis by positive or negative x and y offset.
-    labelOffset: {
-      x: 0,
-      y: 0
-    },
-    // If labels should be shown or not
-    showLabel: true,
-    // If the axis grid should be drawn or not
-    showGrid: true,
-    // Interpolation function that allows you to intercept the value from the axis label
-    labelInterpolationFnc: Chartist.noop,
-    // Set the axis type to be used to project values on this axis. If not defined, Chartist.AutoScaleAxis will be used for the Y-Axis, where the high and low options will be set to the global high and low options. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
-    type: undefined,
-    // This value specifies the minimum height in pixel of the scale steps
-    scaleMinSpace: 20,
-    // Use only integer values (whole numbers) for the scale steps
-    onlyInteger: true
-  },
+                    // The offset of the labels to the chart area
+                    offset: 40,
+                    // Position where labels are placed. Can be set to `start` or `end` where `start` is equivalent to left or top on vertical axis and `end` is equivalent to right or bottom on horizontal axis.
+                    position: 'start',
+                    // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+                    labelOffset: {
+                        x: 0,
+                        y: 0
+                    },
+                    // If labels should be shown or not
+                    showLabel: true,
+                    // If the axis grid should be drawn or not
+                    showGrid: true,
+                    // Interpolation function that allows you to intercept the value from the axis label
+                    labelInterpolationFnc: Chartist.noop,
+                    // Set the axis type to be used to project values on this axis. If not defined, Chartist.AutoScaleAxis will be used for the Y-Axis, where the high and low options will be set to the global high and low options. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
+                    type: undefined,
+                    // This value specifies the minimum height in pixel of the scale steps
+                    scaleMinSpace: 20,
+                    // Use only integer values (whole numbers) for the scale steps
+                    onlyInteger: true
+                },
                 showArea: false,
                 showLine: true,
                 showPoint: false,
@@ -178,7 +178,7 @@ console.log(temperatrango);
 
             //var epa = new Chartist.Line('#temperatura', temperatdatos, temperatoptions1);
 
-            
+
 
             new Chartist.Line('#temperatura', temperatdatos, temperatoptions);
 
@@ -190,6 +190,65 @@ console.log(temperatrango);
 
 
     </script>
+
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script>
+
+        const options = {
+            clean: true, // retain session
+            connectTimeout: 4000,
+            clientId: "ariel",
+            username: "superuser",
+            password: "superuser",
+            keepalive: 0,
+            qos: 0,
+
+            keepalive: 60,
+            will: {
+                topic: 'WillMsg',
+                payload: 'Connection Closed abnormally.. que loco!',
+                qos: 0,
+                retain: false
+            },
+
+            clean: true,
+            rejectUnauthorized: false
+        };
+        //username: "UsuarioSOS",
+        //password: "SOS2020",    
+
+        const WebSocket_URL = "ws://icuadrado.net:8083/mqtt"
+        const client = mqtt.connect(WebSocket_URL, options)
+
+        client.on('error', function (err) {
+            console.log(err)
+            //client.end()
+        })
+        client.on('connect', function () {
+            console.log('client connected:')
+        })
+        client.on('message', function (topic, message, pakcet) {
+            console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic)
+            var parte = topic.split("/");
+            var accion = message.toString();
+            if (parte[0] == 'placa') {
+
+                $('#estadocolor').css('background-color', 'rgb(' + R + ',' + G + ',' + B + ')');
+            }
+
+        })
+        client.on('close', function () {
+            console.log(' disconnected')
+        })
+        client.subscribe('placa/+', { qos: 0 });
+
+
+
+    </script>
+
+
+
 </body>
 
 </html>

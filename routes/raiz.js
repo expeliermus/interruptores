@@ -14,22 +14,29 @@ const titulo = config.get("titulo");
 
 console.log("Ambiente : ", ambiente);
 router.get('/', function (req, res) {
-    var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 and habitacion not in ('enfermeria','desconocida') order by length(habitacion),habitacion;";
-    //conn.query(laquery, function (err, rows) {
-    fs.readFile("botones.html", function (err, html) {
+    fs.readFile("habitaciones.html", function (err, html) {
         if (err) console.error(err);
-        let html_string = html.toString();
-        //html_string = html_string.replace("xyzopqdatosdesdeelserver", JSON.stringify(rows));
-        // html_string = html_string.replace(/xyzopqwebserver/g, webserver);
-        //html_string = html_string.replace(/xyzopqwebport/g, webport);
-        //html_string = html_string.replace("xyzopqdatodeambiente", ambiente);
-        //html_string = html_string.replace(/xyzopqdatodetitulo/g, titulo);
+        var html_string = html.toString();
+        html_string = html_string.replace(/xyzopqwebserver/g, webserver);
+        html_string = html_string.replace(/xyzopqwebport/g, webport);
         res.writeHead(200);
         res.write(html_string);
         res.end();
     });
-    //});
 });
+router.get('/simulacion', function (req, res) {
+    fs.readFile("simulacion.html", function (err, html) {
+        if (err) console.error(err);
+        var html_string = html.toString();
+        html_string = html_string.replace(/xyzopqwebserver/g, webserver);
+        html_string = html_string.replace(/xyzopqwebport/g, webport);
+        res.writeHead(200);
+        res.write(html_string);
+        res.end();
+    });
+});
+
+
 
 router.get('/comandos.html', function (req, res) {
     var laquery = "SELECT habitacion,tipohab FROM mac where tipohab <9 and habitacion not in ('enfermeria','desconocida') order by length(habitacion),habitacion;";

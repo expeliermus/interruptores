@@ -17,9 +17,6 @@
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <style>
-
-    </style>
 
 </head>
 
@@ -127,15 +124,10 @@
         })
         client.on('message', function (topic, message, pakcet) {
             console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic)
-            var parte = topic.split("/");
-            var accion = message.toString().split(";");
-            if (parte[1] == 'estado') {
-                document.getElementById('estado').innerHTML = accion;
-                let R = parseInt(accion[0] / 4);
-                let G = parseInt(accion[1] / 4);
-                let B = parseInt(accion[2] / 4);
-                $('#estadocolor').css('background-color', 'rgb(' + R + ',' + G + ',' + B + ')');
-            }
+
+            $('#topico').val(topic.toString());
+            $('#mensaje').val(message.toString());
+
 
         })
         client.on('close', function () {

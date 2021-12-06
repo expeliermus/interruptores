@@ -129,7 +129,7 @@
 
 
         var cuadrados = '<div class="row">';
-        for (var h = 1; h <= 15; h++) {
+        for (var h = 1; h <= 40; h++) {
             cuadrados = cuadrados + '<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 ">'
             cuadrados = cuadrados + ' <div class="p-3  card text-center cuadro d-none d-sm-block" id="Hcolor' + h + '">'
             cuadrados = cuadrados + '  <h1>' + h + '</h1>'
@@ -140,20 +140,7 @@
             // if (h % 6 == 0) { cuadrados = cuadrados + '</div><div class="row">' }
         }
 
-        cuadrados = cuadrados + '<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 ">'
-        cuadrados = cuadrados + ' <div class="p-3  card text-center cuadro d-none d-sm-block" id="FcolorH1">'
-        cuadrados = cuadrados + '  <h1>H1</h1>'
-        cuadrados = cuadrados + '  <p style="margin-bottom: 0px;" id="FtextoH1">&nbsp;</p>'
-        cuadrados = cuadrados + '  <h6 style="margin-bottom: 0px;text-align: right !important;padding-right: 20px;" id="FtemperaturaH1">&nbsp;</h6>'
-        cuadrados = cuadrados + ' </div>'
-        cuadrados = cuadrados + '</div>'
 
-        cuadrados = cuadrados + '<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 ">'
-        cuadrados = cuadrados + ' <div class="p-4  card  cuadro text-center"  style="display:block;">'
-        cuadrados = cuadrados + '<img class="img-thumbnail" id="rfidenfermeria" src="assets/img/rfidenfermeria.png" style="width:100px;background-color:#202940;border:0px; " alt="lector en enfermeria">'
-        //cuadrados = cuadrados + '  <h6 style="margin-bottom: 0px;text-align: center !important;padding-right: 20px;" >desconectado</h6>'
-        cuadrados = cuadrados + '</div>'
-        cuadrados = cuadrados + '</div>'
 
         cuadrados = cuadrados + '</div>'
 
@@ -161,15 +148,11 @@
             $(".cuadro").on('click', function (event) {
                 event.stopPropagation();
                 event.stopImmediatePropagation();
-                var alarma = $(this).data("alarma");
-                var tipohab = $(this).data("tipohab");
-                //console.log($(this).data( "alarma"));
-                if ((alarma == 2 || alarma == 3 || alarma == 5) && tipohab == 1) {
-                    var hab = $(this).children("h1").text();
-                    $("#modalhab").text(hab);
-                    $("#modalhab2").text(hab);
-                    $('#modalapagaalerta').modal('show');
-                }
+                let cual = this.id;
+
+                client.publish('placa/' + cual.replace('Hcolor', ''), '9', { qos: 0, retained: false })
+
+
             });
         });
 
@@ -214,130 +197,13 @@
 
 
     </script>
-    <script src='/socket.io/socket.io.js'></script>
-    <script src="assets/js/adapter-latest.js"></script>
+
     <script>
         var ultrespuesta1 = Date.now();
         var heladera = "white";
         var puerta = 'cerrada';
 
         let servidor = 'http://192.168.1.36:3000';
-        var socket = io.connect(servidor);
-
-
-        console.log("conectar a: " + servidor);
-        socket.on('welcome', function (data) {
-            console.log(data.message);
-            socket.emit('i am client', { app: 'pagina', grupo: 1 });
-            //alert(cordova.plugins.backgroundMode.isEnabled());
-            //cordova.plugins.backgroundMode.moveToBackground();
-            //alert(cordova.plugins.backgroundMode.isActive());
-
-        });
-
-
-
-        socket.on('puerta', function (data) {
-            console.log(data.situacion);
-            if (data.situacion == 'abierta') {
-                puerta = 'abierta';
-                $("#FcolorH1").css('color', 'black');
-                $("#FcolorH1").css('background-color', 'cyan');
-            }
-            if (data.situacion == 'cerrada') {
-                puerta = 'cerrada';
-                $("#FcolorH1").css('color', 'black');
-                $("#FcolorH1").css('background-color', heladera);
-            }
-        });
-        socket.on('heladera', function (data) {
-            //console.log(data.situacion);
-            if (data.situacion == 'normal') {
-                heladera = "white";
-                if (puerta == 'cerrada') {
-                    $("#FcolorH1").css('color', 'black');
-                    $("#FcolorH1").css('background-color', "white");
-                }
-            }
-            if (data.situacion == 'alerta') {
-                heladera = "yellow";
-                if (puerta == 'cerrada') {
-                    $("#FcolorH1").css('color', 'black');
-                    $("#FcolorH1").css('background-color', 'yellow');
-                }
-            }
-        });
-        socket.on('temperatura', function (data) {
-            $("#FtemperaturaH1").html(data.situacion + "°C");
-        });
-
-        socket.on('message', function (msg) {
-
-            console.log(msg);
-            /*
-            $("#Hcolor" + caso.habitacion).css('background-color', '#' + caso.color)
-            if (caso.estado == 1) {
-                $("#Hcolor" + caso.habitacion).removeClass("d-block").addClass("d-none");
-            } else {
-                $("#Hcolor" + caso.habitacion).removeClass("d-none").addClass("d-block");
-            }
-            */
-
-            /*
-                        cantAlertaMaxima = 0;
-                        arrHabAlertaMaxima = [];
-                        arrCamaAlertaMaxima = [];
-                        $("#alertamaxima").html('');
-                        $("#muestraError").html("");
-            */
-            console.log('-----');
-            //console.log(msg.estado);
-            //var respuesta = JSON.parse(msg);
-            //console.log(respuesta);
-            let caso = msg;
-            var d = Date.now();
-            //for (var caso of respuesta) {
-            var d2 = ultrespuesta1;
-
-            /*if (ultrespuesta1 == null || (d - d2) / 60000 > 5) {
-                //si resulta que el dispositivo no se reporta desde hace X minutos entonces ignoro el estado de la habitacion por obsoleto y muestro un estado de "roto"
-                $("#Hcolor" + caso.habitacion).css('background-color', 'black');
-                $("#Hcolor" + caso.habitacion).css('color', 'white');
-                $("#Htexto" + caso.habitacion).html('&nbsp;');
-                $("#Hantiguedad" + caso.habitacion).html('&nbsp;');
-
-            } else {
-                */
-            $("#Hcolor" + caso.habitacion).css('color', 'black');
-            if (caso.estado == 1) {
-                $("#Hantiguedad" + caso.habitacion).html('mensaje');
-                $("#Hcolor" + caso.habitacion).css('background-color', '#DD0000')
-            }
-            else {
-                $("#Hantiguedad" + caso.habitacion).html('&nbsp;');
-                $("#Hcolor" + caso.habitacion).css('background-color', '#00dd00')
-
-
-            }
-
-            $("#Hcolor" + caso.habitacion).css('color', 'white');
-            $("#Htexto" + caso.habitacion).html('&nbsp;');
-            //if (caso.estado == 2) { $("#Hcolor" + caso.habitacion).css('background-color', '#' + caso.color) }
-            // if (caso.estado == 5) { $("#Hcolor" + caso.habitacion).css('background-color', '#1597D4') }
-            // if (caso.estado == 2) { $("#Hcolor" + caso.habitacion).css('background-color', '#23EB58') } //FFFC33
-            // if (caso.estado == 3) { $("#Hcolor" + caso.habitacion).css('background-color', 'yellow') }
-
-
-            //}
-            //}
-            if (cantAlertaMaxima > 0) {
-                disparaAlertaMaxima();
-
-                if (cantAlertaMaxima == 1) { $("#alerta1").trigger("play"); }
-                if (cantAlertaMaxima == 2) { $("#alerta2").trigger("play"); }
-                if (cantAlertaMaxima > 2) { $("#alerta3").trigger("play"); }
-
-            } else { $("#cuadradosHabitaciones").css("display", "block"); }
 
 
 
@@ -347,23 +213,100 @@
 
 
 
+    </script>
 
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script>
 
+        const options = {
+            clean: true, // retain session
+            connectTimeout: 4000,
+            clientId: "tablero",
+            username: "superuser",
+            password: "superuser",
+            keepalive: 0,
+            qos: 0,
 
+            keepalive: 60,
+            will: {
+                topic: 'WillMsg',
+                payload: 'Connection Closed abnormally.. que loco!',
+                qos: 0,
+                retain: false
+            },
 
-
-
-
-
-
-        });
-
-        socket.on('error', console.error.bind(console));
-        socket.on('algo', console.log.bind(console));
-        window.onbeforeunload = function () {
-            socket.emit('meDesconecto');
-            socket.close();
+            clean: true,
+            rejectUnauthorized: false
         };
+        //username: "UsuarioSOS",
+        //password: "SOS2020",    
+
+        const WebSocket_URL = "ws://icuadrado.net:8083/mqtt"
+        const client = mqtt.connect(WebSocket_URL, options)
+
+        client.on('error', function (err) {
+            console.log(err)
+            //client.end()
+        })
+        client.on('connect', function () {
+            console.log('client connected:')
+        })
+        client.on('message', function (topic, message, pakcet) {
+            console.log('Received Message:= ' + message.toString() + '\nOn topic:= ' + topic)
+            var parte = topic.split("/");
+            var accion = message.toString();
+            if (parte[0] == 'placa') {
+
+
+
+
+
+
+                var d = Date.now();
+                var d2 = ultrespuesta1;
+
+                $("#Hcolor" + parte[1]).css('color', 'black');
+                if (accion == 1) {
+                    $("#Hantiguedad" + parte[1]).html('mensaje');
+                    $("#Hcolor" + parte[1]).css('background-color', '#DD0000')
+                }
+                if (accion == 0) {
+                    $("#Hantiguedad" + parte[1]).html('&nbsp;');
+                    $("#Hcolor" + parte[1]).css('background-color', '#00dd00')
+
+
+                }
+
+                $("#Hcolor" + parte[1]).css('color', 'white');
+                $("#Htexto" + parte[1]).html('&nbsp;');
+
+                if (cantAlertaMaxima > 0) {
+                    disparaAlertaMaxima();
+
+                    if (cantAlertaMaxima == 1) { $("#alerta1").trigger("play"); }
+                    if (cantAlertaMaxima == 2) { $("#alerta2").trigger("play"); }
+                    if (cantAlertaMaxima > 2) { $("#alerta3").trigger("play"); }
+
+                } else { $("#cuadradosHabitaciones").css("display", "block"); }
+
+
+
+
+
+
+
+
+
+
+            }
+
+        })
+        client.on('close', function () {
+            console.log(' disconnected')
+        })
+        client.subscribe('placa/+', { qos: 0 });
+
+
 
     </script>
 </body>
