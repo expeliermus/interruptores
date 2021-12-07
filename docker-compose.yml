@@ -14,9 +14,9 @@ services:
     container_name: node
     image: "node:14"
     restart: always
-    working_dir: /home/interruptores
+    working_dir: /home/ssos
     volumes:
-      - ./:/home/interruptores
+      - ./:/home/ssos
     ports:
       - "3000:3000"
       - "3001:3001"
@@ -64,7 +64,7 @@ services:
       - "localhost:192.168.1.229"
 
     environment:
-      EMQX_NAME: SSOSInterruptores
+      EMQX_NAME: SSOSssos
       EMQX_HOST: 127.0.0.1
 
       TZ: "America/Argentina/Buenos_Aires"

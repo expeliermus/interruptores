@@ -5,9 +5,9 @@ services:
   node:
     container_name: node
     image: "node:14"
-    working_dir: /home/interruptores
+    working_dir: /home/ssos
     volumes:
-      - ./:/home/interruptores
+      - ./:/home/ssos
     ports:
       - "3000:3000"
       - "3001:3001"
