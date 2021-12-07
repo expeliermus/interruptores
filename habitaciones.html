@@ -240,7 +240,7 @@
         //username: "UsuarioSOS",
         //password: "SOS2020",    
 
-        const WebSocket_URL = "ws://localhost:8083/mqtt"
+        const WebSocket_URL = "ws://192.168.1.229:8083/mqtt"
         const client = mqtt.connect(WebSocket_URL, options)
 
         client.on('error', function (err) {

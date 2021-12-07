@@ -61,7 +61,7 @@ services:
       - mongo
 
     extra_hosts:
-      - "localhost:192.168.1.51"
+      - "localhost:192.168.1.229"
 
     environment:
       EMQX_NAME: SSOSInterruptores

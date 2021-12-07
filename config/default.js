@@ -10,10 +10,10 @@ let Interruptores = {
         "clientId": "ariel",
         "username": "UsuarioSOS",
         "password": "SOS2020",
-        "serverurl": "mqtt://localhost"
+        "serverurl": "mqtt://192.168.1.229"
     },
-    "webserver": "localhost",
-    "webserverpuerto": "3000",
+    "webserver": "192.168.1.229",
+    "webserverpuerto": "3002",
     "ambiente": "produccion",
     "titulo": "Interruptores"
 };
@@ -36,4 +36,4 @@ let demo = {
     "ambiente": "produccion",
     "titulo": "Interruptores"
 };
-module.exports = demo;
+module.exports = Interruptores;
