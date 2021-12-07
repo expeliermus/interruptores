@@ -13,7 +13,7 @@ services:
   node:
     container_name: node
     image: "node:14"
-    #restart: always
+    restart: always
     working_dir: /home/interruptores
     volumes:
       - ./:/home/interruptores
@@ -32,10 +32,10 @@ services:
   mongo:
     container_name: mongo
     image: mongo:4.4
-    #restart: always
+    restart: always
     environment:
       TZ: "America/Argentina/Buenos_Aires"
-      #MONGO_INITDB_ROOT_USERNAME: "myUserMongo"
+      #MONGO_INITDB_ROOT_USERNAME: "usuariomongo"
       #MONGO_INITDB_ROOT_PASSWORD: "passmongo"
     volumes:
       - ./mongodata:/data/db
@@ -45,7 +45,7 @@ services:
   emqx:
     container_name: emqx
     image: emqx/emqx:4.2.3
-    #restart: always
+    restart: always
     ports:
       - 18083:18083
       - 1883:1883
@@ -79,35 +79,35 @@ services:
       EMQX_NOMATCH: "deny"
 
       # MONGO CONNECTION
-      EMQX_AUTH__MONGO__TYPE: single
-      EMQX_AUTH__MONGO__TOPOLOGY__POOL_SIZE: 1
-      EMQX_AUTH__MONGO__TOPOLOGY__MAX_OVERFLOW: 0
+      ##EMQX_AUTH__MONGO__TYPE: single
+      ##EMQX_AUTH__MONGO__TOPOLOGY__POOL_SIZE: 1
+      ##EMQX_AUTH__MONGO__TOPOLOGY__MAX_OVERFLOW: 0
 
-      EMQX_AUTH__MONGO__SERVER: "mongo:27017"
-      EMQX_AUTH__MONGO__POOL: 8
+      ##EMQX_AUTH__MONGO__SERVER: "mongo:27017"
+      ##EMQX_AUTH__MONGO__POOL: 8
 
-      #EMQX_AUTH__MONGO__LOGIN: "myUserMongo"
+      #EMQX_AUTH__MONGO__LOGIN: "usuariomongo"
       #EMQX_AUTH__MONGO__PASSWORD: "passmongo"
       #EMQX_AUTH__MONGO__AUTH_SOURCE: admin
 
-      EMQX_AUTH__MONGO__DATABASE: "SSOSapp"
-      EMQX_AUTH__MONGO__AUTH_QUERY__COLLECTION: "emqxauthrules"
+      ##EMQX_AUTH__MONGO__DATABASE: "admin"
+      ##EMQX_AUTH__MONGO__AUTH_QUERY__COLLECTION: "emqxauthrules"
 
-      EMQX_AUTH__MONGO__SUPER_QUERY__COLLECTION: "emqxauthrules"
-      EMQX_AUTH__MONGO__SUPER_QUERY__SUPER_FIELD: "is_superuser"
-      EMQX_AUTH__MONGO__SUPER_QUERY__SELECTOR: "username=%u"
-      EMQX_AUTH__MONGO__SUPER_QUERY: "off"
+      ##EMQX_AUTH__MONGO__SUPER_QUERY__COLLECTION: "emqxauthrules"
+      ##EMQX_AUTH__MONGO__SUPER_QUERY__SUPER_FIELD: "is_superuser"
+      ##EMQX_AUTH__MONGO__SUPER_QUERY__SELECTOR: "username=%u"
+      ##EMQX_AUTH__MONGO__SUPER_QUERY: "off"
 
-      EMQX_AUTH__MONGO__AUTH_QUERY__PASSWORD_HASH: plain
-      EMQX_AUTH__MONGO__AUTH_QUERY__PASSWORD_FIELD: "password"
-      EMQX_AUTH__MONGO__AUTH_QUERY__SELECTOR: "username=%u"
+      ##EMQX_AUTH__MONGO__AUTH_QUERY__PASSWORD_HASH: plain
+      ##EMQX_AUTH__MONGO__AUTH_QUERY__PASSWORD_FIELD: "password"
+      ##EMQX_AUTH__MONGO__AUTH_QUERY__SELECTOR: "username=%u"
 
       ## Enable ACL query.
       #Access control list
-      EMQX_AUTH__MONGO__ACL_QUERY: "on"
-      EMQX_AUTH__MONGO__ACL_QUERY__COLLECTION: "emqxauthrules"
-      EMQX_AUTH__MONGO__ACL_QUERY__SELECTOR: "username=%u"
+      ##EMQX_AUTH__MONGO__ACL_QUERY: "on"
+      ##EMQX_AUTH__MONGO__ACL_QUERY__COLLECTION: "emqxauthrules"
+      ##EMQX_AUTH__MONGO__ACL_QUERY__SELECTOR: "username=%u"
 
-      EMQX_LOADED_PLUGINS: "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard,emqx_auth_mongo"
-
+      ##EMQX_LOADED_PLUGINS: "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard,emqx_auth_mongo"
+      EMQX_LOADED_PLUGINS: "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard"
       EMQX_LISTENER__TCP__EXTERNAL__MAX_CONNECTIONS: 1000

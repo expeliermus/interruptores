@@ -221,27 +221,26 @@
         const options = {
             clean: true, // retain session
             connectTimeout: 4000,
-            clientId: "tablero",
-            username: "superuser",
-            password: "superuser",
+            clientId: "tablero" + Math.random(),
+            //username: "superuser",
+            //password: "superuser",
             keepalive: 0,
             qos: 0,
 
-            keepalive: 60,
             will: {
                 topic: 'WillMsg',
-                payload: 'Connection Closed abnormally.. que loco!',
+                payload: 'Connection tablero cerrada en forma anormal',
                 qos: 0,
                 retain: false
             },
 
-            clean: true,
+
             rejectUnauthorized: false
         };
         //username: "UsuarioSOS",
         //password: "SOS2020",    
 
-        const WebSocket_URL = "ws://icuadrado.net:8083/mqtt"
+        const WebSocket_URL = "ws://localhost:8083/mqtt"
         const client = mqtt.connect(WebSocket_URL, options)
 
         client.on('error', function (err) {
