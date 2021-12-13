@@ -8,8 +8,8 @@ let Interruptores = {
     },
     "mqttserver": {
         "clientId": "ariel",
-        "username": "UsuarioSOS",
-        "password": "SOS2020",
+        "username": "xxx",
+        "password": "xxx",
         "serverurl": "mqtt://192.168.1.229"
     },
     "webserver": "192.168.1.229",
@@ -27,13 +27,13 @@ let demo = {
     },
     "mqttserver": {
         "clientId": "ariel",
-        "username": "UsuarioSOS",
-        "password": "SOS2020",
+        "username": "xxx",
+        "password": "xxx",
         "serverurl": "mqtt://192.168.1.51"
     },
-    "webserver": "localhost",
+    "webserver": "192.168.1.51",
     "webserverpuerto": "3002",
     "ambiente": "produccion",
     "titulo": "Interruptores"
 };
-module.exports = Interruptores;
+module.exports = demo;
