@@ -129,7 +129,7 @@
                     let plac = Math.ceil(cual / 2);
                     let rel = plac * 2 == cual ? 2 : 1;
                     //placaID4/relay2 mensaje "1"
-                    console.log("placaID" + plac + "/relay" + rel);
+                    //console.log("placaID" + plac + "/relay" + rel);
                     client.publish("placaID" + plac + "/relay" + rel, "1", {
                         qos: 0,
                         retained: false,
@@ -169,53 +169,53 @@
             //client.end()
         });
         client.on("connect", function () {
-            console.log("client connected:");
+            console.log("client connectado:");
         });
         client.on("message", function (topic, message, pakcet) {
-            console.log(
-                "Received Message:= " + message.toString() + "\nOn topic:= " + topic
+            //console.log(
+            "Received Message:= " + message.toString() + "\nOn topic:= " + topic
             );
-            var parte = topic.split("/");
-            var accion = message.toString().split(";");
-            if (parte[0] == "estado") {
-                let d = Date.now();
-                //var d2 = ultrespuesta;
-                let placa = 2 * accion[0] - 1;
-                arrultimarespuesta[accion[0]] = d;
-                for (var h = 1; h <= cantplacasdobles; h++) {
-                    if (
-                        arrultimarespuesta[h] == undefined ||
-                        (d - arrultimarespuesta[h]) / 60000 > 5
-                    ) {
-                        $("#Hcolor" + 2 * h).css("color", "black");
-                        $("#Hcolor" + 2 * h).css("background-color", "#202940"); //default
-                        $("#Hcolor" + (2 * h - 1)).css("color", "black");
-                        $("#Hcolor" + (2 * h - 1)).css("background-color", "#202940"); //default
-                    }
-                }
-
-                let parte1 = accion[1].substring(0, 2);
-                let parte2 = accion[1].substring(2, 4);
-                console.warn(placa, parte1, parte2);
-
-                if (parte1 == "01") {
-                    $("#Hcolor" + placa).css("background-color", "#DF746C"); //rojo
-                    $("#Hcolor" + placa).css("color", "white");
-                }
-                if (parte1 == "00") {
-                    $("#Hcolor" + placa).css("background-color", "#D0DE66"); //verde
-                    $("#Hcolor" + placa).css("color", "white");
-                }
-                placa = placa + 1;
-                if (parte2 == "01") {
-                    $("#Hcolor" + placa).css("background-color", "#DF746C"); //rojo
-                    $("#Hcolor" + placa).css("color", "white");
-                }
-                if (parte2 == "00") {
-                    $("#Hcolor" + placa).css("background-color", "#D0DE66"); //verde
-                    $("#Hcolor" + placa).css("color", "white");
+        var parte = topic.split("/");
+        var accion = message.toString().split(";");
+        if (parte[0] == "estado") {
+            let d = Date.now();
+            //var d2 = ultrespuesta;
+            let placa = 2 * accion[0] - 1;
+            arrultimarespuesta[accion[0]] = d;
+            for (var h = 1; h <= cantplacasdobles; h++) {
+                if (
+                    arrultimarespuesta[h] == undefined ||
+                    (d - arrultimarespuesta[h]) / 60000 > 5
+                ) {
+                    $("#Hcolor" + 2 * h).css("color", "black");
+                    $("#Hcolor" + 2 * h).css("background-color", "#202940"); //default
+                    $("#Hcolor" + (2 * h - 1)).css("color", "black");
+                    $("#Hcolor" + (2 * h - 1)).css("background-color", "#202940"); //default
                 }
             }
+
+            let parte1 = accion[1].substring(0, 2);
+            let parte2 = accion[1].substring(2, 4);
+            //console.warn(placa, parte1, parte2);
+
+            if (parte1 == "01") {
+                $("#Hcolor" + placa).css("background-color", "#DF746C"); //rojo
+                $("#Hcolor" + placa).css("color", "white");
+            }
+            if (parte1 == "00") {
+                $("#Hcolor" + placa).css("background-color", "#D0DE66"); //verde
+                $("#Hcolor" + placa).css("color", "white");
+            }
+            placa = placa + 1;
+            if (parte2 == "01") {
+                $("#Hcolor" + placa).css("background-color", "#DF746C"); //rojo
+                $("#Hcolor" + placa).css("color", "white");
+            }
+            if (parte2 == "00") {
+                $("#Hcolor" + placa).css("background-color", "#D0DE66"); //verde
+                $("#Hcolor" + placa).css("color", "white");
+            }
+        }
         });
         client.on("close", function () {
             console.log(" disconnected");
