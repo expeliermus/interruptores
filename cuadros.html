@@ -91,32 +91,32 @@
     <script src="assets/js/perfect-scrollbar.jquery.min.js"></script>
     <script src="assets/js/material-dashboard.min.js"></script>
     <script>
-
-
-
+        const cantplacasdobles = 20;
+        var arrultimarespuesta = [];
 
         var cuadrados;
-        for (var h = 1; h <= 40; h++) {
-            if (h == 1) { cuadrados = '<div class="row">'; }
+        for (var h = 1; h <= cantplacasdobles * 2; h++) {
+            if (h == 1) {
+                cuadrados = '<div class="row">';
+            }
 
             cuadrados = cuadrados + '<div class="fraccion p-1">';
             cuadrados =
                 cuadrados +
-                ' <div class="p-3  card text-center cuadro d-none d-sm-block" id="Hcolor' +
+                ' <div class="p-1  card text-center cuadro" id="Hcolor' +
                 h +
                 '">';
             cuadrados = cuadrados + "  <p>" + h + "</p>";
             cuadrados = cuadrados + " </div>";
             cuadrados = cuadrados + "</div>";
             if (h % 8 == 0) {
-                if (h == 40) { cuadrados = cuadrados + '</div>'; }
-                else { cuadrados = cuadrados + '</div><div class="row">'; }
-
+                if (h >= cantplacasdobles * 2) {
+                    cuadrados = cuadrados + "</div>";
+                } else {
+                    cuadrados = cuadrados + '</div><div class="row">';
+                }
             }
-
         }
-
-
 
         $("#cuadradosHabitaciones")
             .html(cuadrados)
@@ -127,7 +127,7 @@
                     event.stopImmediatePropagation();
                     let cual = this.id.replace("Hcolor", "");
                     let plac = Math.ceil(cual / 2);
-                    let rel = (plac * 2 == cual) ? 2 : 1;
+                    let rel = plac * 2 == cual ? 2 : 1;
                     //placaID4/relay2 mensaje "1"
                     console.log("placaID" + plac + "/relay" + rel);
                     client.publish("placaID" + plac + "/relay" + rel, "1", {
@@ -137,14 +137,7 @@
                 });
             });
 
-
-
         function chequeaStatus() { }
-    </script>
-
-    <script>
-        var ultrespuesta = Date.now();
-
     </script>
 
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
@@ -168,7 +161,6 @@
             rejectUnauthorized: false,
         };
 
-
         const WebSocket_URL = "ws://xyzopqwebserver:8083/mqtt";
         const client = mqtt.connect(WebSocket_URL, options);
 
@@ -186,35 +178,43 @@
             var parte = topic.split("/");
             var accion = message.toString().split(";");
             if (parte[0] == "estado") {
-                //var d = Date.now();
+                let d = Date.now();
                 //var d2 = ultrespuesta;
                 let placa = 2 * accion[0] - 1;
+                arrultimarespuesta[accion[0]] = d;
+                for (var h = 1; h <= cantplacasdobles; h++) {
+                    if (
+                        arrultimarespuesta[h] == undefined ||
+                        (d - arrultimarespuesta[h]) / 60000 > 5
+                    ) {
+                        $("#Hcolor" + 2 * h).css("color", "black");
+                        $("#Hcolor" + 2 * h).css("background-color", "#202940"); //default
+                        $("#Hcolor" + (2 * h - 1)).css("color", "black");
+                        $("#Hcolor" + (2 * h - 1)).css("background-color", "#202940"); //default
+                    }
+                }
+
                 let parte1 = accion[1].substring(0, 2);
                 let parte2 = accion[1].substring(2, 4);
                 console.warn(placa, parte1, parte2);
 
-                $("#Hcolor" + placa).css("color", "black");
-                if (parte1 == '01') {
-                    $("#Hcolor" + placa).css("background-color", "#DF746C");  //rojo
+                if (parte1 == "01") {
+                    $("#Hcolor" + placa).css("background-color", "#DF746C"); //rojo
                     $("#Hcolor" + placa).css("color", "white");
                 }
-                if (parte1 == '00') {
+                if (parte1 == "00") {
                     $("#Hcolor" + placa).css("background-color", "#D0DE66"); //verde
                     $("#Hcolor" + placa).css("color", "white");
                 }
-                placa = placa + 1
-                if (parte2 == '01') {
-                    $("#Hcolor" + placa).css("background-color", "#DF746C");  //rojo
+                placa = placa + 1;
+                if (parte2 == "01") {
+                    $("#Hcolor" + placa).css("background-color", "#DF746C"); //rojo
                     $("#Hcolor" + placa).css("color", "white");
                 }
-                if (parte2 == '00') {
+                if (parte2 == "00") {
                     $("#Hcolor" + placa).css("background-color", "#D0DE66"); //verde
                     $("#Hcolor" + placa).css("color", "white");
                 }
-
-
-
-
             }
         });
         client.on("close", function () {
